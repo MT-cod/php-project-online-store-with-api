@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\Goods;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -22,13 +23,13 @@ class GoodsFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->unique()->realText(rand(10, 20));
+        $name = $this->faker->unique()->words(2, true);
         return [
-            'name' => 'Thing_' . $name,
+            'name' => 'Thing ' . $name,
             'description' => $this->faker->text(),
             'slug' => Str::slug($name),
             'price' => rand(1000, 2000),
-            'category_id' => rand(1, 5)
+            'category_id' => rand(1, Category::count())
         ];
     }
 }

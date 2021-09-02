@@ -17,17 +17,26 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // \App\Models\User::factory(10)->create();
-        Category::factory(5)->create();
-        Goods::factory(5)->create();
-        AdditionalChar::factory(5)->create();
 
-        /*$this->call(CategoriesTableSeeder::class);
-        $this->command->info('Categories is done');
+        //Создание фейковых категорий
+        $maxCategLevel = 3;
+        $categAmountForLvl = 15;
+        Category::factory($categAmountForLvl)->create(['level' => 1]);
+        if ($maxCategLevel > 1) {
+            for ($lvl = 2; $lvl <= $maxCategLevel; $lvl++) {
+                for ($i = 1; $i <= $categAmountForLvl; $i++) {
+                    $parent_id = rand($categAmountForLvl * ($lvl - 2) + 1, $categAmountForLvl * ($lvl - 1));
+                    Category::factory()->create(['parent_id' => $parent_id, 'level' => $lvl]);
+                }
+            }
+        }
 
-        $this->call(GoodsTableSeeder::class);
-        $this->command->info('Goods is done');
-
-        $this->call(AdditionalCharsTableSeeder::class);
-        $this->command->info('AdditionalChars is done');*/
+        //Создание фейковых товаров с доп. характеристиками
+        AdditionalChar::factory(15)->create();
+        Goods::factory(15)->create();
+        //Генерируем случайные связи между товарами и доп. характеристиками
+        for ($i = 1; $i < 31; $i++) {
+            Goods::find(rand(1, Goods::count()))->additionalChars()->attach(AdditionalChar::find(rand(1, AdditionalChar::count())));
+        }
     }
 }
