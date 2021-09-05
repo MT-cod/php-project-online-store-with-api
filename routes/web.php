@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\GoodsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,12 +19,7 @@ Route::get('/', function () {
     return view('index');
 });
 
-Auth::routes();
-
-//Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
 Route::resource('categories', CategoriesController::class);
+Route::resource('goods', GoodsController::class);
 
 Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
