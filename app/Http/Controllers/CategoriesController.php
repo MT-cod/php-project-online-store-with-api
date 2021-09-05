@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class CategoriesController extends Controller
@@ -10,11 +13,28 @@ class CategoriesController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
      */
     public function index()
     {
-        //
+        $categories = Category::all();
+        $topCategories = $categories->where('parent_id', '=', 0);
+        //$chi = Category::find(20)->goods()->get()->toArray();
+        //$chi = Category::find(20)->parent()->get()->toArray();
+        return view('category.index', compact('topCategories'));
+    }
+    private function getTree($categories)
+    {
+        $res = [];
+        foreach ($categories as $cat) {
+            if ($cat['parent_id'] == 0) {
+                $res[] = ['text' => $cat['name']];
+
+            }
+        }
+        //$categories = Category::select('name')->get()->toArray();
+
+        return $res;
     }
 
     /**

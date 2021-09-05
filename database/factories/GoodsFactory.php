@@ -23,9 +23,9 @@ class GoodsFactory extends Factory
      */
     public function definition()
     {
-        $name = $this->faker->unique()->words(2, true);
+        $name = $this->faker->words(3, true);
         return [
-            'name' => 'Thing ' . $name,
+            'name' => 'Товар ' . $name,
             'description' => $this->faker->text(),
             'slug' => Str::slug($name),
             'price' => rand(1000, 2000),

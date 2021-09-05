@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
 
         //Создание фейковых категорий
         $maxCategLevel = 3;
-        $categAmountForLvl = 15;
+        $categAmountForLvl = 20;
         Category::factory($categAmountForLvl)->create(['level' => 1]);
         if ($maxCategLevel > 1) {
             for ($lvl = 2; $lvl <= $maxCategLevel; $lvl++) {
@@ -33,9 +33,9 @@ class DatabaseSeeder extends Seeder
 
         //Создание фейковых товаров с доп. характеристиками
         AdditionalChar::factory(15)->create();
-        Goods::factory(15)->create();
+        Goods::factory(300)->create();
         //Генерируем случайные связи между товарами и доп. характеристиками
-        for ($i = 1; $i < 31; $i++) {
+        for ($i = 1; $i < 10; $i++) {
             Goods::find(rand(1, Goods::count()))->additionalChars()->attach(AdditionalChar::find(rand(1, AdditionalChar::count())));
         }
     }

@@ -22,7 +22,7 @@ class AdditionalCharFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'Char_' . $this->faker->unique()->word(),
+            'name' => 'Характеристика_' . $this->faker->unique()->word(),
             'value' => $this->faker->text()
         ];
     }
