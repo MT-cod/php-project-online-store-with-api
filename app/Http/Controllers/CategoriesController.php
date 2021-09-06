@@ -17,24 +17,11 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        $topCategories = $categories->where('parent_id', '=', 0);
+        $categoriesTree = Category::getCategoriesTree();
+        $topCategories = Category::orderBy('name')->where('level', '=', 1)->get();
         //$chi = Category::find(20)->goods()->get()->toArray();
         //$chi = Category::find(20)->parent()->get()->toArray();
         return view('category.index', compact('topCategories'));
-    }
-    private function getTree($categories)
-    {
-        $res = [];
-        foreach ($categories as $cat) {
-            if ($cat['parent_id'] == 0) {
-                $res[] = ['text' => $cat['name']];
-
-            }
-        }
-        //$categories = Category::select('name')->get()->toArray();
-
-        return $res;
     }
 
     /**

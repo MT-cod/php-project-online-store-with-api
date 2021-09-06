@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
@@ -18,13 +18,30 @@ class Category extends Model
         return $this->hasMany(Goods::class);
     }
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'parent_id', 'id');
     }
 
-    public function childrens()
+    public function childrens(): HasMany
     {
         return $this->hasMany(Category::class,'parent_id','id');
+    }
+
+    public static function getCategoriesTree($categs = []): array
+    {
+        $res = [];
+        if (empty($categs)) {
+            $categs = Category::orderBy('name')->where('level', 1)->get();
+        }
+        foreach ($categs as $cat) {
+            if ($cat->childrens()->count() > 0) {
+                $childs = ['childrens' => Category::getCategoriesTree($cat->childrens()->get())];
+                $res[] = $cat->toArray() + $childs;
+            } else {
+                $res[] = $cat->toArray();
+            }
+        }
+        return $res;
     }
 }

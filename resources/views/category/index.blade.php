@@ -8,7 +8,7 @@
         <div class="col-9"><h2>Подробности</h2></div>
     </div>
     <div class="row">
-        <div class="col-3" style="max-height: 85vh !important; overflow-y: scroll !important;">
+        <div class="col-3" style="max-height: 90vh !important; overflow-y: scroll !important;">
             @foreach ($topCategories as $cat)
                 @php
                     $childCount = $cat->childrens()->count();
@@ -109,14 +109,17 @@
                 </div>
             @endforeach
         </div>
-        <div class="col-9 text-left" style="max-height: 85vh !important; overflow-y: scroll !important;">
+        <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
             @foreach (App\Models\Category::all() as $cat)
                 <div id="cat{{$cat->id}}" class="card collapse">
                     <div class="card shadow-lg">
                         <ul class="list-group list-group-flush shadow">
                             <li class="list-group-item">
+                                <button type="button" class="close" aria-label="Close" data-toggle="collapse" data-target="#cat{{$cat->id}}">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
                                 <h5 class="card-title font-weight-bold">Имя категории</h5>
-                                <p class="card-text">{{$cat->name}}</p>
+                                <p class="card-text">{{$cat->id}} {{$cat->name}}</p>
                             </li>
                             <li class="list-group-item">
                                 <h5 class="card-title font-weight-bold">Время создания категории</h5>
