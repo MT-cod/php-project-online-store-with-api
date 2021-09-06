@@ -28,8 +28,9 @@ class GoodsFactory extends Factory
             'name' => 'Товар ' . $name,
             'description' => $this->faker->text(),
             'slug' => Str::slug($name),
-            'price' => rand(1000, 2000),
-            'category_id' => rand(1, Category::count())
+            'price' => rand(10000, 20000) * 0.01,
+            'category_id' => rand(
+                (Category::all()->where('level', 1)->count()) + 1, Category::count())
         ];
     }
 }

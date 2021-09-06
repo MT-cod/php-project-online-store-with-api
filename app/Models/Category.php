@@ -35,12 +35,14 @@ class Category extends Model
             $categs = Category::orderBy('name')->where('level', 1)->get();
         }
         foreach ($categs as $cat) {
+            $childs = [];
             if ($cat->childrens()->count() > 0) {
                 $childs = ['childrens' => Category::getCategoriesTree($cat->childrens()->get())];
-                $res[] = $cat->toArray() + $childs;
-            } else {
-                $res[] = $cat->toArray();
             }
+            $node = $cat->toArray() + $childs;
+            $node['created_at'] = $cat->created_at->format('d.m.Y');
+            $node['updated_at'] = $cat->updated_at->format('d.m.Y');
+            $res[] = $node;
         }
         return $res;
     }
