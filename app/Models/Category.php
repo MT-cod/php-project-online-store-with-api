@@ -20,26 +20,27 @@ class Category extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(Category::class, 'parent_id', 'id');
+        return $this->belongsTo(self::class, 'parent_id', 'id');
     }
 
     public function childrens(): HasMany
     {
-        return $this->hasMany(Category::class,'parent_id','id');
+        return $this->hasMany(self::class,'parent_id','id');
     }
 
-    public static function getCategoriesTree($categs = []): array
+    public static function categoriesTree($categs = []): array
     {
         $res = [];
         if (empty($categs)) {
-            $categs = Category::orderBy('name')->where('level', 1)->get();
+            $categs = self::orderBy('name')->where('level', 1)->get();
         }
         foreach ($categs as $cat) {
             $childs = [];
             if ($cat->childrens()->count() > 0) {
-                $childs = ['childrens' => Category::getCategoriesTree($cat->childrens()->get())];
+                $childs = ['childrens' => self::categoriesTree($cat->childrens()->get())];
             }
             $node = $cat->toArray() + $childs;
+            //передадим даты сразу в читабельном формате
             $node['created_at'] = $cat->created_at->format('d.m.Y');
             $node['updated_at'] = $cat->updated_at->format('d.m.Y');
             $res[] = $node;

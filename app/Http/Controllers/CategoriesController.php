@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Goods;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -17,7 +18,8 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $categoriesTree = Category::getCategoriesTree();
+        $categTree = Category::categoriesTree();
+        $goods = Goods::goodsList();
         $topCategories = Category::orderBy('name')->where('level', '=', 1)->get();
         //$chi = Category::find(20)->goods()->get()->toArray();
         //$chi = Category::find(20)->parent()->get()->toArray();

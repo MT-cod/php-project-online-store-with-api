@@ -19,7 +19,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col">
-                                    <button class="btn-secondary btn-block btn-sm text-left" type="button" data-toggle="collapse" data-target="#subcat{{$cat->id}}">
+                                    <button class="btn-secondary btn-block btn-sm text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat->id}}">
                                         <div class="row">
                                             <div class="col-8">
                                                 <b>{{$cat->name}}</b>
@@ -36,7 +36,9 @@
                                     </button>
                                 </div>
                             </div>
-                            <button class="btn-secondary btn-block btn-sm" type="button" data-toggle="collapse" data-target="#cat{{$cat->id}}"> >>> </button>
+                            @if ($childCount > 0)
+                                <button class="btn-secondary btn-block btn-sm" type="button" data-toggle="collapse" data-target="#subcat{{$cat->id}}" style="max-height: 20px !important; padding: 0;">&#8595</button>
+                            @endif
                         </div>
                         @if ($childCount > 0)
                             <div id="subcat{{$cat->id}}" class="collapse">
@@ -51,7 +53,7 @@
                                                 <div class="card-header">
                                                     <div class="row">
                                                         <div class="col">
-                                                            <button class="btn-secondary btn-block btn-sm text-left" type="button" data-toggle="collapse" data-target="#subcat{{$cat2lvl->id}}">
+                                                            <button class="btn-secondary btn-block btn-sm text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat2lvl->id}}">
                                                                 <div class="row">
                                                                     <div class="col-8">
                                                                         <b>{{$cat2lvl->name}}</b>
@@ -68,7 +70,9 @@
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <button class="btn-secondary btn-block btn-sm" type="button" data-toggle="collapse" data-target="#cat{{$cat2lvl->id}}"> >>> </button>
+                                                    @if ($childLvl2Count > 0)
+                                                        <button class="btn-secondary btn-block btn-sm" type="button" data-toggle="collapse" data-target="#subcat{{$cat2lvl->id}}" style="max-height: 20px !important; padding: 0;">&#8595</button>
+                                                    @endif
                                                 </div>
                                                 @if ($childLvl2Count > 0)
                                                     <div id="subcat{{$cat2lvl->id}}" class="collapse">

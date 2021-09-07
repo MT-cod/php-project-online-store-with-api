@@ -22,4 +22,17 @@ class Goods extends Model
     {
         return $this->belongsToMany(AdditionalChar::class, 'goods_additional_chars', 'goods_id', 'additional_char_id');
     }
+
+    public static function goodsList(): array
+    {
+        $res = [];
+        foreach (Goods::all() as $val) {
+            $res[$val->id] = $val->toArray();
+            //передадим даты сразу в читабельном формате
+            $res[$val->id]['created_at'] = $val->created_at->format('d.m.Y');
+            $res[$val->id]['updated_at'] = $val->updated_at->format('d.m.Y');
+            $res[$val->id]['additional_chars'] = $val->additionalChars()->get()->toArray();
+        }
+        return $res;
+    }
 }
