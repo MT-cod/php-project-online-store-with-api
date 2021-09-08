@@ -28,37 +28,42 @@
                             </div>
                         @endif
                     </div>
-
+                    {{--2-й уровень вложенности категорий--}}
                     @if ($childCount > 0)
-                            <div id="subcat{{$cat->id}}" class="collapse list-group list-group-flush">
-                                @foreach ($cat->childrens()->get() as $cat2lvl)
-                                    @php
-                                        $childLvl2Count = $cat2lvl->childrens()->count();
-                                    @endphp
-                                    <div class="list-group-item shadow-lg">
-                                        <div class="text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat2lvl->id}}" style="background-color: #f6e6ae;">
-                                            <b>{{$cat2lvl->name}}</b>
-                                            @if ($childLvl2Count > 0)
-                                                <span class="badge badge-warning badge-pill text-right">Подкатегорий {{$childLvl2Count}}</span>
-                                            @endif
-                                        </div>
-                                        @if ($childLvl2Count > 0)
-                                            <div class="text-left" type="button" data-toggle="collapse" data-target="#subcat{{$cat2lvl->id}}" style="background-color: #f6e6b9;">&#8595</div>
-                                        @endif
-                                    </div>
-
+                        <div id="subcat{{$cat->id}}" class="collapse">
+                            @foreach ($cat->childrens()->get() as $cat2lvl)
+                                @php
+                                    $childLvl2Count = $cat2lvl->childrens()->count();
+                                @endphp
+                                <div class="row" style="background-color: #fce088; border: groove">
                                     @if ($childLvl2Count > 0)
-                                        <div id="subcat{{$cat2lvl->id}}" class="collapse">
-                                            @foreach ($cat2lvl->childrens()->get() as $cat3lvl)
-                                                <button class="btn list-group-item shadow-lg text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat3lvl->id}}" style="background-color: #f6e6b9; left: 10%; width: 90%">
-                                                    <b>{{$cat3lvl->name}}</b>
-                                                </button>
-                                            @endforeach
+                                        <div class="col-10 font-weight-bold">
+                                            <div class="text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat2lvl->id}}" data-toggle="tooltip" data-placement="bottom" title="Подробнее о категории">&ensp;&ensp;{{$cat2lvl->name}}</div>
+                                        </div>
+                                        <div class="col-2 text-right font-weight-bold" type="button" data-toggle="collapse" data-target="#subcat{{$cat2lvl->id}}">
+                                            <span class="badge-hover badge badge-warning badge-pill" data-toggle="tooltip" data-placement="bottom" title="Развернуть категорию">{{$childLvl2Count}}&#8595</span>
+                                        </div>
+                                    @else
+                                        <div class="col-12 font-weight-bold">
+                                            <div class="text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat2lvl->id}}" data-toggle="tooltip" data-placement="bottom" title="Подробнее о категории">&ensp;&ensp;{{$cat->name}}</div>
                                         </div>
                                     @endif
-                                @endforeach
-                            </div>
-                        @endif
+                                </div>
+                                {{--3-й уровень вложенности категорий--}}
+                                @if ($childLvl2Count > 0)
+                                    <div id="subcat{{$cat2lvl->id}}" class="collapse">
+                                        @foreach ($cat2lvl->childrens()->get() as $cat3lvl)
+                                            <div class="row" style="background-color: #ffe597; border: groove;">
+                                                <div class="col-12 font-weight-bold">
+                                                    <div class="shadow-lg text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat3lvl->id}}" data-toggle="tooltip" data-placement="bottom" title="Подробнее о категории">&ensp;&ensp;&ensp;&ensp;{{$cat3lvl->name}}</div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    @endif
                 @endforeach
             </ul>
         </div>
