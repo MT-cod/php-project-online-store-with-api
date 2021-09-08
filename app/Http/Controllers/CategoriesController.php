@@ -18,8 +18,8 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $categTree = Category::categoriesTree();
-        $goods = Goods::goodsList();
+        //$categTree = Category::categoriesTree();
+        //$goods = Goods::goodsList();
         $topCategories = Category::orderBy('name')->where('level', '=', 1)->get();
         //$chi = Category::find(20)->goods()->get()->toArray();
         //$chi = Category::find(20)->parent()->get()->toArray();

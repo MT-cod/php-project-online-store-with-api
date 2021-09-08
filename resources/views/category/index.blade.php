@@ -7,112 +7,62 @@
         <div class="col-3"><h2>Категории</h2></div>
         <div class="col-9"><h2>Подробности</h2></div>
     </div>
-    <div class="row">
+    <div class="row accordion">
         <div class="col-3" style="max-height: 90vh !important; overflow-y: scroll !important;">
-            @foreach ($topCategories as $cat)
-                @php
-                    $childCount = $cat->childrens()->count();
-                    $goodsCount = $cat->goods()->count();
-                @endphp
-                <div class="accordion">
-                    <div class="card shadow-lg" style="background-color: #e8dbaa">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col">
-                                    <button class="btn-secondary btn-block btn-sm text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat->id}}">
-                                        <div class="row">
-                                            <div class="col-8">
-                                                <b>{{$cat->name}}</b>
-                                            </div>
-                                            <div class="col-4 text-right">
-                                                @if ($childCount > 0)
-                                                    <span class="badge badge-warning badge-pill">Подкатегорий {{$childCount}}</span>
-                                                @endif
-                                                @if ($goodsCount > 0)
-                                                    <span class="badge badge-success badge-pill">Товаров {{$goodsCount}}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </button>
-                                </div>
-                            </div>
-                            @if ($childCount > 0)
-                                <button class="btn-secondary btn-block btn-sm" type="button" data-toggle="collapse" data-target="#subcat{{$cat->id}}" style="max-height: 20px !important; padding: 0;">&#8595</button>
-                            @endif
-                        </div>
+            <ul class="list-group list-group-flush">
+                @foreach ($topCategories as $cat)
+                    @php
+                        $childCount = $cat->childrens()->count();
+                    @endphp
+                    <div class="row" style="background-color: #ffdb5d; border: groove">
                         @if ($childCount > 0)
-                            <div id="subcat{{$cat->id}}" class="collapse">
-                                <div class="card-body">
-                                    @foreach ($cat->childrens()->get() as $cat2lvl)
-                                        @php
-                                            $childLvl2Count = $cat2lvl->childrens()->count();
-                                            $goodsLvl2Count = $cat2lvl->goods()->count();
-                                        @endphp
-                                        <div class="accordion">
-                                            <div class="card shadow-lg" style="background-color: #e8dbaa">
-                                                <div class="card-header">
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <button class="btn-secondary btn-block btn-sm text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat2lvl->id}}">
-                                                                <div class="row">
-                                                                    <div class="col-8">
-                                                                        <b>{{$cat2lvl->name}}</b>
-                                                                    </div>
-                                                                    <div class="col-4 text-right">
-                                                                        @if ($childLvl2Count > 0)
-                                                                            <span class="badge badge-warning badge-pill">Подкатегорий {{$childLvl2Count}}</span>
-                                                                        @endif
-                                                                        @if ($goodsLvl2Count > 0)
-                                                                            <span class="badge badge-success badge-pill">Товаров {{$goodsLvl2Count}}</span>
-                                                                        @endif
-                                                                    </div>
-                                                                </div>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    @if ($childLvl2Count > 0)
-                                                        <button class="btn-secondary btn-block btn-sm" type="button" data-toggle="collapse" data-target="#subcat{{$cat2lvl->id}}" style="max-height: 20px !important; padding: 0;">&#8595</button>
-                                                    @endif
-                                                </div>
-                                                @if ($childLvl2Count > 0)
-                                                    <div id="subcat{{$cat2lvl->id}}" class="collapse">
-                                                        <div class="card-body">
-                                                            @foreach ($cat2lvl->childrens()->get() as $cat3lvl)
-                                                                @php
-                                                                    $goodsLvl3Count = $cat3lvl->goods()->count();
-                                                                @endphp
-                                                                <div class="accordion">
-                                                                    <div class="card shadow-lg" style="background-color: #e8dbaa">
-                                                                        <div class="card-header">
-                                                                            <button class="btn-secondary btn-block btn-sm text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat3lvl->id}}">
-                                                                                <div class="row">
-                                                                                    <div class="col-8">
-                                                                                        <b>{{$cat3lvl->name}}</b>
-                                                                                    </div>
-                                                                                    <div class="col-4 text-right">
-                                                                                        @if ($goodsLvl3Count > 0)
-                                                                                            <span class="badge badge-success badge-pill">Товаров {{$goodsLvl3Count}}</span>
-                                                                                        @endif
-                                                                                    </div>
-                                                                                </div>
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
+                        <div class="col-10 font-weight-bold">
+                            <div class="text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat->id}}" data-toggle="tooltip" data-placement="bottom" title="Подробнее о категории">{{$cat->name}}</div>
+                        </div>
+                        <div class="col-2 text-right font-weight-bold" type="button" data-toggle="collapse" data-target="#subcat{{$cat->id}}">
+                            <span class="badge-hover badge badge-warning badge-pill" data-toggle="tooltip" data-placement="bottom" title="Развернуть категорию">{{$childCount}}&#8595</span>
+                        </div>
+                        @else
+                            <div class="col-12 font-weight-bold">
+                                <div class="text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat->id}}" data-toggle="tooltip" data-placement="bottom" title="Подробнее о категории">{{$cat->name}}</div>
                             </div>
                         @endif
                     </div>
-                </div>
-            @endforeach
+
+                    @if ($childCount > 0)
+                            <div id="subcat{{$cat->id}}" class="collapse list-group list-group-flush">
+                                @foreach ($cat->childrens()->get() as $cat2lvl)
+                                    @php
+                                        $childLvl2Count = $cat2lvl->childrens()->count();
+                                    @endphp
+                                    <div class="list-group-item shadow-lg">
+                                        <div class="text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat2lvl->id}}" style="background-color: #f6e6ae;">
+                                            <b>{{$cat2lvl->name}}</b>
+                                            @if ($childLvl2Count > 0)
+                                                <span class="badge badge-warning badge-pill text-right">Подкатегорий {{$childLvl2Count}}</span>
+                                            @endif
+                                        </div>
+                                        @if ($childLvl2Count > 0)
+                                            <div class="text-left" type="button" data-toggle="collapse" data-target="#subcat{{$cat2lvl->id}}" style="background-color: #f6e6b9;">&#8595</div>
+                                        @endif
+                                    </div>
+
+                                    @if ($childLvl2Count > 0)
+                                        <div id="subcat{{$cat2lvl->id}}" class="collapse">
+                                            @foreach ($cat2lvl->childrens()->get() as $cat3lvl)
+                                                <button class="btn list-group-item shadow-lg text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat3lvl->id}}" style="background-color: #f6e6b9; left: 10%; width: 90%">
+                                                    <b>{{$cat3lvl->name}}</b>
+                                                </button>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+                @endforeach
+            </ul>
         </div>
+
         <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
             @foreach (App\Models\Category::all() as $cat)
                 <div id="cat{{$cat->id}}" class="card collapse">

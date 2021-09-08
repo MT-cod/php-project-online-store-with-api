@@ -41,6 +41,12 @@
     scrollbar-width: thin;
 }
 
+.badge-hover:hover {
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    background: linear-gradient(to bottom, #acfff4, #e9e9ce);
+    color: #a00;
+}
+
 /*Scrolling for webkit-browsers GRAY*/
 ::-webkit-scrollbar {
     width: 8px;
