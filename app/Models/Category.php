@@ -39,11 +39,22 @@ class Category extends Model
             if ($cat->childrens()->count() > 0) {
                 $childs = ['childrens' => self::categoriesTree($cat->childrens()->get())];
             }
-            $node = $cat->toArray() + $childs;
+            $res[$cat->id] = $cat->toArray() + $childs;
             //передадим даты сразу в читабельном формате
-            $node['created_at'] = $cat->created_at->format('d.m.Y');
-            $node['updated_at'] = $cat->updated_at->format('d.m.Y');
-            $res[] = $node;
+            $res[$cat->id]['created_at'] = $cat->created_at->format('d.m.Y');
+            $res[$cat->id]['updated_at'] = $cat->updated_at->format('d.m.Y');
+        }
+        return $res;
+    }
+
+    public static function categoriesList(): array
+    {
+        $res = [];
+        foreach (self::all() as $val) {
+            $res[$val->id] = $val->toArray();
+            //передадим даты сразу в читабельном формате
+            $res[$val->id]['created_at'] = $val->created_at->format('d.m.Y');
+            $res[$val->id]['updated_at'] = $val->updated_at->format('d.m.Y');
         }
         return $res;
     }

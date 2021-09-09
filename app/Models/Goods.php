@@ -26,7 +26,7 @@ class Goods extends Model
     public static function goodsList(): array
     {
         $res = [];
-        foreach (Goods::all() as $val) {
+        foreach (self::all() as $val) {
             $res[$val->id] = $val->toArray();
             //передадим даты сразу в читабельном формате
             $res[$val->id]['created_at'] = $val->created_at->format('d.m.Y');
