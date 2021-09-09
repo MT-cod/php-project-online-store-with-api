@@ -19,10 +19,7 @@ class CategoriesController extends Controller
     public function index()
     {
         $categTree = Category::categoriesTree();
-        //$goods = Goods::goodsList();
         $categories = Category::categoriesList();
-        //$chi = Category::find(20)->goods()->get()->toArray();
-        //$chi = Category::find(20)->parent()->get()->toArray();
         return view('category.index', compact('categTree', 'categories'));
     }
 

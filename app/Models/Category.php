@@ -47,6 +47,29 @@ class Category extends Model
         return $res;
     }
 
+    public static function categTreeWithGoods($categs = []): array
+    {
+        $res = [];
+        if (empty($categs)) {
+            $categs = self::orderBy('name')->where('level', 1)->get();
+        }
+        foreach ($categs as $cat) {
+            $childs = [];
+            $goods = [];
+            if ($cat->childrens()->count() > 0) {
+                $childs = ['childrens' => self::categTreeWithGoods($cat->childrens()->get())];
+            }
+            if ($cat->goods()->count() > 0) {
+                $goods = ['goods' => Goods::goodsList($cat->id)];
+            }
+            $res[$cat->id] = $cat->toArray() + $childs + $goods;
+            //передадим даты сразу в читабельном формате
+            $res[$cat->id]['created_at'] = $cat->created_at->format('d.m.Y');
+            $res[$cat->id]['updated_at'] = $cat->updated_at->format('d.m.Y');
+        }
+        return $res;
+    }
+
     public static function categoriesList(): array
     {
         $res = [];

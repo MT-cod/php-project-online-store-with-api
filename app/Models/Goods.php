@@ -23,15 +23,16 @@ class Goods extends Model
         return $this->belongsToMany(AdditionalChar::class, 'goods_additional_chars', 'goods_id', 'additional_char_id');
     }
 
-    public static function goodsList(): array
+    public static function goodsList(int $categoryId = 0): array
     {
         $res = [];
-        foreach (self::all() as $val) {
-            $res[$val->id] = $val->toArray();
+        $goods = ($categoryId) ? self::orderBy('name')->where('category_id', $categoryId)->get() : self::all();
+        foreach ($goods as $item) {
+            $res[$item->id] = $item->toArray();
             //передадим даты сразу в читабельном формате
-            $res[$val->id]['created_at'] = $val->created_at->format('d.m.Y');
-            $res[$val->id]['updated_at'] = $val->updated_at->format('d.m.Y');
-            $res[$val->id]['additional_chars'] = $val->additionalChars()->get()->toArray();
+            $res[$item->id]['created_at'] = $item->created_at->format('d.m.Y');
+            $res[$item->id]['updated_at'] = $item->updated_at->format('d.m.Y');
+            $res[$item->id]['additional_chars'] = $item->additionalChars()->get()->toArray();
         }
         return $res;
     }

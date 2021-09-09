@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         AdditionalChar::factory(15)->create();
         Goods::factory(300)->create();
         //Генерируем случайные связи между товарами и доп. характеристиками
-        for ($i = 1; $i < 10; $i++) {
+        for ($i = 1; $i < 200; $i++) {
             Goods::find(rand(1, Goods::count()))->additionalChars()->attach(AdditionalChar::find(rand(1, AdditionalChar::count())));
         }
     }

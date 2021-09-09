@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Goods;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -17,8 +18,9 @@ class GoodsController extends Controller
      */
     public function index()
     {
-        $goods = Goods::orderBy('name')->get();
-        return view('goods.index', compact('goods'));
+        $categTreeWithGoods = Category::categTreeWithGoods();
+        $goods = Goods::goodsList();
+        return view('goods.index', compact('goods', 'categTreeWithGoods'));
     }
 
     /**
