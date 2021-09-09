@@ -8,13 +8,13 @@
         <div class="col-9"><h2>Подробности</h2></div>
     </div>
     <div class="row accordion">
-        <div class="col-3" style="max-height: 90vh !important; overflow-y: scroll !important;">
+        <div class="col-3" style="max-height:90vh !important; overflow-y:scroll !important;">
             <ul class="list-group list-group-flush">
                 @foreach ($topCategories as $cat)
                     @php
                         $childCount = $cat->childrens()->count();
                     @endphp
-                    <div class="row" style="background-color: #ffdb5d; border: groove">
+                    <div class="row" style="background-color: #ffdb5d; border: groove;">
                         @if ($childCount > 0)
                         <div class="col-10 font-weight-bold">
                             <div class="text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat->id}}" data-toggle="tooltip" data-placement="bottom" title="Подробнее о категории">{{$cat->name}}</div>
@@ -35,7 +35,7 @@
                                 @php
                                     $childLvl2Count = $cat2lvl->childrens()->count();
                                 @endphp
-                                <div class="row" style="background-color: #fce088; border: groove">
+                                <div class="row" style="background-color: #fce088; border: groove;">
                                     @if ($childLvl2Count > 0)
                                         <div class="col-10 font-weight-bold">
                                             <div class="text-left" type="button" data-toggle="collapse" data-target="#cat{{$cat2lvl->id}}" data-toggle="tooltip" data-placement="bottom" title="Подробнее о категории">&ensp;&ensp;{{$cat2lvl->name}}</div>
@@ -67,7 +67,7 @@
                 @endforeach
             </ul>
         </div>
-
+        {{--Подробности--}}
         <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
             @foreach (App\Models\Category::all() as $cat)
                 <div id="cat{{$cat->id}}" class="card collapse">
@@ -87,16 +87,6 @@
                             <li class="list-group-item">
                                 <h5 class="card-title font-weight-bold">Описание категории</h5>
                                 <p class="card-text font-italic">{{$cat->description}}</p>
-                            </li>
-                            <li class="list-group-item">
-                                <h5 class="card-title font-weight-bold">Товары категории</h5>
-                                @if ($cat->goods()->count() > 0)
-                                    @foreach ($cat->goods()->get() as $goods)
-                                        <div><a href="#">{{$goods->name}}</a></div>
-                                    @endforeach
-                                @else
-                                    <p class="card-text">Данной категории не принадлежит товаров</p>
-                                @endif
                             </li>
                         </ul>
                     </div>
