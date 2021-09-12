@@ -70,26 +70,24 @@
         {{--Подробности--}}
         <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
             @foreach ($categories as $cat)
-                <div id="cat{{$cat['id']}}" class="card collapse">
-                    <div class="card shadow-lg">
-                        <ul class="list-group list-group-flush shadow">
-                            <li class="list-group-item">
-                                <button type="button" class="close" aria-label="Close" data-toggle="collapse" data-target="#cat{{$cat['id']}}">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                <h5 class="card-title font-weight-bold">Имя категории</h5>
-                                <p class="card-text">{{$cat['name']}}</p>
-                            </li>
-                            <li class="list-group-item">
-                                <h5 class="card-title font-weight-bold">Время создания категории</h5>
-                                <p class="card-text font-italic">{{$cat['created_at']}}</p>
-                            </li>
-                            <li class="list-group-item">
-                                <h5 class="card-title font-weight-bold">Описание категории</h5>
-                                <p class="card-text font-italic">{{$cat['description']}}</p>
-                            </li>
-                        </ul>
-                    </div>
+                <div id="cat{{$cat['id']}}" class="collapse">
+                    <ul class="list-group list-group-flush shadow">
+                        <li class="list-group-item">
+                            <button type="button" class="close" aria-label="Close" data-toggle="collapse" data-target="#cat{{$cat['id']}}">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h5 class="font-weight-bold">Имя категории</h5>
+                            <p class="">{{$cat['name']}}</p>
+                        </li>
+                        <li class="list-group-item">
+                            <h5 class="font-weight-bold">Время создания категории</h5>
+                            <p class="font-italic">{{$cat['created_at']}}</p>
+                        </li>
+                        <li class="list-group-item">
+                            <h5 class="font-weight-bold">Описание категории</h5>
+                            <p class="font-italic">{{$cat['description']}}</p>
+                        </li>
+                    </ul>
                 </div>
             @endforeach
         </div>

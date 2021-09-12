@@ -41,7 +41,7 @@
                                     @if ($childLvl2Count > 0)
                                         @if ($goodsCount2lvl > 0)
                                             @php
-                                                $goods[$cat2lvl['id']] = $cat2lvl['goods'];
+                                                $goods[$cat2lvl['id']] = ['goods' => $cat2lvl['goods'], 'category_name' => $cat2lvl['name']];
                                             @endphp
                                             <div class="col-10 font-weight-bold">
                                                 <div class="text-left" type="button" data-toggle="collapse" data-target="#subcat{{$cat2lvl['id']}}" data-toggle="tooltip" data-placement="bottom" title="Развернуть категорию">&ensp;&ensp;{{$cat2lvl['name']}}</div>
@@ -57,7 +57,7 @@
                                     @else
                                         @if ($goodsCount2lvl > 0)
                                             @php
-                                                $goods[$cat2lvl['id']] = $cat2lvl['goods'];
+                                                $goods[$cat2lvl['id']] = ['goods' => $cat2lvl['goods'], 'category_name' => $cat2lvl['name']];
                                             @endphp
                                             <div class="col-10 font-weight-bold">
                                                 <div class="text-left">&ensp;&ensp;{{$cat2lvl['name']}}</div>
@@ -82,7 +82,7 @@
                                             <div class="row" style="background-color: #ffe597; border: groove;">
                                                 @if ($goodsCount2lvl > 0)
                                                     @php
-                                                    $goods[$cat3lvl['id']] = $cat3lvl['goods'];
+                                                        $goods[$cat3lvl['id']] = ['goods' => $cat3lvl['goods'], 'category_name' => $cat3lvl['name']];
                                                     @endphp
                                                     <div class="col-10 font-weight-bold">
                                                         <div class="text-left">&ensp;&ensp;&ensp;&ensp;{{$cat3lvl['name']}}</div>
@@ -106,28 +106,16 @@
             </ul>
         </div>
         {{--Товары--}}
-        <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
+        <ul class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
             @foreach ($goods as $catId => $catGoods)
                 <div id="item{{$catId}}" class="collapse">
-                    @foreach($catGoods as $item)
-                        <div class="row" style="background-color: #d8fd95; border: 1px solid silver;">
-                            <div class="text-left">&ensp;&ensp;&ensp;&ensp;{{$item['name']}}</div>
-                        {{--<ul class="list-group list-group-flush shadow">
-                            <li class="list-group-item">
-                                <h5 class="card-title font-weight-bold">Имя категории</h5>
-                                <p class="card-text">{{$item['id']}} {{$item['name']}}</p>
-                            </li>
-                            <li class="list-group-item">
-                                <h5 class="card-title font-weight-bold">Время создания категории</h5>
-                                <p class="card-text font-italic">{{$item['created_at']}}</p>
-                            </li>
-                            <li class="list-group-item">
-                                <h5 class="card-title font-weight-bold">Описание категории</h5>
-                                <p class="card-text font-italic">{{$item['description']}}</p>
-                            </li>
-                        </ul>--}}
-                        </div>
-                    @endforeach
+
+                    <ul class="list-group list-group-flush shadow" style="border: groove;">
+                        <h6><b>&ensp;{{$catGoods['category_name']}}</b></h6>
+                        @foreach($catGoods['goods'] as $item)
+                            <li class="list-group-item" style="background-color: #d8fd95;">&ensp;{{$item['name']}}</li>
+                        @endforeach
+                    </ul>
                 </div>
             @endforeach
         </div>

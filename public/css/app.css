@@ -51,10 +51,10 @@
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
-    background-color: #e8c574;
+    background-color: #fdebb9;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: #e8c574;
+    background-color: #fdebb9;
     border-radius: 9em;
     box-shadow: inset 1px 1px 10px yellow;
 }
