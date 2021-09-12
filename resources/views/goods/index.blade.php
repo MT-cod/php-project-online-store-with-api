@@ -9,7 +9,7 @@
     </div>
     <div class="row accordion">
         <div class="col-3" style="max-height:90vh !important; overflow-y:scroll !important;">
-            <form method="GET" action="/goods" accept-charset="UTF-8" class="form-inline">
+            <form class="center m-md-3 p-md-3" method="GET" action="/goods" accept-charset="UTF-8" class="form-inline">
                 <select class="form-control" name="filter[category_id]">
                     <option selected="selected" value="">-</option>
                     @foreach ($categories as $cat)
@@ -40,8 +40,8 @@
                 <tbody>
                     @foreach ($goods as $item)
                         <tr>
-                            <td><a href="#">{{Str::limit($item['name'], 30)}}</a></td>
-                            <td>{{Str::limit($item['description'], 100)}}</td>
+                            <td><a href="#">{{Str::limit($item['name'], 40)}}</a></td>
+                            <td>{{Str::limit($item['description'], 120)}}</td>
                             <td>{{$item['price']}}</td>
                         </tr>
                     @endforeach
