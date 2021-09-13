@@ -110,7 +110,7 @@
             @foreach ($goods as $catId => $catGoods)
                 <div id="item{{$catId}}" class="collapse">
 
-                    <ul class="list-group list-group-flush shadow" style="border: groove;">
+                    <ul class="list-group-sm list-group-flush shadow" style="border: groove;">
                         <h6><b>&ensp;{{$catGoods['category_name']}}</b></h6>
                         @foreach($catGoods['goods'] as $item)
                             <li class="list-group-item" style="background-color: #d8fd95;">&ensp;{{$item['name']}}</li>

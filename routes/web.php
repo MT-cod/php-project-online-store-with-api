@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\GoodsController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*

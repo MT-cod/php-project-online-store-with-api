@@ -71,7 +71,7 @@ class GoodsController extends Controller
         }, []);
         $additCharacteristics = AdditionalChar::select('id', 'name')->orderBy('name')->get()->toArray();
 
-        return view('goods.index', compact('goods', 'categories', 'additCharacteristics'));
+        return view('goods.filt_index', compact('goods', 'categories', 'additCharacteristics'));
     }
 
     /**
