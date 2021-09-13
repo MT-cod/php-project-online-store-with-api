@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AdditionalChar;
 use App\Models\Category;
 use App\Models\Goods;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class GoodsController extends Controller
@@ -18,25 +20,41 @@ class GoodsController extends Controller
      */
     public function index()
     {
-        $filteredGoods = array_reduce(request()->query(), function ($res, $filt) {
-            if (key($filt) === 'category_id' && !is_null($filt[key($filt)])) {
-                $categories = [];
-                $categories[] = $filt['category_id'];
-                if (count(Category::whereId($filt[key($filt)])->first()->childrens()->get()) > 0) {
-                    foreach (Category::whereId($filt[key($filt)])->first()->childrens()->get() as $cat2) {
-                        $categories[] = $cat2['id'];
-                        if (count(Category::whereId($cat2['id'])->first()->childrens()->get()) > 0) {
-                            foreach (Category::whereId($cat2['id'])->first()->childrens()->get() as $cat3) {
-                                $categories[] = $cat3['id'];
+        $filteredGoods = array_reduce(request()->query(), function ($res, $filters) {
+            foreach ($filters as $fName => $fValue) {
+                //фильтр по категориям
+                if ($fName === 'category_id' && !is_null($fValue)) {
+                    $categories = [];
+                    $categories[] = $fValue;
+                    if (count(Category::whereId($fValue)->first()->childrens()->get()) > 0) {
+                        foreach (Category::whereId($fValue)->first()->childrens()->get() as $cat2) {
+                            $categories[] = $cat2['id'];
+                            if (count(Category::whereId($cat2['id'])->first()->childrens()->get()) > 0) {
+                                foreach (Category::whereId($cat2['id'])->first()->childrens()->get() as $cat3) {
+                                    $categories[] = $cat3['id'];
+                                }
                             }
                         }
                     }
+                    $res = $res->whereIn('category_id', $categories);
                 }
-                $res = Goods::whereIn('category_id', $categories);
+                //фильтр по строке в имени
+                if ($fName == 'name' && !is_null($fValue)) {
+                    $res = $res->where('name', 'like', '%' . $fValue . '%');
+                }
+                //фильтр по доп. характеристикам
+                if ($fName == 'additChars' && !is_null($fValue)) {
+                    foreach ($fValue as $char) {
+                        $res = $res->whereHas('additionalChars', function (Builder $query) use ($char) {
+                            $query->where('additional_char_id', $char);
+                        });
+                    }
+                }
             }
             return $res;
-        });
-        $goods = (is_null($filteredGoods)) ? Goods::orderBy('name')->get() : $filteredGoods->get()->toArray();
+        }, Goods::orderBy('name'));
+        $goods = (is_null($filteredGoods)) ? Goods::orderBy('name')->get()->toArray() : $filteredGoods->get()->toArray();
+
         $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
             $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
             if (isset($cat['childrens'])) {
@@ -51,8 +69,9 @@ class GoodsController extends Controller
             }
             return $res;
         }, []);
+        $additCharacteristics = AdditionalChar::select('id', 'name')->orderBy('name')->get()->toArray();
 
-        return view('goods.index', compact('goods', 'categories'));
+        return view('goods.index', compact('goods', 'categories', 'additCharacteristics'));
     }
 
     /**
