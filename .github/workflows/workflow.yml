@@ -1,0 +1,35 @@
+name: PHP CI
+on:
+  - push
+  - pull_request
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          ini-values: xdebug.mode=coverage
+      - uses: actions/checkout@v1
+      - name: PHP Security Checker
+        uses: StephaneBour/actions-php-security-checker@1.1
+
+      - name: Setup project
+        run: make setup
+
+      - name: Check lint
+        run: make lint
+
+        # Publish code coverage on Code Climate
+        # https://github.com/paambaati/codeclimate-action
+      - name: Run test & publish code coverage
+        uses: paambaati/codeclimate-action@v2.6.0
+        # Add Code Climate secret key
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        with:
+          coverageCommand: make test-coverage
+          coverageLocations: ${{github.workplace}}clover.xml:clover
+          debug: true

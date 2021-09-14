@@ -47,6 +47,12 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "test": "phpunit tests",
+        "phpcs": [
+            "./vendor/bin/phpcs --config-set default_standard phpcs.xml",
+            "./vendor/bin/phpcs --config-set colors 1",
+            "./vendor/bin/phpcs -s --report=code"
         ]
     },
     "extra": {

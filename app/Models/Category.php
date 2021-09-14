@@ -25,7 +25,7 @@ class Category extends Model
 
     public function childrens(): HasMany
     {
-        return $this->hasMany(self::class,'parent_id','id');
+        return $this->hasMany(self::class, 'parent_id', 'id');
     }
 
     public static function categoriesTree($categs = []): array

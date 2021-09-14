@@ -30,7 +30,11 @@ class GoodsFactory extends Factory
             'slug' => Str::slug($name),
             'price' => rand(10000, 20000) / 100,
             'category_id' => rand(
-                (Category::all()->where('level', 1)->count()) + 1, Category::count())
+                (Category::all()
+                    ->where('level', 1)
+                    ->count()) + 1,
+                Category::count()
+            )
         ];
     }
 }
