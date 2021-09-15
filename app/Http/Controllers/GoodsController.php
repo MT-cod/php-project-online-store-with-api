@@ -10,6 +10,8 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class GoodsController extends Controller
 {
@@ -17,10 +19,60 @@ class GoodsController extends Controller
      * Display a listing of the resource.
      *
      * @return Application|Factory|View
+     * @throws ValidationException
      */
     public function index()
     {
-        $filteredGoods = array_reduce(request()->query(), function ($res, $filters) {
+        $goods = (isset($_REQUEST['filter']))
+            ? $this->validAndFiltIndex(request())->get()->toArray()
+            : Goods::orderBy('name')->get()->toArray();
+
+        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
+            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
+            if (isset($cat['childrens'])) {
+                foreach ($cat['childrens'] as $cat2lvl) {
+                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
+                    if (isset($cat2lvl['childrens'])) {
+                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
+                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
+                        }
+                    }
+                }
+            }
+            return $res;
+        }, []);
+
+        $additCharacteristics = AdditionalChar::select('id', 'name')->orderBy('name')->get()->toArray();
+
+        return view('goods.filt_index', compact('goods', 'categories', 'additCharacteristics'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return Application|Factory
+     * @throws ValidationException
+     */
+    public function validAndFiltIndex(Request $request)
+    {
+        $validated = $this->validate($request, [
+            'filter.category_id' => [function ($attribute, $value, $fail): void {
+                if ($value != null && Category::whereId($value)->first() === null) {
+                    unset($_REQUEST['filter']['category_id']);
+                    $fail('Указана некорректная категория для фильтра');
+                }
+            }],
+            'filter.additChars' => [function ($attribute, $value, $fail): void {
+                if (AdditionalChar::whereId($value)->first() == null) {
+                    unset($_REQUEST['filter']['additChars']);
+                    $fail('Указана некорректная доп. характеристика для фильтра');
+                }
+            }
+            ]
+        ]);
+
+        $filteredGoods = array_reduce($validated, function ($res, $filters) {
             foreach ($filters as $fName => $fValue) {
                 //фильтр по категориям
                 if ($fName === 'category_id' && !is_null($fValue)) {
@@ -53,25 +105,7 @@ class GoodsController extends Controller
             }
             return $res;
         }, Goods::orderBy('name'));
-        $goods = (is_null($filteredGoods)) ? Goods::orderBy('name')->get()->toArray() : $filteredGoods->get()->toArray();
-
-        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
-            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
-            if (isset($cat['childrens'])) {
-                foreach ($cat['childrens'] as $cat2lvl) {
-                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
-                    if (isset($cat2lvl['childrens'])) {
-                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
-                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
-                        }
-                    }
-                }
-            }
-            return $res;
-        }, []);
-        $additCharacteristics = AdditionalChar::select('id', 'name')->orderBy('name')->get()->toArray();
-
-        return view('goods.filt_index', compact('goods', 'categories', 'additCharacteristics'));
+        return $filteredGoods;
     }
 
     /**

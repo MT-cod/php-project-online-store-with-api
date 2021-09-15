@@ -12,7 +12,7 @@
             <form class="center m-md-3 p-md-3" method="GET" action="/goods" accept-charset="UTF-8">
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
                     <label for="category">по категории</label>
-                    <select class="form-control" name="filter[category_id]" id="category">
+                    <select class="form-control @error('filter.category_id') is-invalid @enderror" name="filter[category_id]" id="category">
                         <option selected="selected" value="">-</option>
                         @foreach ($categories as $cat)
                             @if (
@@ -44,6 +44,7 @@
                         @foreach($additCharacteristics as $char)
                             <tr>
                                 <td>
+                                    <div class="form-control @error('filter.additChars') is-invalid @enderror">
                                     <div class="row form-check">
                                         <label class="col-11 form-check-label" for="additChars">{{$char['name']}}</label>
                                         @if (
@@ -55,6 +56,7 @@
                                         @else
                                             <input class="col-1 right form-check-input" type="checkbox" name="filter[additChars][]" value="{{$char['id']}}" id="additChars">
                                         @endif
+                                    </div>
                                     </div>
                                 <td>
                             </tr>
