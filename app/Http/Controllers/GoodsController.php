@@ -63,6 +63,7 @@ class GoodsController extends Controller
                     $fail('Указана некорректная категория для фильтра');
                 }
             }],
+            'filter.name' => 'nullable|max:255',
             'filter.additChars' => [function ($attribute, $value, $fail): void {
                 if (AdditionalChar::whereId($value)->first() == null) {
                     unset($_REQUEST['filter']['additChars']);

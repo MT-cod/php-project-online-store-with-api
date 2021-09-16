@@ -4,7 +4,7 @@
 
 <div class="container-fluid">
     <div class="row text-center shadow-lg">
-        <div class="col-3"><h2>Категории</h2></div>
+        <div class="col-3"><h2>Фильтр</h2></div>
         <div class="col-9"><h2>Товары</h2></div>
     </div>
     <div class="row">
@@ -38,7 +38,7 @@
 
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
                     <div class="col"  style="max-height: 50vh !important; overflow-y: scroll !important;">
-                    <label for="additChars">по дополнительным характеристикам</label>
+                    <label for="additChars">имеет характеристики</label>
                     <table class="table table-striped table-sm table-warning table-bordered">
                         <tbody>
                         @foreach($additCharacteristics as $char)
@@ -67,8 +67,19 @@
                 </div>
 
                 <div class="btn-block m-md-2 p-md-2 shadow-lg">
-                    <a class="btn btn-outline-primary" href="/goods" role="button">Сброс фильтра</a>
-                    <input class="btn btn-outline-primary" type="submit" value="Применить">
+                    <a href="/goods" style="text-decoration: none">
+                        <button class="btn btn-outline-secondary collapse multi_filt show" type="button" id="submit_filt1" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
+                            Сброс фильтра
+                        </button>
+                    </a>
+                    <button id="submit_filt2" class="btn btn-outline-secondary collapse multi_filt" type="button" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Сброс фильтра
+                    </button>
+
+                    <input class="btn btn-outline-secondary collapse multi-collapse show" id="submit1" type="submit" value="Применить" data-toggle="collapse" data-target=".multi-collapse" aria-controls="submit1 submit2">
+                    <button id="submit2" class="btn btn-outline-secondary collapse multi-collapse" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-controls="submit1 submit2">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Применить
+                    </button>
                 </div>
             </form>
         </div>
