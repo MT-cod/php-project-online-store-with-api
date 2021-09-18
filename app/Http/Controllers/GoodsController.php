@@ -24,8 +24,8 @@ class GoodsController extends Controller
     public function index()
     {
         $goods = (isset($_REQUEST['filter']))
-            ? $this->validAndFiltIndex(request())->get()->toArray()
-            : Goods::orderBy('name')->get()->toArray();
+            ? $this->validAndFiltIndex(request())->get()
+            : Goods::orderBy('name')->get();
 
         $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
             $res[] = ['id' => $cat['id'], 'name' => $cat['name']];

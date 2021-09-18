@@ -96,15 +96,87 @@
                 <tbody>
                     @foreach ($goods as $item)
                         <tr>
-                            <td><a href="#">{{Str::limit($item['name'], 40)}}</a></td>
-                            <td>{{Str::limit($item['description'], 120)}}</td>
-                            <td>{{$item['price']}}</td>
+                            <td>
+                                <button type="button" class="text-left btn btn-block btn-outline-secondary btn-sm" data-toggle="modal" data-target="#modalItem-{{$item->id}}" data-toggle="tooltip" data-placement="bottom" title="Нажать для подробностей/изменения" style="border: none">
+                                    <b>{{Str::limit($item->name, 40)}}</b>
+                                </button>
+                            </td>
+                            <td>{{Str::limit($item->description, 120)}}</td>
+                            <td>{{$item->price}}</td>
                         </tr>
+                        <div class="modal fade bd-example-modal-lg" id="modalItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header shadow" style="background-color: #c0ffe2">
+                                        <h4 class="modal-title" id="exampleModalLongTitle"><b>{{$item->name}}</b></h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" style="background-color: #d5fdef">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item" style="background-color: #e6fff4">
+                                                <div class="row">
+                                                    <div class="col">
+                                                       <h6><b>Имя товара</b></h6>
+                                                        <p>{{$item->name}}</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6><b>slug товара</b></h6>
+                                                        <p>{{$item->slug}}</p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item" style="background-color: #e6fff4">
+                                                <h6><b>Описание</b></h6>
+                                                <p>{{$item->description}}</p>
+                                            </li>
+                                            <li class="list-group-item" style="background-color: #e6fff4">
+                                                <h6><b>Цена товара</b></h6>
+                                                <p>{{$item->price}}</p>
+                                            </li>
+                                            <li class="list-group-item" style="background-color: #e6fff4">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <h6><b>Время создания товара</b></h6>
+                                                        <p>{{$item->created_at->format('d.m.Y H:i:s')}}</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6><b>Время последнего изменения товара</b></h6>
+                                                        <p>{{$item->updated_at->format('d.m.Y H:i:s')}}</p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item" style="background-color: #e6fff4">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <h6><b>Дополнительные характеристики товара</b></h6>
+                                                        @foreach($item->additionalChars()->get() as $char)
+                                                            <p><u>{{$char->name}}</u> ({{$char->value}})</p>
+                                                        @endforeach
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6><b>Категория товара</b></h6>
+                                                        <p>{{$item->category()->first()->name}}</p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer shadow" style="background-color: #c0ffe2">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+
 
 @endsection
