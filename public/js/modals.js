@@ -53,15 +53,17 @@ $(document).on("click", ".btn-modal_goods_show", function() {
         url: '/goods/' + id,
         method: "get",
         success: function(data, textStatus, jqXHR){
-        //var name = data.name;
-        $('.modal-title').html('<b>' + data.name + '</b>');
-        document.querySelector('#modal_goods_show_name').innerHTML = data.name;
-        document.querySelector('#modal_goods_show_slug').innerHTML = data.slug;
-        document.querySelector('#modal_goods_show_description').innerHTML = data.description;
-        document.querySelector('#modal_goods_show_price').innerHTML = data.price;
-        document.querySelector('#modal_goods_show_category').innerHTML = data.category;
-        document.querySelector('#modal_goods_show_created_at').innerHTML = data.created_at;
-        document.querySelector('#modal_goods_show_updated_at').innerHTML = data.updated_at;
+            //var name = data.name;
+            $('.modal-title').html('<b>' + data.name + '</b>');
+            $('.modal_goods_show_name').html(data.name);
+            $('.modal_goods_show_slug').html(data.slug);
+            $('.modal_goods_show_description').html(data.description);
+            $('.modal_goods_show_price').html(data.price);
+            $('.modal_goods_show_category').html(data.category);
+            $('.modal_goods_show_created_at').html(data.created_at);
+            $('.modal_goods_show_updated_at').html(data.updated_at);
+            $('.modal_goods_show_additional_chars').html(`${data.additional_chars.map((e, i) => { return `${e.name} (${e.value})<br/>`; }).join``}`);
+            $('#modalItem-show').modal('show');
         //alert(textStatus);
     },
     error: function(jqXHR, textStatus, errorThrown){

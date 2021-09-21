@@ -143,7 +143,7 @@ class GoodsController extends Controller
         $res['category'] = $item->category()->first()->name;
         $res['created_at'] = $item->created_at->format('d.m.Y H:i:s');
         $res['updated_at'] = $item->updated_at->format('d.m.Y H:i:s');
-        //$res['additional_chars'] = $item->additionalChars()->get()->toArray();
+        $res['additional_chars'] = $item->additionalChars()->get()->toArray();
         return $res;
     }
 

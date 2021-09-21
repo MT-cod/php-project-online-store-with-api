@@ -112,8 +112,6 @@
                                 <button
                                     type="button"
                                     class="text-left btn btn-block btn-outline-secondary btn-sm btn-modal_goods_show"
-                                    data-toggle="modal"
-                                    data-target="#modalItem-show"
                                     data-toggle="tooltip"
                                     data-placement="bottom"
                                     title="Нажать для подробностей/изменения"
@@ -149,27 +147,27 @@
                             <div class="row">
                                 <div class="col">
                                     <h6><b>Имя товара</b></h6>
-                                    <p><span id="modal_goods_show_name"></span></p>
+                                    <p><span class="modal_goods_show_name"></span></p>
                                 </div>
                                 <div class="col">
                                     <h6><b>slug товара</b></h6>
-                                    <p><span id="modal_goods_show_slug"></span></p>
+                                    <p><span class="modal_goods_show_slug"></span></p>
                                 </div>
                             </div>
                         </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
                             <h6><b>Описание</b></h6>
-                            <p><span id="modal_goods_show_description"></span></p>
+                            <p><span class="modal_goods_show_description"></span></p>
                         </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
                             <div class="row">
                                 <div class="col">
                                     <h6><b>Цена товара</b></h6>
-                                    <p><span id="modal_goods_show_price"></span></p>
+                                    <p><span class="modal_goods_show_price"></span></p>
                                 </div>
                                 <div class="col">
                                     <h6><b>Категория товара</b></h6>
-                                    <p><span id="modal_goods_show_category"></span></p>
+                                    <p><span class="modal_goods_show_category"></span></p>
                                 </div>
                             </div>
                         </li>
@@ -177,24 +175,26 @@
                             <div class="row">
                                 <div class="col">
                                     <h6><b>Время создания товара</b></h6>
-                                    <p><span id="modal_goods_show_created_at"></span></p>
+                                    <p><span class="modal_goods_show_created_at"></span></p>
                                 </div>
                                 <div class="col">
                                     <h6><b>Время последнего изменения товара</b></h6>
-                                    <p><span id="modal_goods_show_updated_at"></span></p>
+                                    <p><span class="modal_goods_show_updated_at"></span></p>
                                 </div>
                             </div>
                         </li>
-                        {{--<li class="list-group-item" style="background-color: #e6fff4">
-                            @if ($item->additionalChars()->get()->count() == 0)
+                        <li class="list-group-item" style="background-color: #e6fff4">
+                            {{--@if ($item->additionalChars()->get()->count() == 0)
                                 <h6><b>Дополнительные характеристики товара отсутствуют</b></h6>
-                            @else
-                                <h6><b>Дополнительные характеристики товара</b></h6>
+                            @else--}}
+                                {{--<h6><b>Дополнительные характеристики товара</b></h6>
                                 @foreach($item->additionalChars()->get() as $char)
                                     <p><u>{{$char->name}}</u> ({{$char->value}})</p>
-                                @endforeach
-                            @endif
-                        </li>--}}
+                                @endforeach--}}
+                            {{--<p><span id="modal_goods_show_additional_chars"></span></p>--}}
+                            <div class="modal_goods_show_additional_chars"></div>
+                            {{--@endif--}}
+                        </li>
                     </ul>
                 </div>
                 <div class="modal-footer shadow" style="background-color: #c0ffe2">
