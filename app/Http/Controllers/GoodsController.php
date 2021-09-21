@@ -24,8 +24,8 @@ class GoodsController extends Controller
     public function index()
     {
         $goods = (isset($_REQUEST['filter']))
-            ? $this->validAndFiltIndex(request())->get()
-            : Goods::orderBy('name')->get();
+            ? $this->validAndFiltIndex(request())->get()->toArray()
+            : Goods::orderBy('name')->get()->toArray();
 
         $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
             $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
@@ -134,12 +134,17 @@ class GoodsController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return Application|Factory|View
+     * @return array
      */
     public function show($id)
     {
         $item = Goods::findOrFail($id);
-        return view('goods.show', compact('item'));
+        $res = $item->toArray();
+        $res['category'] = $item->category()->first()->name;
+        $res['created_at'] = $item->created_at->format('d.m.Y H:i:s');
+        $res['updated_at'] = $item->updated_at->format('d.m.Y H:i:s');
+        //$res['additional_chars'] = $item->additionalChars()->get()->toArray();
+        return $res;
     }
 
     /**

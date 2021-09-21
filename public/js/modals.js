@@ -1,3 +1,9 @@
+//Подключаем токен для запросов ajax глобально
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }});
+
 
 /*    // при открытии модального окна
     $('#myModal').on('show.bs.modal', function (event) {
@@ -10,7 +16,7 @@
     $(content).modal('hide');
 })*/
 
-if (window.jQuery) {
+/*if (window.jQuery) {
     var verJquery = jQuery.fn.jquery;
     // выведем версию jQuery в консоль
     console.log(verJquery);
@@ -39,5 +45,29 @@ if (window.jQuery) {
 
 }('#modalItem-241','#modalItem-241-edit');
 
+});*/
+
+$(document).on("click", ".btn-modal_goods_show", function() {
+    var id = $(this).data('id');
+    $.ajax({
+        url: '/goods/' + id,
+        method: "get",
+        success: function(data, textStatus, jqXHR){
+        //var name = data.name;
+        $('.modal-title').html('<b>' + data.name + '</b>');
+        document.querySelector('#modal_goods_show_name').innerHTML = data.name;
+        document.querySelector('#modal_goods_show_slug').innerHTML = data.slug;
+        document.querySelector('#modal_goods_show_description').innerHTML = data.description;
+        document.querySelector('#modal_goods_show_price').innerHTML = data.price;
+        document.querySelector('#modal_goods_show_category').innerHTML = data.category;
+        document.querySelector('#modal_goods_show_created_at').innerHTML = data.created_at;
+        document.querySelector('#modal_goods_show_updated_at').innerHTML = data.updated_at;
+        //alert(textStatus);
+    },
+    error: function(jqXHR, textStatus, errorThrown){
+
+    }});
 });
 
+
+//$("input[name='showName']").val(name);

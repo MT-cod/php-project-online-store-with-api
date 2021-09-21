@@ -7,7 +7,9 @@
         <div class="col-3"><h2>Фильтр</h2></div>
         <div class="col-9"><h2>Товары</h2></div>
     </div>
+
     <div class="row">
+        {{--Фильтр--}}
         <div class="col-3 text-center" style="max-height:90vh !important; overflow-y:scroll !important;">
             <form class="center m-md-3 p-md-3" method="GET" action="/goods" accept-charset="UTF-8">
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
@@ -92,6 +94,7 @@
                 </div>
             </form>
         </div>
+        {{--Фильтр-end--}}
         {{--Товары--}}
         <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
             <table class="table table-success table-striped table-sm mx-auto">
@@ -106,174 +109,36 @@
                     @foreach ($goods as $item)
                         <tr>
                             <td>
-                                <button type="button" class="text-left btn btn-block btn-outline-secondary btn-sm" data-toggle="modal" data-target="#modalItem-{{$item->id}}" data-toggle="tooltip" data-placement="bottom" title="Нажать для подробностей/изменения" style="border: none">
-                                    <b>{{Str::limit($item->name, 40)}}</b>
+                                <button
+                                    type="button"
+                                    class="text-left btn btn-block btn-outline-secondary btn-sm btn-modal_goods_show"
+                                    data-toggle="modal"
+                                    data-target="#modalItem-show"
+                                    data-toggle="tooltip"
+                                    data-placement="bottom"
+                                    title="Нажать для подробностей/изменения"
+                                    data-id="{{$item['id']}}"
+                                    style="border: none"
+                                >
+                                    <b>{{Str::limit($item['name'], 40)}}</b>
                                 </button>
                             </td>
-                            <td>{{Str::limit($item->description, 120)}}</td>
-                            <td>{{$item->price}}</td>
+                            <td>{{Str::limit($item['description'], 120)}}</td>
+                            <td>{{$item['price']}}</td>
                         </tr>
-                        {{--Show--}}
-                        <div class="modal fade" id="modalItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-xl">
-                                <div class="modal-content">
-                                    <div class="modal-header shadow" style="background-color: #c0ffe2">
-                                        <h4 class="modal-title" id="exampleModalLongTitle"><b>{{$item->name}}</b></h4>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body" style="background-color: #d5fdef">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                <div class="row">
-                                                    <div class="col">
-                                                       <h6><b>Имя товара</b></h6>
-                                                        <p>{{$item->name}}</p>
-                                                    </div>
-                                                    <div class="col">
-                                                        <h6><b>slug товара</b></h6>
-                                                        <p>{{$item->slug}}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                <h6><b>Описание</b></h6>
-                                                <p>{{$item->description}}</p>
-                                            </li>
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <h6><b>Цена товара</b></h6>
-                                                        <p>{{$item->price}}</p>
-                                                    </div>
-                                                    <div class="col">
-                                                        <h6><b>Категория товара</b></h6>
-                                                        <p>{{$item->category()->first()->name}}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <h6><b>Время создания товара</b></h6>
-                                                        <p>{{$item->created_at->format('d.m.Y H:i:s')}}</p>
-                                                    </div>
-                                                    <div class="col">
-                                                        <h6><b>Время последнего изменения товара</b></h6>
-                                                        <p>{{$item->updated_at->format('d.m.Y H:i:s')}}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                @if ($item->additionalChars()->get()->count() == 0)
-                                                    <h6><b>Дополнительные характеристики товара отсутствуют</b></h6>
-                                                @else
-                                                    <h6><b>Дополнительные характеристики товара</b></h6>
-                                                    @foreach($item->additionalChars()->get() as $char)
-                                                        <p><u>{{$char->name}}</u> ({{$char->value}})</p>
-                                                    @endforeach
-                                                @endif
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="modal-footer shadow" style="background-color: #c0ffe2">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                        <button type="button" class="btn btn-warning">Изменить</button>
-                                        <a href="#modalItem-{{$item->id}}-edit">Edit</a>
-                                        <button type="button" class="btn btn-danger">Удалить</button>
-                                        {{--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalItem-{{$item->id}}-edit" data-content="#modalItem-{{$item->id}}">Закрываем owner</button>--}}
-                                        {{--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-content="Содержимое 2...">Открыть модальное окно с содержимым 2</button>
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-content="Содержимое 1...">Открыть модальное окно с содержимым 3</button>--}}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{--Show end--}}
-
-                        {{--Edit--}}
-                        <div class="modal fade" id="modalItem-{{$item->id}}-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-xl">
-                                <div class="modal-content">
-                                    <div class="modal-header shadow" style="background-color: #c0ffe2">
-                                        <h4 class="modal-title" id="exampleModalLongTitle"><b>{{$item->name}}</b></h4>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body" style="background-color: #d5fdef">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <h6><b>Имя товара</b></h6>
-                                                        <p>{{$item->name}}</p>
-                                                    </div>
-                                                    <div class="col">
-                                                        <h6><b>slug товара</b></h6>
-                                                        <p>{{$item->slug}}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                <h6><b>Описание</b></h6>
-                                                <p>{{$item->description}}</p>
-                                            </li>
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <h6><b>Цена товара</b></h6>
-                                                        <p>{{$item->price}}</p>
-                                                    </div>
-                                                    <div class="col">
-                                                        <h6><b>Категория товара</b></h6>
-                                                        <p>{{$item->category()->first()->name}}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <h6><b>Время создания товара</b></h6>
-                                                        <p>{{$item->created_at->format('d.m.Y H:i:s')}}</p>
-                                                    </div>
-                                                    <div class="col">
-                                                        <h6><b>Время последнего изменения товара</b></h6>
-                                                        <p>{{$item->updated_at->format('d.m.Y H:i:s')}}</p>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li class="list-group-item" style="background-color: #e6fff4">
-                                                @if ($item->additionalChars()->get()->count() == 0)
-                                                    <h6><b>Дополнительные характеристики товара отсутствуют</b></h6>
-                                                @else
-                                                    <h6><b>Дополнительные характеристики товара</b></h6>
-                                                    @foreach($item->additionalChars()->get() as $char)
-                                                        <p><u>{{$char->name}}</u> ({{$char->value}})</p>
-                                                    @endforeach
-                                                @endif
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="modal-footer shadow" style="background-color: #c0ffe2">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                                        <button type="submit" class="btn btn-warning">Изменить</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{--Edit end--}}
                     @endforeach
                 </tbody>
             </table>
         </div>
+        {{--Товары-end--}}
     </div>
-    {{--Modal--}}
-    <div class="modal fade" id="modalItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+    {{--Modal-show--}}
+    <div class="modal fade" id="modalItem-show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header shadow" style="background-color: #c0ffe2">
-                    <h4 class="modal-title" id="exampleModalLongTitle"><b>{{$item->name}}</b></h4>
+                    <h4 class="modal-title"><b></b></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -284,27 +149,27 @@
                             <div class="row">
                                 <div class="col">
                                     <h6><b>Имя товара</b></h6>
-                                    <p>{{$item->name}}</p>
+                                    <p><span id="modal_goods_show_name"></span></p>
                                 </div>
                                 <div class="col">
                                     <h6><b>slug товара</b></h6>
-                                    <p>{{$item->slug}}</p>
+                                    <p><span id="modal_goods_show_slug"></span></p>
                                 </div>
                             </div>
                         </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
                             <h6><b>Описание</b></h6>
-                            <p>{{$item->description}}</p>
+                            <p><span id="modal_goods_show_description"></span></p>
                         </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
                             <div class="row">
                                 <div class="col">
                                     <h6><b>Цена товара</b></h6>
-                                    <p>{{$item->price}}</p>
+                                    <p><span id="modal_goods_show_price"></span></p>
                                 </div>
                                 <div class="col">
                                     <h6><b>Категория товара</b></h6>
-                                    <p>{{$item->category()->first()->name}}</p>
+                                    <p><span id="modal_goods_show_category"></span></p>
                                 </div>
                             </div>
                         </li>
@@ -312,15 +177,15 @@
                             <div class="row">
                                 <div class="col">
                                     <h6><b>Время создания товара</b></h6>
-                                    <p>{{$item->created_at->format('d.m.Y H:i:s')}}</p>
+                                    <p><span id="modal_goods_show_created_at"></span></p>
                                 </div>
                                 <div class="col">
                                     <h6><b>Время последнего изменения товара</b></h6>
-                                    <p>{{$item->updated_at->format('d.m.Y H:i:s')}}</p>
+                                    <p><span id="modal_goods_show_updated_at"></span></p>
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item" style="background-color: #e6fff4">
+                        {{--<li class="list-group-item" style="background-color: #e6fff4">
                             @if ($item->additionalChars()->get()->count() == 0)
                                 <h6><b>Дополнительные характеристики товара отсутствуют</b></h6>
                             @else
@@ -329,19 +194,18 @@
                                     <p><u>{{$char->name}}</u> ({{$char->value}})</p>
                                 @endforeach
                             @endif
-                        </li>
+                        </li>--}}
                     </ul>
                 </div>
                 <div class="modal-footer shadow" style="background-color: #c0ffe2">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                     <button type="button" class="btn btn-warning">Изменить</button>
-                    <a href="#modalItem-{{$item->id}}-edit">Edit</a>
                     <button type="button" class="btn btn-danger">Удалить</button>
                 </div>
             </div>
         </div>
     </div>
-    {{--Modal--}}
+    {{--Modal-show-end--}}
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
