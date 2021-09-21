@@ -60,14 +60,14 @@ class GoodsController extends Controller
             'filter.category_id' => [function ($attribute, $value, $fail): void {
                 if ($value != null && Category::whereId($value)->first() === null) {
                     unset($_REQUEST['filter']['category_id']);
-                    $fail('Указана некорректная категория для фильтра');
+                    $fail('Запрошена некорректная категория для фильтра');
                 }
             }],
             'filter.name' => 'nullable|max:255',
             'filter.additChars' => [function ($attribute, $value, $fail): void {
                 if (AdditionalChar::whereId($value)->first() == null) {
                     unset($_REQUEST['filter']['additChars']);
-                    $fail('Указана некорректная доп. характеристика для фильтра');
+                    $fail('Запрошена некорректная доп. характеристика для фильтра');
                 }
             }
             ]
@@ -133,12 +133,13 @@ class GoodsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Goods  $goods
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return Application|Factory|View
      */
-    public function show(Goods $goods)
+    public function show($id)
     {
-        //
+        $item = Goods::findOrFail($id);
+        return view('goods.show', compact('item'));
     }
 
     /**

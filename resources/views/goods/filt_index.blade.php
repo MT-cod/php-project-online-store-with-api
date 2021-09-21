@@ -26,43 +26,52 @@
                             @endif
                         @endforeach
                     </select>
+                    @error('filter.category_id')
+                    <span class="invalid-feedback" role="alert"><strong>{{$message}}</strong></span>
+                    @enderror
                 </div>
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
                     <label for="name">по имени</label>
                     @if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== ''))
-                        <input type="text" class="form-control" id="name" name="filter[name]" value="{{$_REQUEST['filter']['name']}}">
+                        <input type="text" class="form-control @error('filter.name') is-invalid @enderror" id="name" name="filter[name]" value="{{$_REQUEST['filter']['name']}}">
                     @else
-                        <input type="text" class="form-control" id="name" name="filter[name]">
+                        <input type="text" class="form-control @error('filter.name') is-invalid @enderror" id="name" name="filter[name]">
                     @endif
+                    @error('filter.name')
+                    <span class="invalid-feedback" role="alert"><strong>{{$message}}</strong></span>
+                    @enderror
                 </div>
 
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
-                    <div class="col"  style="max-height: 50vh !important; overflow-y: scroll !important;">
-                    <label for="additChars">имеет характеристики</label>
-                    <table class="table table-striped table-sm table-warning table-bordered">
-                        <tbody>
-                        @foreach($additCharacteristics as $char)
-                            <tr>
-                                <td>
-                                    <div class="form-control @error('filter.additChars') is-invalid @enderror">
-                                    <div class="row form-check">
-                                        <label class="col-11 form-check-label" for="additChars">{{$char['name']}}</label>
-                                        @if (
-                                            isset($_REQUEST['filter']['additChars']) &&
-                                            ($_REQUEST['filter']['additChars'] !== '') &&
-                                            in_array($char['id'], $_REQUEST['filter']['additChars'])
-                                            )
-                                            <input class="col-1 right form-check-input" type="checkbox" name="filter[additChars][]" value="{{$char['id']}}" id="additChars" checked>
-                                        @else
-                                            <input class="col-1 right form-check-input" type="checkbox" name="filter[additChars][]" value="{{$char['id']}}" id="additChars">
-                                        @endif
-                                    </div>
-                                    </div>
-                                <td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                    <div class="col" style="max-height: 50vh !important; overflow-y: scroll !important;">
+                        <label for="additChars">имеет характеристики</label>
+                        <table class="table table-striped table-sm table-warning table-bordered">
+                            <tbody>
+                            @foreach($additCharacteristics as $char)
+                                <tr>
+                                    <td>
+                                        <div class="form-control @error('filter.additChars') is-invalid @enderror">
+                                            <div class="row form-check">
+                                                <label class="col-11 form-check-label" for="additChars">{{$char['name']}}</label>
+                                                @if (
+                                                    isset($_REQUEST['filter']['additChars']) &&
+                                                    ($_REQUEST['filter']['additChars'] !== '') &&
+                                                    in_array($char['id'], $_REQUEST['filter']['additChars'])
+                                                    )
+                                                    <input class="col-1 right form-check-input" type="checkbox" name="filter[additChars][]" value="{{$char['id']}}" id="additChars" checked>
+                                                @else
+                                                    <input class="col-1 right form-check-input" type="checkbox" name="filter[additChars][]" value="{{$char['id']}}" id="additChars">
+                                                @endif
+                                            </div>
+                                            @error('filter.additChars')
+                                            <span class="invalid-feedback" role="alert"><strong>{{$message}}</strong></span>
+                                            @enderror
+                                        </div>
+                                    <td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -104,8 +113,9 @@
                             <td>{{Str::limit($item->description, 120)}}</td>
                             <td>{{$item->price}}</td>
                         </tr>
-                        <div class="modal fade bd-example-modal-lg" id="modalItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                        {{--Show--}}
+                        <div class="modal fade" id="modalItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
                                 <div class="modal-content">
                                     <div class="modal-header shadow" style="background-color: #c0ffe2">
                                         <h4 class="modal-title" id="exampleModalLongTitle"><b>{{$item->name}}</b></h4>
@@ -132,8 +142,16 @@
                                                 <p>{{$item->description}}</p>
                                             </li>
                                             <li class="list-group-item" style="background-color: #e6fff4">
-                                                <h6><b>Цена товара</b></h6>
-                                                <p>{{$item->price}}</p>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <h6><b>Цена товара</b></h6>
+                                                        <p>{{$item->price}}</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6><b>Категория товара</b></h6>
+                                                        <p>{{$item->category()->first()->name}}</p>
+                                                    </div>
+                                                </div>
                                             </li>
                                             <li class="list-group-item" style="background-color: #e6fff4">
                                                 <div class="row">
@@ -148,12 +166,64 @@
                                                 </div>
                                             </li>
                                             <li class="list-group-item" style="background-color: #e6fff4">
+                                                @if ($item->additionalChars()->get()->count() == 0)
+                                                    <h6><b>Дополнительные характеристики товара отсутствуют</b></h6>
+                                                @else
+                                                    <h6><b>Дополнительные характеристики товара</b></h6>
+                                                    @foreach($item->additionalChars()->get() as $char)
+                                                        <p><u>{{$char->name}}</u> ({{$char->value}})</p>
+                                                    @endforeach
+                                                @endif
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-footer shadow" style="background-color: #c0ffe2">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                        <button type="button" class="btn btn-warning">Изменить</button>
+                                        <a href="#modalItem-{{$item->id}}-edit">Edit</a>
+                                        <button type="button" class="btn btn-danger">Удалить</button>
+                                        {{--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalItem-{{$item->id}}-edit" data-content="#modalItem-{{$item->id}}">Закрываем owner</button>--}}
+                                        {{--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-content="Содержимое 2...">Открыть модальное окно с содержимым 2</button>
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" data-content="Содержимое 1...">Открыть модальное окно с содержимым 3</button>--}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{--Show end--}}
+
+                        {{--Edit--}}
+                        <div class="modal fade" id="modalItem-{{$item->id}}-edit" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header shadow" style="background-color: #c0ffe2">
+                                        <h4 class="modal-title" id="exampleModalLongTitle"><b>{{$item->name}}</b></h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body" style="background-color: #d5fdef">
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item" style="background-color: #e6fff4">
                                                 <div class="row">
                                                     <div class="col">
-                                                        <h6><b>Дополнительные характеристики товара</b></h6>
-                                                        @foreach($item->additionalChars()->get() as $char)
-                                                            <p><u>{{$char->name}}</u> ({{$char->value}})</p>
-                                                        @endforeach
+                                                        <h6><b>Имя товара</b></h6>
+                                                        <p>{{$item->name}}</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6><b>slug товара</b></h6>
+                                                        <p>{{$item->slug}}</p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item" style="background-color: #e6fff4">
+                                                <h6><b>Описание</b></h6>
+                                                <p>{{$item->description}}</p>
+                                            </li>
+                                            <li class="list-group-item" style="background-color: #e6fff4">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <h6><b>Цена товара</b></h6>
+                                                        <p>{{$item->price}}</p>
                                                     </div>
                                                     <div class="col">
                                                         <h6><b>Категория товара</b></h6>
@@ -161,22 +231,120 @@
                                                     </div>
                                                 </div>
                                             </li>
+                                            <li class="list-group-item" style="background-color: #e6fff4">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <h6><b>Время создания товара</b></h6>
+                                                        <p>{{$item->created_at->format('d.m.Y H:i:s')}}</p>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6><b>Время последнего изменения товара</b></h6>
+                                                        <p>{{$item->updated_at->format('d.m.Y H:i:s')}}</p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li class="list-group-item" style="background-color: #e6fff4">
+                                                @if ($item->additionalChars()->get()->count() == 0)
+                                                    <h6><b>Дополнительные характеристики товара отсутствуют</b></h6>
+                                                @else
+                                                    <h6><b>Дополнительные характеристики товара</b></h6>
+                                                    @foreach($item->additionalChars()->get() as $char)
+                                                        <p><u>{{$char->name}}</u> ({{$char->value}})</p>
+                                                    @endforeach
+                                                @endif
+                                            </li>
                                         </ul>
                                     </div>
                                     <div class="modal-footer shadow" style="background-color: #c0ffe2">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                        <button type="submit" class="btn btn-warning">Изменить</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        {{--Edit end--}}
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+    {{--Modal--}}
+    <div class="modal fade" id="modalItem-{{$item->id}}" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header shadow" style="background-color: #c0ffe2">
+                    <h4 class="modal-title" id="exampleModalLongTitle"><b>{{$item->name}}</b></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="background-color: #d5fdef">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" style="background-color: #e6fff4">
+                            <div class="row">
+                                <div class="col">
+                                    <h6><b>Имя товара</b></h6>
+                                    <p>{{$item->name}}</p>
+                                </div>
+                                <div class="col">
+                                    <h6><b>slug товара</b></h6>
+                                    <p>{{$item->slug}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item" style="background-color: #e6fff4">
+                            <h6><b>Описание</b></h6>
+                            <p>{{$item->description}}</p>
+                        </li>
+                        <li class="list-group-item" style="background-color: #e6fff4">
+                            <div class="row">
+                                <div class="col">
+                                    <h6><b>Цена товара</b></h6>
+                                    <p>{{$item->price}}</p>
+                                </div>
+                                <div class="col">
+                                    <h6><b>Категория товара</b></h6>
+                                    <p>{{$item->category()->first()->name}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item" style="background-color: #e6fff4">
+                            <div class="row">
+                                <div class="col">
+                                    <h6><b>Время создания товара</b></h6>
+                                    <p>{{$item->created_at->format('d.m.Y H:i:s')}}</p>
+                                </div>
+                                <div class="col">
+                                    <h6><b>Время последнего изменения товара</b></h6>
+                                    <p>{{$item->updated_at->format('d.m.Y H:i:s')}}</p>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item" style="background-color: #e6fff4">
+                            @if ($item->additionalChars()->get()->count() == 0)
+                                <h6><b>Дополнительные характеристики товара отсутствуют</b></h6>
+                            @else
+                                <h6><b>Дополнительные характеристики товара</b></h6>
+                                @foreach($item->additionalChars()->get() as $char)
+                                    <p><u>{{$char->name}}</u> ({{$char->value}})</p>
+                                @endforeach
+                            @endif
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-footer shadow" style="background-color: #c0ffe2">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-warning">Изменить</button>
+                    <a href="#modalItem-{{$item->id}}-edit">Edit</a>
+                    <button type="button" class="btn btn-danger">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{--Modal--}}
 </div>
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/js/modals.js"></script>
 
 @endsection
