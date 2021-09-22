@@ -20,11 +20,10 @@ class TestDatabaseSeeder extends Seeder
 
         Category::create(['name' => 'Тестовая категория']);
 
-        AdditionalChar::create(
-            [
-                'name' => 'Тестовая характеристика',
-                'value' => 'test_char_value'
-            ]);
+        AdditionalChar::create([
+            'name' => 'Тестовая характеристика',
+            'value' => 'test_char_value'
+        ]);
 
         Goods::create([
             'name' => 'Тестовый товар',

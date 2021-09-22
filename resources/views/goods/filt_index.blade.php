@@ -2,6 +2,9 @@
 
 @section('content')
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="/js/modals.js"></script>
+
 <div class="container-fluid">
     <div class="row text-center shadow-lg">
         <div class="col-3"><h2>Фильтр</h2></div>
@@ -116,6 +119,7 @@
                                     data-placement="bottom"
                                     title="Нажать для подробностей/изменения"
                                     data-id="{{$item['id']}}"
+                                    data-route="{{route('goods.update', $item['id'])}}"
                                     style="border: none"
                                 >
                                     <b>{{Str::limit($item['name'], 40)}}</b>
@@ -132,11 +136,11 @@
     </div>
 
     {{--Modal-show--}}
-    <div class="modal fade" id="modalItem-show" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalItem-show" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header shadow" style="background-color: #c0ffe2">
-                    <h4 class="modal-title"><b></b></h4>
+                    <h4 class="modal_goods_show_title"><b></b></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -184,32 +188,92 @@
                             </div>
                         </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
-                            <h6><b>Дополнительные характеристики товара</b></h6>
-                            {{--@if ($item->additionalChars()->get()->count() == 0)
-                                <h6><b>Дополнительные характеристики товара отсутствуют</b></h6>
-                            @else--}}
-                                {{--<h6><b>Дополнительные характеристики товара</b></h6>
-                                @foreach($item->additionalChars()->get() as $char)
-                                    <p><u>{{$char->name}}</u> ({{$char->value}})</p>
-                                @endforeach--}}
-                            {{--<p><span id="modal_goods_show_additional_chars"></span></p>--}}
+                            <h6><b><u>Дополнительные характеристики товара</u></b></h6>
                             <span class="modal_goods_show_additional_chars"></span>
-                            {{--@endif--}}
                         </li>
                     </ul>
                 </div>
                 <div class="modal-footer shadow" style="background-color: #c0ffe2">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-warning">Изменить</button>
+                    <div class="modal_goods_edit_button"></div>
                     <button type="button" class="btn btn-danger">Удалить</button>
                 </div>
             </div>
         </div>
     </div>
     {{--Modal-show-end--}}
+
+    {{--Modal-edit--}}
+    <div class="modal fade" id="modalItem-edit" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <form id="modalItem-edit-form" method="POST" action="/goods/">
+                    @csrf
+                    @method('PATCH')
+                    <div class="modal-header shadow" style="background-color: #c0ffe2">
+                        <h4 class="modal_goods_edit_title"><b></b></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="background-color: #d5fdef">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" style="background-color: #e6fff4">
+                                <div class="row">
+                                    <div class="col">
+                                        <h6><b><label for="modal_goods_edit_name">Имя товара</label></b></h6>
+                                        <input class="form-control modal_goods_edit_name" id="modal_goods_edit_name" type="text" name="name">
+                                    </div>
+                                    <div class="col">
+                                        <h6><b><label for="modal_goods_edit_slug">slug товара</label></b></h6>
+                                        <input class="form-control modal_goods_edit_slug" id="modal_goods_edit_slug" type="text" name="slug">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item" style="background-color: #e6fff4">
+                                <h6><b><label for="modal_goods_edit_description">Описание</label></b></h6>
+                                <textarea class="form-control modal_goods_edit_description" id="modal_goods_edit_description" rows="2" name="description"></textarea>
+                            </li>
+                            <li class="list-group-item" style="background-color: #e6fff4">
+                                <div class="row">
+                                    <div class="col">
+                                        <h6><b><label for="modal_goods_edit_price">Цена товара</label></b></h6>
+                                        <input class="form-control modal_goods_edit_price" id="modal_goods_edit_price" type="text" name="price">
+                                    </div>
+                                    <div class="col">
+                                        <h6><b>Категория товара</b></h6>
+                                        <p><span class="modal_goods_edit_category"></span></p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item" style="background-color: #e6fff4">
+                                <div class="row">
+                                    <div class="col">
+                                        <h6><b>Время создания товара</b></h6>
+                                        <p><span class="modal_goods_edit_created_at"></span></p>
+                                    </div>
+                                    <div class="col">
+                                        <h6><b>Время последнего изменения товара</b></h6>
+                                        <p><span class="modal_goods_edit_updated_at"></span></p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item" style="background-color: #e6fff4">
+                                <h6><b><u>Дополнительные характеристики товара</u></b></h6>
+                                <span class="modal_goods_edit_additional_chars"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer shadow" style="background-color: #c0ffe2">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{--Modal-edit-end--}}
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="/js/modals.js"></script>
 
 @endsection

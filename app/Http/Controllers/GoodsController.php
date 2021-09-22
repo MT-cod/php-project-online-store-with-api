@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\AdditionalChar;
 use App\Models\Category;
 use App\Models\Goods;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -50,7 +52,7 @@ class GoodsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return Application|Factory
      * @throws ValidationException
      */
@@ -122,7 +124,7 @@ class GoodsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -150,24 +152,53 @@ class GoodsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Goods  $goods
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return array
      */
-    public function edit(Goods $goods)
+    public function edit($id)
     {
-        //
+        $item = Goods::findOrFail($id);
+        //$this->authorize('update', $task);
+        $res = $item->toArray();
+        $res['category'] = $item->category()->first()->name;
+        $res['created_at'] = $item->created_at->format('d.m.Y H:i:s');
+        $res['updated_at'] = $item->updated_at->format('d.m.Y H:i:s');
+        $res['additional_chars'] = $item->additionalChars()->get()->toArray();
+        return $res;
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Goods  $goods
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param int $id
+     * @return RedirectResponse
+     * @throws AuthorizationException|ValidationException
      */
-    public function update(Request $request, Goods $goods)
+    public function update(Request $request, int $id)
     {
-        //
+        $item = Goods::findOrFail($id);
+        //$this->authorize('update', $item);
+        $data = $this->validate($request, ['name' => [
+            'required',
+            function ($attribute, $value, $fail) use ($item): void {
+                if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->name)) {
+                    $fail('Товар с таким именем уже существует');
+                }
+            }
+        ],
+            'status_id' => 'required']);
+        $data['description'] = $request->input('description', '');
+        $data['assigned_to_id'] = $request->input('assigned_to_id') ?? $item->assigned_to_id;
+        $item->fill($data);
+        $labels = $request->input('labels', []);
+        if ($task->save()) {
+            $task->labels()->sync($labels);
+            flash('Задача успешно изменена')->success();
+        } else {
+            flash('Ошибка изменения задачи')->error();
+        }
+        return redirect()->route('tasks.index');
     }
 
     /**
