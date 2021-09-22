@@ -21,7 +21,7 @@ class GoodsTest extends TestCase
     {
         parent::setUp();
         Artisan::call('migrate');
-        Artisan::call('db:seed GoodsTestSeeder');
+        Artisan::call('db:seed TestDatabaseSeeder');
         $this->testUser = User::factory()->create();
     }
 
@@ -33,6 +33,12 @@ class GoodsTest extends TestCase
             ['Тестовый товар', 'Тестовое описание', '111.11'],
             true
         );
+    }
+
+    public function testShow(): void
+    {
+        $response = $this->get('/goods/1');
+        $this->assertSame('Тестовый товар', $response['name']);
     }
 
     protected function tearDown(): void

@@ -21,7 +21,7 @@ class CategoriesTest extends TestCase
     {
         parent::setUp();
         Artisan::call('migrate');
-        Artisan::call('db:seed CategoriesTestSeeder');
+        Artisan::call('db:seed TestDatabaseSeeder');
         $this->testUser = User::factory()->create();
     }
 

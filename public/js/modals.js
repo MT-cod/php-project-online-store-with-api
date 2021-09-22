@@ -62,7 +62,7 @@ $(document).on("click", ".btn-modal_goods_show", function() {
             $('.modal_goods_show_category').html(data.category);
             $('.modal_goods_show_created_at').html(data.created_at);
             $('.modal_goods_show_updated_at').html(data.updated_at);
-            $('.modal_goods_show_additional_chars').html(`${data.additional_chars.map((e, i) => { return `${e.name} (${e.value})<br/>`; }).join``}`);
+            $('.modal_goods_show_additional_chars').html(`${data.additional_chars.map((char) => {return `<b>${char.name}</b> (${char.value})<br/>`;}).join``}`);
             $('#modalItem-show').modal('show');
         //alert(textStatus);
     },

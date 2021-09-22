@@ -184,6 +184,7 @@
                             </div>
                         </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
+                            <h6><b>Дополнительные характеристики товара</b></h6>
                             {{--@if ($item->additionalChars()->get()->count() == 0)
                                 <h6><b>Дополнительные характеристики товара отсутствуют</b></h6>
                             @else--}}
@@ -192,7 +193,7 @@
                                     <p><u>{{$char->name}}</u> ({{$char->value}})</p>
                                 @endforeach--}}
                             {{--<p><span id="modal_goods_show_additional_chars"></span></p>--}}
-                            <div class="modal_goods_show_additional_chars"></div>
+                            <span class="modal_goods_show_additional_chars"></span>
                             {{--@endif--}}
                         </li>
                     </ul>
