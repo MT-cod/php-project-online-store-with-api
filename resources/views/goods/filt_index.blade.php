@@ -241,8 +241,8 @@
                                         <input class="form-control modal_goods_edit_price" id="modal_goods_edit_price" type="text" name="price">
                                     </div>
                                     <div class="col">
-                                        <h6><b>Категория товара</b></h6>
-                                        <p><span class="modal_goods_edit_category"></span></p>
+                                        <h6><b><label for="category">Категория товара</label></b></h6>
+                                        <span class="modal_goods_edit_category" id="category"></span>
                                     </div>
                                 </div>
                             </li>
@@ -259,7 +259,7 @@
                                 </div>
                             </li>
                             <li class="list-group-item" style="background-color: #e6fff4">
-                                <h6><b><u>Дополнительные характеристики товара</u></b></h6>
+                                <h6><b><center>Дополнительные характеристики товара</center></b></h6>
                                 <span class="modal_goods_edit_additional_chars"></span>
                             </li>
                         </ul>

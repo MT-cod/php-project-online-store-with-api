@@ -157,14 +157,36 @@ class GoodsController extends Controller
      */
     public function edit($id)
     {
-        $item = Goods::findOrFail($id);
+        $prepare_item = Goods::findOrFail($id);
         //$this->authorize('update', $task);
-        $res = $item->toArray();
-        $res['category'] = $item->category()->first()->name;
-        $res['created_at'] = $item->created_at->format('d.m.Y H:i:s');
-        $res['updated_at'] = $item->updated_at->format('d.m.Y H:i:s');
-        $res['additional_chars'] = $item->additionalChars()->get()->toArray();
-        return $res;
+        $item = $prepare_item->toArray();
+        $item['created_at'] = $prepare_item->created_at->format('d.m.Y H:i:s');
+        $item['updated_at'] = $prepare_item->updated_at->format('d.m.Y H:i:s');
+        $item['additional_chars'] = $prepare_item
+            ->additionalChars()
+            ->select('id', 'name', 'value')
+            ->orderBy('name')
+            ->get()
+            ->toArray();
+
+        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
+            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
+            if (isset($cat['childrens'])) {
+                foreach ($cat['childrens'] as $cat2lvl) {
+                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
+                    if (isset($cat2lvl['childrens'])) {
+                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
+                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
+                        }
+                    }
+                }
+            }
+            return $res;
+        }, []);
+
+        $additCharacteristics = AdditionalChar::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
+
+        return compact('item', 'categories', 'additCharacteristics');
     }
 
     /**
@@ -187,18 +209,18 @@ class GoodsController extends Controller
                 }
             }
         ],
-            'status_id' => 'required']);
+            'slug' => 'required']);
         $data['description'] = $request->input('description', '');
-        $data['assigned_to_id'] = $request->input('assigned_to_id') ?? $item->assigned_to_id;
-        $item->fill($data);
-        $labels = $request->input('labels', []);
-        if ($task->save()) {
+        //$data['assigned_to_id'] = $request->input('assigned_to_id') ?? $item->assigned_to_id;
+        //$item->fill($data);
+        //$labels = $request->input('labels', []);
+        /*if ($task->save()) {
             $task->labels()->sync($labels);
             flash('Задача успешно изменена')->success();
         } else {
             flash('Ошибка изменения задачи')->error();
-        }
-        return redirect()->route('tasks.index');
+        }*/
+        return redirect()->route('goods.index');
     }
 
     /**

@@ -4,7 +4,8 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }});
 
-//Модалки по товарам
+//Модалки по товарам-----------------------------------------------------------------------
+//Просмотр товара
 $(document).on("click", ".btn-modal_goods_show", function() {
     var id = $(this).data('id');
     var route = $(this).data('route');
@@ -31,6 +32,9 @@ $(document).on("click", ".btn-modal_goods_show", function() {
 
         }});
 });
+//Просмотр товара - end
+
+//Изменение товара
 $(document).on("click", ".btn-modal_goods_edit", function() {
     var id = $(this).data('id');
     var route = $(this).data('route');
@@ -38,29 +42,57 @@ $(document).on("click", ".btn-modal_goods_edit", function() {
         url: '/goods/' + id + "/edit",
         method: "get",
         success: function(data, textStatus, jqXHR){
-            $('.modal_goods_edit_title').html('<b>' + data.name + '</b>');
-            $('.modal_goods_edit_name').val(data.name);
-            $('.modal_goods_edit_slug').val(data.slug);
-            $('.modal_goods_edit_description').val(data.description);
-            $('.modal_goods_edit_price').val(data.price);
-            $('.modal_goods_edit_category').html(data.category);
-            $('.modal_goods_edit_created_at').html(data.created_at);
-            $('.modal_goods_edit_updated_at').html(data.updated_at);
-            $('.modal_goods_edit_additional_chars').html(`${data.additional_chars.map((char) => {return `<b>${char.name}</b> (${char.value})<br/>`;}).join``}`);
+            $('.modal_goods_edit_title').html('<b>' + data.item.name + '</b>');
+            $('.modal_goods_edit_name').val(data.item.name);
+            $('.modal_goods_edit_slug').val(data.item.slug);
+            $('.modal_goods_edit_description').val(data.item.description);
+            $('.modal_goods_edit_price').val(data.item.price);
+            $('.modal_goods_edit_created_at').html(data.item.created_at);
+            $('.modal_goods_edit_updated_at').html(data.item.updated_at);
+            $('.modal_goods_edit_category').html(
+                `<select class="form-control" name="category_id" id="category">` +
+                `${data.categories.map((cat) => {
+                    if (Number(cat.id) === Number(data.item.category_id)) {
+                        return `<option selected="selected" value=${cat.id}>${cat.name}</option>`;
+                    } else {
+                        return `<option value=${cat.id}>${cat.name}</option>`;
+                    }
+                }).join``}` +
+                `</select>`
+            );
+            $('.modal_goods_edit_additional_chars').html(
+                `<div class="form-control" style="min-height: 20vh !important; max-height: 30vh !important; overflow-y: scroll !important;">` +
+                `${data.additCharacteristics.map((char) => {
+                    var res = `<div class="form-check">`;
+                    if (idsInArray(char.id, data.item.additional_chars)) {
+                        res += `<input name="additChars[]" type="checkbox" class="form-check-input" id="additChar_${char.id}" value=${char.id} checked>`;
+                    } else {
+                        res += `<input name="additChars[]" type="checkbox" class="form-check-input" id="additChar_${char.id}" value=${char.id}>`;
+                    }
+                    res += `<label class="form-check-label" for="additChar_${char.id}"><b>${char.name}</b> (${char.value})</label></div>`;
+                    return res;
+                }).join``}` +
+                `</div>`
+            );
 
-            //Setting submit url
-            //var urlu = "<?php route('goods.update',' + id + ')' ?>";
             $('#modalItem-edit-form').attr('action', route);
-
             $('#modalItem-show').modal('hide');
             $('#modalItem-edit').modal('show');
-            //alert(textStatus);
         },
         error: function(jqXHR, textStatus, errorThrown){
-
+            alert('ошибкэ' + textStatus + errorThrown);
         }});
 });
+//Изменение товара - end
 
+//Доп функции
+function idsInArray(needleId, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if (haystack[i]['id'] == needleId) return true;
+    }
+    return false;
+}
 
 //-----------------------------------------------------------------------------------------------------------
 /*$(function(){
