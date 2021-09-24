@@ -12,6 +12,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -194,33 +195,45 @@ class GoodsController extends Controller
      *
      * @param Request $request
      * @param int $id
-     * @return RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      * @throws AuthorizationException|ValidationException
      */
     public function update(Request $request, int $id)
     {
         $item = Goods::findOrFail($id);
         //$this->authorize('update', $item);
-        $data = $this->validate($request, ['name' => [
-            'required',
-            function ($attribute, $value, $fail) use ($item): void {
-                if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->name)) {
-                    $fail('Товар с таким именем уже существует');
-                }
-            }
-        ],
-            'slug' => 'required']);
+        $data = $this->validate($request, [
+            'name' => [
+                'required',
+                function ($attribute, $value, $fail) use ($item): void {
+                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->name)) {
+                        $fail('Товар с таким именем уже существует');
+                    }
+                }],
+            'slug' => [
+                'required',
+                function ($attribute, $value, $fail) use ($item): void {
+                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->slug)) {
+                        $fail('Товар с таким slug уже существует');
+                    }
+                }],
+            'category_id' => [
+                'required',
+                function ($attribute, $value, $fail) use ($item): void {
+                    if (Category::where('id', $value)->first()->level == 1) {
+                        $fail('Категории 1-го уровня не могут принадлежать товары');
+                    }
+                }]
+        ]);
         $data['description'] = $request->input('description', '');
-        //$data['assigned_to_id'] = $request->input('assigned_to_id') ?? $item->assigned_to_id;
-        //$item->fill($data);
-        //$labels = $request->input('labels', []);
-        /*if ($task->save()) {
-            $task->labels()->sync($labels);
-            flash('Задача успешно изменена')->success();
-        } else {
-            flash('Ошибка изменения задачи')->error();
-        }*/
-        return redirect()->route('goods.index');
+        $data['price'] = $request->input('price') ?? 0;
+        $item->fill($data);
+        $additChars = $request->input('additChars', []);
+        if ($item->save()) {
+            $item->additionalChars()->sync($additChars);
+            return Response::json(['success' => 'Параметры товара успешно изменены'], 200);
+        }
+        return Response::json(['error' => 'Ошибка изменения данных'], 404);
     }
 
     /**

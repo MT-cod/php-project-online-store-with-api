@@ -12,7 +12,7 @@ $(document).on("click", ".btn-modal_goods_show", function() {
     $.ajax({
         url: '/goods/' + id,
         method: "get",
-        success: function(data, textStatus, jqXHR){
+        success: function(data, textStatus, jqXHR) {
             $('.modal_goods_show_title').html('<b>' + data.name + '</b>');
             $('.modal_goods_show_name').html(data.name);
             $('.modal_goods_show_slug').html(data.slug);
@@ -28,8 +28,8 @@ $(document).on("click", ".btn-modal_goods_show", function() {
             $('#modalItem-show').modal('show');
             //alert(textStatus);
         },
-        error: function(jqXHR, textStatus, errorThrown){
-
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert('Ошибка получения данных о товаре<br>(' + textStatus + ')');
         }});
 });
 //Просмотр товара - end
@@ -41,7 +41,7 @@ $(document).on("click", ".btn-modal_goods_edit", function() {
     $.ajax({
         url: '/goods/' + id + "/edit",
         method: "get",
-        success: function(data, textStatus, jqXHR){
+        success: function(data, textStatus, jqXHR) {
             $('.modal_goods_edit_title').html('<b>' + data.item.name + '</b>');
             $('.modal_goods_edit_name').val(data.item.name);
             $('.modal_goods_edit_slug').val(data.item.slug);
@@ -50,7 +50,7 @@ $(document).on("click", ".btn-modal_goods_edit", function() {
             $('.modal_goods_edit_created_at').html(data.item.created_at);
             $('.modal_goods_edit_updated_at').html(data.item.updated_at);
             $('.modal_goods_edit_category').html(
-                `<select class="form-control" name="category_id" id="category">` +
+                `<select class="form-control" name="category_id">` +
                 `${data.categories.map((cat) => {
                     if (Number(cat.id) === Number(data.item.category_id)) {
                         return `<option selected="selected" value=${cat.id}>${cat.name}</option>`;
@@ -74,15 +74,77 @@ $(document).on("click", ".btn-modal_goods_edit", function() {
                 }).join``}` +
                 `</div>`
             );
-
+            $('.btn-modal_goods_edit_save').html('<button type="submit" class="btn btn-primary btn-modal_goods_edit_save">Сохранить изменения</button>');
             $('#modalItem-edit-form').attr('action', route);
             $('#modalItem-show').modal('hide');
             $('#modalItem-edit').modal('show');
         },
-        error: function(jqXHR, textStatus, errorThrown){
-            alert('ошибкэ' + textStatus + errorThrown);
+        error: function (jqXHR, textStatus, errorThrown) {
         }});
 });
+
+//Попытка сохранения изменений
+$(document).ready(function() {
+    $("#modalItem-edit-form").submit(function(event) {
+        // Отменяем стандартное поведение формы на submit.
+        event.preventDefault();
+
+        // Собираем данные с формы. Здесь будут все поля у которых есть `name`, включая метод `_method` и `_token`.
+        var data = new FormData(this);
+
+        // Отправляем запрос.
+        $.ajax({
+            method: 'POST', // начиная с версии 1.9 `type` - псевдоним для `method`.
+            url: this.action, // атрибут `action="..."` из формы.
+            cache: false, // запрошенные страницы не будут закешированы браузером.
+            data: data, // больше ничего тут не надо!
+            dataType: 'json', // чтобы jQuery распарсил `success` ответ.
+            processData: false, // чтобы jQuery не обрабатывал отправляемые данные.
+            contentType: false, // чтобы jQuery не передавал в заголовке поле `Content-Type` совсем.
+            success: function(data) {
+                console.log(data);
+                //alert('Саксус\n' + data);
+                $('.modal_goods_edit_save_results').html('<div class="alert alert-warning text-center" role="alert">' + data.success + '</div>');
+            },
+            error: function(error) {
+                console.log(error);
+                //alert('Ошибка\n' + error.responseJSON.errors.name.valueOf(0));
+                //alert('Ошибка\n' + Object.entries(error.responseJSON.errors));
+                //$('#modalItem-edit').modal('hide');
+                //$('.modal_goods_edit_save_results').html(Object.entries(error.responseJSON.errors));
+                $('.modal_goods_edit_save_results').html('<div class="alert alert-danger text-center" role="alert">' + Object.entries(error.responseJSON.errors) + '</div>');
+                //$('#modalItem-edit').modal('show');
+            }
+        });
+    })
+});
+/*$(document).on("click", ".btn-modal_goods_edit_save", function() {
+    //var formData = new FormData(this);
+    var id = $(this).data('id');
+    var route = $(this).data('route');
+    var name = $('.modal_goods_edit_name').val();
+    var slug = $('.modal_goods_edit_slug').val();
+    var description = $('.modal_goods_edit_description').val();
+    var price = $('.modal_goods_edit_price').val();
+    var category_id = $("select[name='modal_goods_edit_category']").val();
+    //var additChars = $("input[type=checkbox]:checked");//$('.additChar').val();
+    /!*$("input[type=checkbox]:checked").each(function(i){
+        console.log("i.value :"+i.value);
+    });*!/
+    $.ajax({
+        url: route,
+        type: "POST",
+        _method: "PATCH",
+        data: {name:name, slug:slug, description:description, price:price, category_id:category_id},//, additChars:additChars
+        success: function (data, textStatus, jqXHR) {
+            //$('#modalItem-edit').modal('hide');
+            alert('Саксус' + textStatus + data);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert('Ошибка' + textStatus + errorThrown);
+        }
+    });
+});*/
 //Изменение товара - end
 
 //Доп функции

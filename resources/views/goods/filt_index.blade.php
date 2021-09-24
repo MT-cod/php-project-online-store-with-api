@@ -136,7 +136,7 @@
     </div>
 
     {{--Modal-show--}}
-    <div class="modal fade" id="modalItem-show" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="modalItem-show" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important;">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header shadow" style="background-color: #c0ffe2">
@@ -204,7 +204,7 @@
     {{--Modal-show-end--}}
 
     {{--Modal-edit--}}
-    <div class="modal fade" id="modalItem-edit" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="modalItem-edit" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important; scrollbar-width: thin !important;">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <form id="modalItem-edit-form" method="POST" action="/goods/">
@@ -217,6 +217,7 @@
                         </button>
                     </div>
                     <div class="modal-body" style="background-color: #d5fdef">
+                        <span class="modal_goods_edit_save_results"></span>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item" style="background-color: #e6fff4">
                                 <div class="row">
@@ -241,8 +242,8 @@
                                         <input class="form-control modal_goods_edit_price" id="modal_goods_edit_price" type="text" name="price">
                                     </div>
                                     <div class="col">
-                                        <h6><b><label for="category">Категория товара</label></b></h6>
-                                        <span class="modal_goods_edit_category" id="category"></span>
+                                        <h6><b><label for="modal_goods_edit_category">Категория товара</label></b></h6>
+                                        <span class="modal_goods_edit_category" id="modal_goods_edit_category"></span>
                                     </div>
                                 </div>
                             </li>
@@ -266,7 +267,7 @@
                     </div>
                     <div class="modal-footer shadow" style="background-color: #c0ffe2">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        <div class="btn-modal_goods_edit_save"></div>
                     </div>
                 </form>
             </div>
@@ -274,6 +275,6 @@
     </div>
     {{--Modal-edit-end--}}
 </div>
-
+{{--@include('flash::message')--}}
 
 @endsection
