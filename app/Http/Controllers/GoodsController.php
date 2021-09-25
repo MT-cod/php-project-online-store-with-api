@@ -233,7 +233,7 @@ class GoodsController extends Controller
             $item->additionalChars()->sync($additChars);
             return Response::json(['success' => 'Параметры товара успешно изменены'], 200);
         }
-        return Response::json(['error' => 'Ошибка изменения данных'], 404);
+        return Response::json(['error' => 'Ошибка изменения данных'], 422);
     }
 
     /**

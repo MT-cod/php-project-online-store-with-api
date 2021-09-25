@@ -7,8 +7,8 @@ $.ajaxSetup({
 //Модалки по товарам-----------------------------------------------------------------------
 //Просмотр товара
 $(document).on("click", ".btn-modal_goods_show", function() {
-    var id = $(this).data('id');
-    var route = $(this).data('route');
+    let id = $(this).data('id');
+    let route = $(this).data('route');
     $.ajax({
         url: '/goods/' + id,
         method: "get",
@@ -36,8 +36,8 @@ $(document).on("click", ".btn-modal_goods_show", function() {
 
 //Изменение товара
 $(document).on("click", ".btn-modal_goods_edit", function() {
-    var id = $(this).data('id');
-    var route = $(this).data('route');
+    let id = $(this).data('id');
+    let route = $(this).data('route');
     $.ajax({
         url: '/goods/' + id + "/edit",
         method: "get",
@@ -63,7 +63,7 @@ $(document).on("click", ".btn-modal_goods_edit", function() {
             $('.modal_goods_edit_additional_chars').html(
                 `<div class="form-control" style="min-height: 20vh !important; max-height: 30vh !important; overflow-y: scroll !important;">` +
                 `${data.additCharacteristics.map((char) => {
-                    var res = `<div class="form-check">`;
+                    let res = `<div class="form-check">`;
                     if (idsInArray(char.id, data.item.additional_chars)) {
                         res += `<input name="additChars[]" type="checkbox" class="form-check-input" id="additChar_${char.id}" value=${char.id} checked>`;
                     } else {
@@ -90,7 +90,7 @@ $(document).ready(function() {
         event.preventDefault();
 
         // Собираем данные с формы. Здесь будут все поля у которых есть `name`, включая метод `_method` и `_token`.
-        var data = new FormData(this);
+        let data = new FormData(this);
 
         // Отправляем запрос.
         $.ajax({
@@ -102,51 +102,27 @@ $(document).ready(function() {
             processData: false, // чтобы jQuery не обрабатывал отправляемые данные.
             contentType: false, // чтобы jQuery не передавал в заголовке поле `Content-Type` совсем.
             success: function(data) {
-                console.log(data);
-                //alert('Саксус\n' + data);
-                $('.modal_goods_edit_save_results').html('<div class="alert alert-warning text-center" role="alert">' + data.success + '</div>');
+                $('.modal_goods_edit_save_results').html(
+                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button></div>');
             },
-            error: function(error) {
-                console.log(error);
-                //alert('Ошибка\n' + error.responseJSON.errors.name.valueOf(0));
-                //alert('Ошибка\n' + Object.entries(error.responseJSON.errors));
-                //$('#modalItem-edit').modal('hide');
-                //$('.modal_goods_edit_save_results').html(Object.entries(error.responseJSON.errors));
-                $('.modal_goods_edit_save_results').html('<div class="alert alert-danger text-center" role="alert">' + Object.entries(error.responseJSON.errors) + '</div>');
-                //$('#modalItem-edit').modal('show');
+            error: function(data) {
+                let errors = '';
+                Object.entries(data.responseJSON.errors).forEach(function(errNote){
+                    errors += errNote[1][0] + '<br>';
+                });
+                $('.modal_goods_edit_save_results').html(
+                    '<div class="alert alert-danger text-center" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
             }
         });
     })
 });
-/*$(document).on("click", ".btn-modal_goods_edit_save", function() {
-    //var formData = new FormData(this);
-    var id = $(this).data('id');
-    var route = $(this).data('route');
-    var name = $('.modal_goods_edit_name').val();
-    var slug = $('.modal_goods_edit_slug').val();
-    var description = $('.modal_goods_edit_description').val();
-    var price = $('.modal_goods_edit_price').val();
-    var category_id = $("select[name='modal_goods_edit_category']").val();
-    //var additChars = $("input[type=checkbox]:checked");//$('.additChar').val();
-    /!*$("input[type=checkbox]:checked").each(function(i){
-        console.log("i.value :"+i.value);
-    });*!/
-    $.ajax({
-        url: route,
-        type: "POST",
-        _method: "PATCH",
-        data: {name:name, slug:slug, description:description, price:price, category_id:category_id},//, additChars:additChars
-        success: function (data, textStatus, jqXHR) {
-            //$('#modalItem-edit').modal('hide');
-            alert('Саксус' + textStatus + data);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert('Ошибка' + textStatus + errorThrown);
-        }
-    });
-});*/
 //Изменение товара - end
 
+//-----------------------------------------------------------------------------------------------------------
 //Доп функции
 function idsInArray(needleId, haystack) {
     var length = haystack.length;
@@ -222,3 +198,32 @@ function idsInArray(needleId, haystack) {
 
 
 //$("input[name='showName']").val(name);
+
+
+/*$(document).on("click", ".btn-modal_goods_edit_save", function() {
+    //var formData = new FormData(this);
+    var id = $(this).data('id');
+    var route = $(this).data('route');
+    var name = $('.modal_goods_edit_name').val();
+    var slug = $('.modal_goods_edit_slug').val();
+    var description = $('.modal_goods_edit_description').val();
+    var price = $('.modal_goods_edit_price').val();
+    var category_id = $("select[name='modal_goods_edit_category']").val();
+    //var additChars = $("input[type=checkbox]:checked");//$('.additChar').val();
+    /!*$("input[type=checkbox]:checked").each(function(i){
+        console.log("i.value :"+i.value);
+    });*!/
+    $.ajax({
+        url: route,
+        type: "POST",
+        _method: "PATCH",
+        data: {name:name, slug:slug, description:description, price:price, category_id:category_id},//, additChars:additChars
+        success: function (data, textStatus, jqXHR) {
+            //$('#modalItem-edit').modal('hide');
+            alert('Саксус' + textStatus + data);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert('Ошибка' + textStatus + errorThrown);
+        }
+    });
+});*/
