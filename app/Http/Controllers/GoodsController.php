@@ -268,7 +268,7 @@ class GoodsController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function regenerate_db()
+    public function regenerateDb()
     {
         Artisan::call('migrate:fresh --seed');
         return view('index');
