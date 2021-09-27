@@ -8,7 +8,8 @@ $.ajaxSetup({
 //Просмотр товара
 $(document).on("click", ".btn-modal_goods_show", function() {
     let id = $(this).data('id');
-    let route = $(this).data('route');
+    let edit_route = $(this).data('edit_route');
+    let delete_route = $(this).data('delete_route');
     $.ajax({
         url: '/goods/' + id,
         method: "get",
@@ -22,9 +23,8 @@ $(document).on("click", ".btn-modal_goods_show", function() {
             $('.modal_goods_show_created_at').html(data.created_at);
             $('.modal_goods_show_updated_at').html(data.updated_at);
             $('.modal_goods_show_additional_chars').html(`${data.additional_chars.map((e) => {return `<b>${e.name}</b> (${e.value})<br/>`;}).join``}`);
-
-            $('.modal_goods_edit_button').html('<button type="button" class="btn btn-warning btn-modal_goods_edit" data-id="' + id + '" data-route="' + route + '" style="border: none">Изменить</button>');
-
+            $('.modal_goods_edit_button').html('<button type="button" class="btn btn-warning btn-modal_goods_edit" data-id="' + id + '" data-route="' + edit_route + '" style="border: none">Изменить</button>');
+            $('.modal_goods_delete_form').attr("action", delete_route);
             $('#modalItem-show').modal('show');
             //alert(textStatus);
         },
@@ -77,6 +77,7 @@ $(document).on("click", ".btn-modal_goods_edit", function() {
             $('.btn-modal_goods_edit_save').html('<button type="submit" class="btn btn-primary btn-modal_goods_edit_save">Сохранить изменения</button>');
             $('#modalItem-edit-form').attr('action', route);
             $('#modalItem-show').modal('hide');
+            $('.modal_goods_edit_save_results').html('');
             $('#modalItem-edit').modal('show');
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -109,7 +110,7 @@ $(document).ready(function() {
             },
             error: function(data) {
                 let errors = '';
-                Object.entries(data.responseJSON.errors).forEach(function(errNote){
+                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
                     errors += errNote[1][0] + '<br>';
                 });
                 $('.modal_goods_edit_save_results').html(

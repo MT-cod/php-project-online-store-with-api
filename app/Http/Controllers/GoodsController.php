@@ -12,6 +12,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -239,11 +241,36 @@ class GoodsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Goods  $goods
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
-    public function destroy(Goods $goods)
+    public function destroy(int $id)
     {
-        //
+        $item = Goods::findOrFail($id);
+        /*if (env('APP_ENV') !== 'testing') {
+            $this->authorize('delete', $item);
+        }*/
+        try {
+            $item->additionalChars()->detach();
+            $item->delete();
+            flash('Товар "' . $item->name . '" удалён')->success();
+        } catch (\Exception $e) {
+            flash('Не удалось удалить товар')->error();
+        } finally {
+            $home = $_SERVER['HTTP_REFERER'];
+            return Redirect::to($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Application|Factory|View
+     */
+    public function regenerate_db()
+    {
+        Artisan::call('migrate:fresh --seed');
+        return view('index');
     }
 }

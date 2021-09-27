@@ -20,6 +20,8 @@ Route::get('/', function () {
     return view('index');
 });
 
+Route::get('goods/regenerate_db', [GoodsController::class, 'regenerate_db'])->name('goods.regenerate_db');
+
 Route::resource('categories', CategoriesController::class);
 Route::resource('goods', GoodsController::class);
 

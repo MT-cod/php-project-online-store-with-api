@@ -100,6 +100,7 @@
         {{--Фильтр-end--}}
         {{--Товары--}}
         <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
+            @include('flash::message')
             <table class="table table-success table-striped table-sm mx-auto">
                 <thead>
                     <tr>
@@ -119,7 +120,8 @@
                                     data-placement="bottom"
                                     title="Нажать для подробностей/изменения"
                                     data-id="{{$item['id']}}"
-                                    data-route="{{route('goods.update', $item['id'])}}"
+                                    data-edit_route="{{route('goods.update', $item['id'])}}"
+                                    data-delete_route="{{route('goods.destroy', $item['id'])}}"
                                     style="border: none"
                                 >
                                     <b>{{Str::limit($item['name'], 40)}}</b>
@@ -188,7 +190,7 @@
                             </div>
                         </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
-                            <h6><b><u>Дополнительные характеристики товара</u></b></h6>
+                            <h6><b><center>Дополнительные характеристики товара</center></b></h6>
                             <span class="modal_goods_show_additional_chars"></span>
                         </li>
                     </ul>
@@ -196,7 +198,11 @@
                 <div class="modal-footer shadow" style="background-color: #c0ffe2">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                     <div class="modal_goods_edit_button"></div>
-                    <button type="button" class="btn btn-danger">Удалить</button>
+                    <form class="modal_goods_delete_form" action="/goods/" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Вы действительно хотите удалить товар?')">Удалить</button>
+                    </form>
                 </div>
             </div>
         </div>
