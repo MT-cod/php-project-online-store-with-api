@@ -152,7 +152,7 @@ class GoodsController extends Controller
     public function store(Request $request)
     {
         $item = new Goods();
-        //$this->authorize('create', $item);
+        $this->authorize('store', $item);
         $data = $this->validate($request, [
             'name' => [
                 'required',
@@ -213,7 +213,7 @@ class GoodsController extends Controller
     public function edit($id)
     {
         $prepare_item = Goods::findOrFail($id);
-        //$this->authorize('update', $task);
+        $this->authorize('update', $prepare_item);
         $item = $prepare_item->toArray();
         $item['created_at'] = $prepare_item->created_at->format('d.m.Y H:i:s');
         $item['updated_at'] = $prepare_item->updated_at->format('d.m.Y H:i:s');
@@ -255,7 +255,7 @@ class GoodsController extends Controller
     public function update(Request $request, int $id)
     {
         $item = Goods::findOrFail($id);
-        //$this->authorize('update', $item);
+        $this->authorize('update', $item);
         $data = $this->validate($request, [
             'name' => [
                 'required',
@@ -300,17 +300,16 @@ class GoodsController extends Controller
     public function destroy(int $id)
     {
         $item = Goods::findOrFail($id);
-        /*if (env('APP_ENV') !== 'testing') {
+        if (env('APP_ENV') !== 'testing') {
             $this->authorize('delete', $item);
-        }*/
+        }
         try {
             $item->additionalChars()->detach();
             $item->delete();
-            flash('Товар "' . $item->name . '" удалён')->success();
+            flash('Товар "' . $item->name . '" успешно удалён')->success();
         } catch (\Exception $e) {
             flash('Не удалось удалить товар')->error();
         } finally {
-            $home = $_SERVER['HTTP_REFERER'];
             return Redirect::to($_SERVER['HTTP_REFERER']);
         }
     }

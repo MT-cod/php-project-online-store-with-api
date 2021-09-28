@@ -10,7 +10,11 @@
         <div class="col-3"><h2>Фильтр</h2></div>
         <div class="col-8"><h2>Товары</h2></div>
         <div class="col-1 text-left">
-            <button class="btn btn-success btn-modal_goods_create" data-toggle="tooltip" data-placement="bottom" title="Создать новый товар">Новый товар</button>
+            @guest
+                <button type="button" class="btn btn-success" onclick="return alert('Для создания товара необходимо авторизоваться!')">Новый товар</button>
+            @else
+                <button class="btn btn-success btn-modal_goods_create" data-toggle="tooltip" data-placement="bottom" title="Создать новый товар">Новый товар</button>
+            @endguest
         </div>
     </div>
 
@@ -200,12 +204,17 @@
                 </div>
                 <div class="modal-footer shadow" style="background-color: #c0ffe2">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    <div class="modal_goods_edit_button"></div>
-                    <form class="modal_goods_delete_form" action="/goods/" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Вы действительно хотите удалить товар?')">Удалить</button>
-                    </form>
+                    @guest
+                        <button type="button" class="btn btn-warning" onclick="return alert('Для изменения товара необходимо авторизоваться!')">Изменить</button>
+                        <button type="button" class="btn btn-danger" onclick="return alert('Для удаления товара необходимо авторизоваться!')">Удалить</button>
+                        @else
+                        <div class="modal_goods_edit_button"></div>
+                        <form class="modal_goods_delete_form" action="/goods/" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Вы действительно хотите удалить товар?')">Удалить</button>
+                        </form>
+                    @endguest
                 </div>
             </div>
         </div>
