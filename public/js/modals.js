@@ -123,6 +123,76 @@ $(document).ready(function() {
 });
 //Изменение товара - end
 
+//Создание товара
+$(document).on("click", ".btn-modal_goods_create", function() {
+    $.ajax({
+        url: '/goods/create',
+        method: "get",
+        success: function(data, textStatus, jqXHR) {
+            $('.modal_goods_create_title').html('<b>Создание нового товара</b>');
+            $('.modal_goods_create_category').html(
+                `<select class="form-control" name="category_id">` +
+                `${data.categories.map((cat) => {
+                    return `<option value=${cat.id}>${cat.name}</option>`;
+                }).join``}` +
+                `</select>`
+            );
+            $('.modal_goods_create_additional_chars').html(
+                `<div class="form-control" style="min-height: 20vh !important; max-height: 30vh !important; overflow-y: scroll !important;">` +
+                `${data.additCharacteristics.map((char) => {
+                    let res = `<div class="form-check">`;
+                    res += `<input name="additChars[]" type="checkbox" class="form-check-input" id="additChar_${char.id}" value=${char.id}>`;
+                    res += `<label class="form-check-label" for="additChar_${char.id}"><b>${char.name}</b> (${char.value})</label></div>`;
+                    return res;
+                }).join``}` +
+                `</div>`
+            );
+            $('.modal_goods_create_results').html('');
+            $('#modalItem-create').modal('show');
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+        }});
+});
+
+//Попытка сохранения нового товара
+$(document).ready(function() {
+    $("#modalItem-create-form").submit(function(event) {
+        // Отменяем стандартное поведение формы на submit.
+        event.preventDefault();
+
+        // Собираем данные с формы. Здесь будут все поля у которых есть `name`, включая метод `_method` и `_token`.
+        let data = new FormData(this);
+
+        // Отправляем запрос.
+        $.ajax({
+            method: 'POST', // начиная с версии 1.9 `type` - псевдоним для `method`.
+            url: this.action, // атрибут `action="..."` из формы.
+            cache: false, // запрошенные страницы не будут закешированы браузером.
+            data: data, // больше ничего тут не надо!
+            dataType: 'json', // чтобы jQuery распарсил `success` ответ.
+            processData: false, // чтобы jQuery не обрабатывал отправляемые данные.
+            contentType: false, // чтобы jQuery не передавал в заголовке поле `Content-Type` совсем.
+            success: function(data) {
+                $('.modal_goods_create_results').html(
+                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button></div>');
+            },
+            error: function(data) {
+                let errors = '';
+                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
+                    errors += errNote[1][0] + '<br>';
+                });
+                $('.modal_goods_create_results').html(
+                    '<div class="alert alert-danger text-center" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
+            }
+        });
+    })
+});
+//Создание товара - end
+
 //-----------------------------------------------------------------------------------------------------------
 //Доп функции
 function idsInArray(needleId, haystack) {

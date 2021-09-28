@@ -115,24 +115,76 @@ class GoodsController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for editing the specified resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function create()
     {
-        //
+        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
+            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
+            if (isset($cat['childrens'])) {
+                foreach ($cat['childrens'] as $cat2lvl) {
+                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
+                    if (isset($cat2lvl['childrens'])) {
+                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
+                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
+                        }
+                    }
+                }
+            }
+            return $res;
+        }, []);
+
+        $additCharacteristics = AdditionalChar::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
+
+        return compact('categories', 'additCharacteristics');
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AuthorizationException
+     * @throws ValidationException
      */
     public function store(Request $request)
     {
-        //
+        $item = new Goods();
+        //$this->authorize('create', $item);
+        $data = $this->validate($request, [
+            'name' => [
+                'required',
+                function ($attribute, $value, $fail) use ($item): void {
+                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->name)) {
+                        $fail('Товар с таким именем уже существует');
+                    }
+                }],
+            'slug' => [
+                'required',
+                function ($attribute, $value, $fail) use ($item): void {
+                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->slug)) {
+                        $fail('Товар с таким slug уже существует');
+                    }
+                }],
+            'category_id' => [
+                'required',
+                function ($attribute, $value, $fail) use ($item): void {
+                    if (Category::where('id', $value)->first()->level == 1) {
+                        $fail('Категории 1-го уровня не могут принадлежать товары');
+                    }
+                }]
+        ]);
+        $data['description'] = $request->input('description', '');
+        $data['price'] = $request->input('price') ?? 0;
+        $item->fill($data);
+        $additChars = $request->input('additChars', []);
+        if ($item->save()) {
+            $item->additionalChars()->attach($additChars);
+            return Response::json(['success' => "Товар $item->name успешно создан"], 200);
+        }
+        return Response::json(['error' => 'Ошибка данных'], 422);
     }
 
     /**

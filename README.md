@@ -1,4 +1,4 @@
-## Учебный проект «Online shop» (PHP-Bootstrap-API)
+## Учебный проект «Online shop» (PHP/Bootstrap/JS/API)
 
 [![Actions Status](https://github.com/MT-cod/php-project-lvl4/workflows/hexlet-check/badge.svg)](https://github.com/MT-cod/php-project-online-store-with-api/actions)
 [![PHP%20CI](https://github.com/MT-cod/php-project-lvl4/workflows/PHP%20CI/badge.svg)](https://github.com/MT-cod/php-project-online-store-with-api/actions)

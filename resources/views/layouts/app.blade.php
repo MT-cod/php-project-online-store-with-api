@@ -42,9 +42,7 @@
                             <a class="nav-link" href="{{ route('goods.index') }}">{{ __('Товары') }}</a>
                         </li>
                         <li class="nav-item">
-                            <form action="/goods/regenerateDb">
-                                <button type="submit" class="btn btn btn-outline-danger" style="border: none" onclick="return confirm('Вы действительно хотите это сделать?\nВсе текущие данные будут уничтожены.')">Залить базу начисто случайными данными</button>
-                            </form>
+                            <a class="nav-link btn-outline-danger" href="{{ route('goods.regenerateDb') }}" onclick="return confirm('Вы действительно хотите это сделать?\nВсе текущие данные будут уничтожены.')">{{ __('Перегенерировать базу') }}</a>
                         </li>
                     </ul>
 
