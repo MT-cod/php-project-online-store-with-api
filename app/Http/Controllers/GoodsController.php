@@ -29,89 +29,12 @@ class GoodsController extends Controller
     public function index()
     {
         $goods = (isset($_REQUEST['filter']))
-            ? $this->validAndFiltIndex(request())->get()->toArray()
+            ? $this->filterValidDataForIndex($this->validateForIndex(request()))->get()->toArray()
             : Goods::orderBy('name')->get()->toArray();
 
-        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
-            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
-            if (isset($cat['childrens'])) {
-                foreach ($cat['childrens'] as $cat2lvl) {
-                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
-                    if (isset($cat2lvl['childrens'])) {
-                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
-                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
-                        }
-                    }
-                }
-            }
-            return $res;
-        }, []);
-
-        $additCharacteristics = AdditionalChar::select('id', 'name')->orderBy('name')->get()->toArray();
+        [$categories, $additCharacteristics] = $this->categAndAdditCharsForModals();
 
         return view('goods.filt_index', compact('goods', 'categories', 'additCharacteristics'));
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return Application|Factory
-     * @throws ValidationException
-     */
-    public function validAndFiltIndex(Request $request)
-    {
-        $validated = $this->validate($request, [
-            'filter.category_id' => [function ($attribute, $value, $fail): void {
-                if ($value != null && Category::whereId($value)->first() === null) {
-                    unset($_REQUEST['filter']['category_id']);
-                    $fail('Запрошена некорректная категория для фильтра');
-                }
-            }],
-            'filter.name' => 'nullable|max:255',
-            'filter.additChars' => [function ($attribute, $value, $fail): void {
-                if (AdditionalChar::whereId($value)->first() == null) {
-                    unset($_REQUEST['filter']['additChars']);
-                    $fail('Запрошена некорректная доп. характеристика для фильтра');
-                }
-            }
-            ]
-        ]);
-
-        $filteredGoods = array_reduce($validated, function ($res, $filters) {
-            foreach ($filters as $fName => $fValue) {
-                //фильтр по категориям
-                if ($fName === 'category_id' && !is_null($fValue)) {
-                    $categories = [];
-                    $categories[] = $fValue;
-                    if (count(Category::whereId($fValue)->first()->childrens()->get()) > 0) {
-                        foreach (Category::whereId($fValue)->first()->childrens()->get() as $cat2) {
-                            $categories[] = $cat2['id'];
-                            if (count(Category::whereId($cat2['id'])->first()->childrens()->get()) > 0) {
-                                foreach (Category::whereId($cat2['id'])->first()->childrens()->get() as $cat3) {
-                                    $categories[] = $cat3['id'];
-                                }
-                            }
-                        }
-                    }
-                    $res = $res->whereIn('category_id', $categories);
-                }
-                //фильтр по строке в имени
-                if ($fName == 'name' && !is_null($fValue)) {
-                    $res = $res->where('name', 'like', '%' . $fValue . '%');
-                }
-                //фильтр по доп. характеристикам
-                if ($fName == 'additChars' && !is_null($fValue)) {
-                    foreach ($fValue as $char) {
-                        $res = $res->whereHas('additionalChars', function (Builder $query) use ($char) {
-                            $query->where('additional_char_id', $char);
-                        });
-                    }
-                }
-            }
-            return $res;
-        }, Goods::orderBy('name'));
-        return $filteredGoods;
     }
 
     /**
@@ -121,23 +44,7 @@ class GoodsController extends Controller
      */
     public function create()
     {
-        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
-            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
-            if (isset($cat['childrens'])) {
-                foreach ($cat['childrens'] as $cat2lvl) {
-                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
-                    if (isset($cat2lvl['childrens'])) {
-                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
-                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
-                        }
-                    }
-                }
-            }
-            return $res;
-        }, []);
-
-        $additCharacteristics = AdditionalChar::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
-
+        [$categories, $additCharacteristics] = $this->categAndAdditCharsForModals();
         return compact('categories', 'additCharacteristics');
     }
 
@@ -153,29 +60,7 @@ class GoodsController extends Controller
     {
         $item = new Goods();
         $this->authorize('store', $item);
-        $data = $this->validate($request, [
-            'name' => [
-                'required',
-                function ($attribute, $value, $fail) use ($item): void {
-                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->name)) {
-                        $fail('Товар с таким именем уже существует');
-                    }
-                }],
-            'slug' => [
-                'required',
-                function ($attribute, $value, $fail) use ($item): void {
-                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->slug)) {
-                        $fail('Товар с таким slug уже существует');
-                    }
-                }],
-            'category_id' => [
-                'required',
-                function ($attribute, $value, $fail) use ($item): void {
-                    if (Category::where('id', $value)->first()->level == 1) {
-                        $fail('Категории 1-го уровня не могут принадлежать товары');
-                    }
-                }]
-        ]);
+        $data = $this->validateCommonGoodsParams($request, $item);
         $data['description'] = $request->input('description', '');
         $data['price'] = $request->input('price') ?? 0;
         $item->fill($data);
@@ -224,22 +109,7 @@ class GoodsController extends Controller
             ->get()
             ->toArray();
 
-        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
-            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
-            if (isset($cat['childrens'])) {
-                foreach ($cat['childrens'] as $cat2lvl) {
-                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
-                    if (isset($cat2lvl['childrens'])) {
-                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
-                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
-                        }
-                    }
-                }
-            }
-            return $res;
-        }, []);
-
-        $additCharacteristics = AdditionalChar::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
+        [$categories, $additCharacteristics] = $this->categAndAdditCharsForModals();
 
         return compact('item', 'categories', 'additCharacteristics');
     }
@@ -256,29 +126,7 @@ class GoodsController extends Controller
     {
         $item = Goods::findOrFail($id);
         $this->authorize('update', $item);
-        $data = $this->validate($request, [
-            'name' => [
-                'required',
-                function ($attribute, $value, $fail) use ($item): void {
-                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->name)) {
-                        $fail('Товар с таким именем уже существует');
-                    }
-                }],
-            'slug' => [
-                'required',
-                function ($attribute, $value, $fail) use ($item): void {
-                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->slug)) {
-                        $fail('Товар с таким slug уже существует');
-                    }
-                }],
-            'category_id' => [
-                'required',
-                function ($attribute, $value, $fail) use ($item): void {
-                    if (Category::where('id', $value)->first()->level == 1) {
-                        $fail('Категории 1-го уровня не могут принадлежать товары');
-                    }
-                }]
-        ]);
+        $data = $this->validateCommonGoodsParams($request, $item);
         $data['description'] = $request->input('description', '');
         $data['price'] = $request->input('price') ?? 0;
         $item->fill($data);
@@ -312,6 +160,136 @@ class GoodsController extends Controller
         } finally {
             return Redirect::to($_SERVER['HTTP_REFERER']);
         }
+    }
+
+//Общие функции контроллера-----------------------------------------------------------------
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return array
+     * @throws ValidationException
+     */
+    private function validateForIndex(Request $request)
+    {
+        return $this->validate($request, [
+            'filter.category_id' => [function ($attribute, $value, $fail): void {
+                if ($value != null && Category::whereId($value)->first() === null) {
+                    unset($_REQUEST['filter']['category_id']);
+                    $fail('Запрошена некорректная категория для фильтра');
+                }
+            }],
+            'filter.name' => 'nullable|max:255',
+            'filter.additChars' => [function ($attribute, $value, $fail): void {
+                if (AdditionalChar::whereId($value)->first() == null) {
+                    unset($_REQUEST['filter']['additChars']);
+                    $fail('Запрошена некорректная доп. характеристика для фильтра');
+                }
+            }
+            ]
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param array $validated
+     * @return Application|Factory
+     */
+    private function filterValidDataForIndex($validated)
+    {
+        return array_reduce($validated, function ($res, $filters) {
+            foreach ($filters as $fName => $fValue) {
+                //фильтр по категориям
+                if ($fName === 'category_id' && !is_null($fValue)) {
+                    $categories = [];
+                    $categories[] = $fValue;
+                    if (count(Category::whereId($fValue)->first()->childrens()->get()) > 0) {
+                        foreach (Category::whereId($fValue)->first()->childrens()->get() as $cat2) {
+                            $categories[] = $cat2['id'];
+                            if (count(Category::whereId($cat2['id'])->first()->childrens()->get()) > 0) {
+                                foreach (Category::whereId($cat2['id'])->first()->childrens()->get() as $cat3) {
+                                    $categories[] = $cat3['id'];
+                                }
+                            }
+                        }
+                    }
+                    $res = $res->whereIn('category_id', $categories);
+                }
+                //фильтр по строке в имени
+                if ($fName == 'name' && !is_null($fValue)) {
+                    $res = $res->where('name', 'like', '%' . $fValue . '%');
+                }
+                //фильтр по доп. характеристикам
+                if ($fName == 'additChars' && !is_null($fValue)) {
+                    foreach ($fValue as $char) {
+                        $res = $res->whereHas('additionalChars', function (Builder $query) use ($char) {
+                            $query->where('additional_char_id', $char);
+                        });
+                    }
+                }
+            }
+            return $res;
+        }, Goods::orderBy('name'));
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return array
+     */
+    private function validateCommonGoodsParams(Request $request, Goods $item)
+    {
+        return $this->validate($request, [
+            'name' => [
+                'required',
+                function ($attribute, $value, $fail) use ($item): void {
+                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->name)) {
+                        $fail('Товар с таким именем уже существует');
+                    }
+                }],
+            'slug' => [
+                'required',
+                function ($attribute, $value, $fail) use ($item): void {
+                    if ((Goods::where($attribute, $value)->first() !== null) && ($value !== $item->slug)) {
+                        $fail('Товар с таким slug уже существует');
+                    }
+                }],
+            'category_id' => [
+                'required',
+                function ($attribute, $value, $fail) use ($item): void {
+                    if (Category::where('id', $value)->first()->level == 1) {
+                        $fail('Категории 1-го уровня не могут принадлежать товары');
+                    }
+                }]
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return array
+     */
+    private function categAndAdditCharsForModals()
+    {
+        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
+            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
+            if (isset($cat['childrens'])) {
+                foreach ($cat['childrens'] as $cat2lvl) {
+                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
+                    if (isset($cat2lvl['childrens'])) {
+                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
+                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
+                        }
+                    }
+                }
+            }
+            return $res;
+        }, []);
+        $additCharacteristics = AdditionalChar::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
+        return [$categories, $additCharacteristics];
     }
 
     /**

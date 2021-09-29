@@ -18,7 +18,8 @@ class TestDatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-        Category::create(['name' => 'Тестовая категория']);
+        Category::create(['parent_id' => 0, 'name' => 'Тестовая категория', 'description' => 'test', 'level' => 1]);
+        Category::create(['parent_id' => 1, 'name' => 'Тестовая категория 2', 'description' => 'test', 'level' => 2]);
 
         AdditionalChar::create([
             'name' => 'Тестовая характеристика',

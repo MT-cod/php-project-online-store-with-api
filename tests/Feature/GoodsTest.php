@@ -41,6 +41,73 @@ class GoodsTest extends TestCase
         $this->assertSame('Тестовый товар', $response['name']);
     }
 
+    public function testCreate(): void
+    {
+        $response = $this->get('/goods/create');
+        $response->assertOk();
+        $this->assertSame(['id' => 1, 'name' => 'Тестовая категория'], $response['categories'][0]);
+        $this->assertSame(['id' => 1, 'name' => 'Тестовая характеристика', 'value' => 'test_char_value'], $response['additCharacteristics'][0]);
+    }
+
+    public function testStore(): void
+    {
+        $response = $this->storeTestGoods();
+        $response->assertStatus(403);
+        Auth::loginUsingId(1);
+        $response = $this->storeTestGoods();
+        $this->assertDatabaseHas('goods', ['name' => 'Тестовый товар']);
+        $response = $this->get('/goods');
+        $response->assertSeeTextInOrder(['Тестовый товар'], true);
+    }
+
+    public function testEdit(): void
+    {
+        $response = $this->get('/goods/1/edit');
+        $response->assertStatus(403);
+        Auth::loginUsingId(1);
+        $response = $this->get('/goods/1/edit');
+        $this->assertSame(['id' => 1, 'name' => 'Тестовая категория'], $response['categories'][0]);
+        $this->assertSame(['id' => 1, 'name' => 'Тестовая характеристика', 'value' => 'test_char_value'], $response['additCharacteristics'][0]);
+    }
+
+    public function testUpdate(): void
+    {
+        $response = $this->post(route('goods.update', 1), ['_method' => 'PATCH', null]);
+        $response->assertStatus(403);
+        Auth::loginUsingId(1);
+        $this->post(route('goods.update', 1), [
+            '_method' => 'PATCH',
+            'name' => 'Тестовый товар2',
+            'description' => 'Тестовое описание2',
+            'slug' => 'test2',
+            'price' => 222,
+            'category_id' => 2
+        ]);
+        $this->assertDatabaseHas('goods', ['name' => 'Тестовый товар2']);
+        $response = $this->get('/goods');
+        $response->assertSeeTextInOrder(['Тестовый товар2'], true);
+    }
+
+    public function testDestroy(): void
+    {
+        Auth::loginUsingId(1);
+        $this->post(route('goods.destroy', 1), ['_method' => 'DELETE']);
+        $this->assertDatabaseMissing('goods', ['name' => 'Тестовый товар']);
+        $response = $this->get('/goods');
+        $response->assertSeeTextInOrder([`Товар "Тестовый товар" успешно удалён`], true);
+    }
+
+    private function storeTestGoods(): \Illuminate\Testing\TestResponse
+    {
+        return $this->post(route('goods.store'), [
+            'name' => 'Тестовый товар',
+            'description' => 'Тестовое описание',
+            'slug' => 'test',
+            'price' => 111.11,
+            'category_id' => 1
+        ]);
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();
