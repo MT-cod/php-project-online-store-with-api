@@ -1,6 +1,5 @@
 ## Учебный проект «Online shop» (PHP/Bootstrap/JS/API)
 
-[![Actions Status](https://github.com/MT-cod/php-project-online-store-with-api/workflows/hexlet-check/badge.svg)](https://github.com/MT-cod/php-project-online-store-with-api/actions)
 [![PHP%20CI](https://github.com/MT-cod/php-project-online-store-with-api/workflows/PHP%20CI/badge.svg)](https://github.com/MT-cod/php-project-online-store-with-api/actions)
 <br>
 [![Code Climate](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api/badges/gpa.svg)](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api)
