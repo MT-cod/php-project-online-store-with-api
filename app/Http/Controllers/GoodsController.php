@@ -38,7 +38,7 @@ class GoodsController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for creating the specified resource.
      *
      * @return array
      */
@@ -165,8 +165,6 @@ class GoodsController extends Controller
 //Общие функции контроллера-----------------------------------------------------------------
 
     /**
-     * Display a listing of the resource.
-     *
      * @param Request $request
      * @return array
      * @throws ValidationException
@@ -191,13 +189,7 @@ class GoodsController extends Controller
         ]);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param array $validated
-     * @return Application|Factory
-     */
-    private function filterValidDataForIndex($validated)
+    private function filterValidDataForIndex(array $validated): Factory|Application
     {
         return array_reduce($validated, function ($res, $filters) {
             foreach ($filters as $fName => $fValue) {
@@ -234,13 +226,7 @@ class GoodsController extends Controller
         }, Goods::orderBy('name'));
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return array
-     */
-    private function validateCommonGoodsParams(Request $request, Goods $item)
+    private function validateCommonGoodsParams(Request $request, Goods $item): array
     {
         return $this->validate($request, [
             'name' => [
@@ -267,12 +253,7 @@ class GoodsController extends Controller
         ]);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return array
-     */
-    private function categAndAdditCharsForModals()
+    private function categAndAdditCharsForModals(): array
     {
         $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
             $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
@@ -292,12 +273,7 @@ class GoodsController extends Controller
         return [$categories, $additCharacteristics];
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Application|Factory|View
-     */
-    public function regenerateDb()
+    public function regenerateDb(): View|Factory|Application
     {
         Artisan::call('migrate:fresh --seed');
         return view('index');

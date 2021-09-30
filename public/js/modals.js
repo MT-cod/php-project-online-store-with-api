@@ -199,13 +199,73 @@ $(document).ready(function() {
 $(document).on("click", ".categ-collapse-pill", function() {
     let id = $(this).data('id');
     let childCount = $(this).data('childcount');
-    console.log('pill ' + id + '   childCount =' + childCount);
     if ($(this).text() === childCount + "▲") {
         $('#categ-collapse-pill-' + id).html(childCount + "▼");
     } else {
         $('#categ-collapse-pill-' + id).html(childCount + "▲");
     }
 });
+
+//Создание категории
+$(document).on("click", ".btn-modal_category_create", function() {
+    $.ajax({
+        url: '/categories/create',
+        method: "get",
+        success: function(data, textStatus, jqXHR) {
+            $('.modal_categ_create_title').html('<b>Создание новой категории</b>');
+            $('.modal_create_categ_parent_category').html(
+                `<select class="form-control" name="parent_id">` +
+                `<option selected="selected" value="0">-</option>` +
+                `${data.categories.map((cat) => {
+                    return `<option value=${cat.id}>${cat.name}</option>`;
+                }).join``}` +
+                `</select>`
+            );
+            $('.modal_categ_create_results').html('');
+            $('#modalCateg-create').modal('show');
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+        }});
+});
+
+//Попытка сохранения новой категории
+$(document).ready(function() {
+    $("#modalCateg-create-form").submit(function(event) {
+        // Отменяем стандартное поведение формы на submit.
+        event.preventDefault();
+
+        // Собираем данные с формы. Здесь будут все поля у которых есть `name`, включая метод `_method` и `_token`.
+        let data = new FormData(this);
+
+        // Отправляем запрос.
+        $.ajax({
+            method: 'POST', // начиная с версии 1.9 `type` - псевдоним для `method`.
+            url: this.action, // атрибут `action="..."` из формы.
+            cache: false, // запрошенные страницы не будут закешированы браузером.
+            data: data, // больше ничего тут не надо!
+            dataType: 'json', // чтобы jQuery распарсил `success` ответ.
+            processData: false, // чтобы jQuery не обрабатывал отправляемые данные.
+            contentType: false, // чтобы jQuery не передавал в заголовке поле `Content-Type` совсем.
+            success: function(data) {
+                $('.modal_categ_create_results').html(
+                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button></div>');
+            },
+            error: function(data) {
+                let errors = '';
+                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
+                    errors += errNote[1][0] + '<br>';
+                });
+                $('.modal_categ_create_results').html(
+                    '<div class="alert alert-danger text-center" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
+            }
+        });
+    })
+});
+//Создание категории - end
 
 //-----------------------------------------------------------------------------------------------------------
 //Доп функции
