@@ -35,6 +35,10 @@
   --breakpoint-xl: 1200px;
   --font-family-sans-serif: "Nunito", sans-serif;
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    scrollbar-color: #996423 #141111;
+    scrollbar-track-color: yellow;
+    scrollbar-base-color: #141111;
+    scrollbar-width: thin;
 }
 
 *,
@@ -10001,4 +10005,25 @@ h3 {
     color: inherit;
     border-color: #dee2e6;
   }
+}
+
+/*Scrolling for webkit-browsers GRAY*/
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: #6F7E8E;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #6F7E8E;
+    border-radius: 9em;
+    box-shadow: inset 1px 1px 10px #f3faf7;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #B8BDC4;
+}
+
+.badge-hover:hover {
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    background: linear-gradient(to bottom, #acfff4, #e9e9ce);
+    color: #a00;
 }
