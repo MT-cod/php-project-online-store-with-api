@@ -42,7 +42,7 @@
                             <a class="nav-link" href="{{ route('goods.index') }}">{{ __('Товары') }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-outline-danger" href="{{ route('goods.regenerateDb') }}" onclick="return confirm('Вы действительно хотите это сделать?\nВсе текущие данные будут уничтожены.')">{{ __('Перегенерировать базу') }}</a>
+                            <a class="nav-link btn-outline-danger" href="{{ route('goods.regenerateDb') }}" onclick="return confirm('Вы действительно хотите это сделать?\nВсе текущие данные будут уничтожены.')">&#9851;Перегенерировать базу</a>
                         </li>
                     </ul>
 

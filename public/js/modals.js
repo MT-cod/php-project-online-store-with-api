@@ -193,6 +193,20 @@ $(document).ready(function() {
 });
 //Создание товара - end
 
+//Модалки по категориям-----------------------------------------------------------------------
+
+//Переключение стрелки в иконке разворачивания/сворачивания категории
+$(document).on("click", ".categ-collapse-pill", function() {
+    let id = $(this).data('id');
+    let childCount = $(this).data('childcount');
+    console.log('pill ' + id + '   childCount =' + childCount);
+    if ($(this).text() === childCount + "▲") {
+        $('#categ-collapse-pill-' + id).html(childCount + "▼");
+    } else {
+        $('#categ-collapse-pill-' + id).html(childCount + "▲");
+    }
+});
+
 //-----------------------------------------------------------------------------------------------------------
 //Доп функции
 function idsInArray(needleId, haystack) {
