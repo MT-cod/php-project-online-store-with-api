@@ -148,9 +148,7 @@ class GoodsController extends Controller
     public function destroy(int $id)
     {
         $item = Goods::findOrFail($id);
-        if (env('APP_ENV') !== 'testing') {
-            $this->authorize('delete', $item);
-        }
+        $this->authorize('delete', $item);
         try {
             $item->additionalChars()->detach();
             $item->delete();

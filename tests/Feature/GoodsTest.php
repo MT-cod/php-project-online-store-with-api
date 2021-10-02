@@ -54,7 +54,7 @@ class GoodsTest extends TestCase
         $response = $this->storeTestGoods();
         $response->assertStatus(403);
         Auth::loginUsingId(1);
-        $response = $this->storeTestGoods();
+        $this->storeTestGoods();
         $this->assertDatabaseHas('goods', ['name' => 'Тестовый товар']);
         $response = $this->get('/goods');
         $response->assertSeeTextInOrder(['Тестовый товар'], true);

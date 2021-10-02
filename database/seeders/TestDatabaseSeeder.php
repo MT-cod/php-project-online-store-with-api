@@ -31,7 +31,7 @@ class TestDatabaseSeeder extends Seeder
             'description' => 'Тестовое описание',
             'slug' => 'test',
             'price' => 111.11,
-            'category_id' => 1
+            'category_id' => 2
         ]);
 
         Goods::find(1)->additionalChars()->attach(AdditionalChar::find(1));

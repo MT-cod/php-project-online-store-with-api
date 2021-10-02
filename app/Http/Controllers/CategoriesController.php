@@ -122,9 +122,7 @@ class CategoriesController extends Controller
     public function destroy(int $id)
     {
         $cat = Category::findOrFail($id);
-        if (env('APP_ENV') !== 'testing') {
-            $this->authorize('delete', $cat);
-        }
+        $this->authorize('delete', $cat);
         if ($cat->childrens()->count()) {
             flash("Не удалось удалить категорию &quot;$cat->name&quot;! У категории имеется подкатегория!")->error();
             return Redirect::to($_SERVER['HTTP_REFERER']);
