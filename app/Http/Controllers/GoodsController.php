@@ -98,7 +98,7 @@ class GoodsController extends Controller
     public function edit($id)
     {
         $prepare_item = Goods::findOrFail($id);
-        $this->authorize('update', $prepare_item);
+        $this->authorize('edit', $prepare_item);
         $item = $prepare_item->toArray();
         $item['created_at'] = $prepare_item->created_at->format('d.m.Y H:i:s');
         $item['updated_at'] = $prepare_item->updated_at->format('d.m.Y H:i:s');
@@ -189,7 +189,7 @@ class GoodsController extends Controller
         ]);
     }
 
-    private function filterValidDataForIndex(array $validated): Factory|Application
+    private function filterValidDataForIndex(array $validated)
     {
         return array_reduce($validated, function ($res, $filters) {
             foreach ($filters as $fName => $fValue) {

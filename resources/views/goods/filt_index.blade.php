@@ -145,7 +145,7 @@
     </div>
 
     {{--Modal-show--}}
-    <div class="modal fade" id="modalItem-show" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important;">
+    <div class="modal fade" id="modal-item-show" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important;">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header shadow" style="background-color: #c0ffe2">
@@ -222,10 +222,10 @@
     {{--Modal-show-end--}}
 
     {{--Modal-edit--}}
-    <div class="modal fade" id="modalItem-edit" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important; scrollbar-width: thin !important;">
+    <div class="modal fade" id="modal-item-edit" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important;">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
-                <form id="modalItem-edit-form" method="POST" action="/goods/">
+                <form id="modal-item-edit-form" method="POST" action="/goods/">
                     @csrf
                     @method('PATCH')
                     <div class="modal-header shadow" style="background-color: #c0ffe2">
@@ -294,10 +294,10 @@
     {{--Modal-edit-end--}}
 
     {{--Modal-create--}}
-    <div class="modal fade" id="modalItem-create" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important; scrollbar-width: thin !important;">
+    <div class="modal fade" id="modal-item-create" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important; scrollbar-width: thin !important;">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
-                <form id="modalItem-create-form" method="POST" action="{{route('goods.store')}}">
+                <form id="modal-item-create-form" method="POST" action="{{route('goods.store')}}">
                     @csrf
                     <div class="modal-header shadow" style="background-color: #c0ffe2">
                         <h4 class="modal_goods_create_title"><b></b></h4>
