@@ -98,12 +98,12 @@ class CategoriesController extends Controller
         $newLvl = ($request->input('parent_id') == 0)
             ? 1
             : Category::findOrFail($request->input('parent_id'))->level + 1;
-            $data['level'] = $newLvl;
-            if ($cat->childrens()->count()) {
-                foreach ($cat->childrens()->get() as $child) {
-                    $child->level = $newLvl + 1;
-                }
+        $data['level'] = $newLvl;
+        if ($cat->childrens()->count()) {
+            foreach ($cat->childrens()->get() as $child) {
+                $child->level = $newLvl + 1;
             }
+        }
 
         $cat->fill($data);
         if ($cat->save()) {
@@ -240,5 +240,4 @@ class CategoriesController extends Controller
         }, []);
         return $categories;
     }
-
 }
