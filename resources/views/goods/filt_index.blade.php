@@ -5,7 +5,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/modals.js"></script>
 
-<div class="container-fluid">
+<div class="container-fluid" style="background-color: #e3ffdd">
     <div class="row text-center">
         <div class="col-3"><h2>Фильтр</h2></div>
         <div class="col-8"><h2>Товары</h2></div>
@@ -57,7 +57,7 @@
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
                     <div class="col" style="max-height: 50vh !important; overflow-y: scroll !important;">
                         <label for="additChars">имеет характеристики</label>
-                        <table class="table table-striped table-sm table-warning table-bordered">
+                        <table class="table table-sm">
                             <tbody>
                             @foreach($additCharacteristics as $char)
                                 <tr>

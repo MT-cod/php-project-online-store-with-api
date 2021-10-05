@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdditionalCharsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\GoodsController;
 use Illuminate\Support\Facades\Auth;
@@ -24,5 +25,6 @@ Route::get('goods/regenerateDb', [GoodsController::class, 'regenerateDb'])->name
 
 Route::resource('categories', CategoriesController::class);
 Route::resource('goods', GoodsController::class);
+Route::resource('additionalChars', AdditionalCharsController::class);
 
 Auth::routes();

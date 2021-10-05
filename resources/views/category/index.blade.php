@@ -5,7 +5,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/modals.js"></script>
 
-<div class="container-fluid">
+<div class="container-fluid" style="background-color: #faffbd">
     <div class="row text-center shadow-lg">
         <div class="col-3"><h2>Категории</h2></div>
         <div class="col-9"><h2>Подробности</h2></div>
@@ -164,7 +164,7 @@
                     @csrf
                     @method('PATCH')
                     <div class="modal-header shadow" style="background-color: #fff89f">
-                        <h4 class="modal_categ_categ_title"><b></b></h4>
+                        <h4 class="modal_categ_edit_title"><b></b></h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
