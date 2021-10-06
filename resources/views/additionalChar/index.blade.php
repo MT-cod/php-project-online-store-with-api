@@ -63,11 +63,20 @@
                     <td>{{Str::limit($char['value'], 200)}}</td>
                     <td class="form-row justify-content-fluid">
                         <button type="button" class="btn btn-outline-secondary btn-sm btn-modal_additChar_edit" data-id="{{$char['id']}}">Изменить</button>
-                        <form action="/additionalChars/{{$char['id']}}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Вы действительно хотите удалить характеристику?')">Удалить</button>
-                        </form>
+                        @if (count($char['goods']))
+                            @php($goodsNames = join(array_map(fn($goodsName) => $goodsName['name'] . '\n', $char['goods'])))
+                            <form method="POST" action="{{route('additionalChars.destroy', $char['id'])}}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('В базе имеются товары с данной характеристикой!\n{{$goodsNames}} Вы действительно хотите удалить характеристику?')">Удалить</button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{route('additionalChars.destroy', $char['id'])}}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Вы действительно хотите удалить характеристику?')">Удалить</button>
+                            </form>
+                        @endif
                     </td>
                 </tr>
             @endforeach

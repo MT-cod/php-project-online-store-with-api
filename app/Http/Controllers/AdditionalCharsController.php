@@ -6,7 +6,9 @@ use App\Models\AdditionalChar;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
 class AdditionalCharsController extends Controller
@@ -20,11 +22,16 @@ class AdditionalCharsController extends Controller
     {
         if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== '')) {
             $additChars = AdditionalChar::where('name', 'like', '%' . $_REQUEST['filter']['name'] . '%')
+                ->with('goods:name')
                 ->orderBy('name')
                 ->get()
                 ->toArray();
         } else {
-            $additChars = AdditionalChar::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
+            $additChars = AdditionalChar::select('id', 'name', 'value')
+                ->with('goods:name')
+                ->orderBy('name')
+                ->get()
+                ->toArray();
         }
         return view('additionalChar.index', compact('additChars'));
     }
@@ -69,7 +76,6 @@ class AdditionalCharsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
-     * @throws AuthorizationException
      */
     public function update(Request $request, $id)
     {
@@ -86,12 +92,21 @@ class AdditionalCharsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\AdditionalChar  $additionalChar
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return RedirectResponse
      */
-    public function destroy(AdditionalChar $additionalChar)
+    public function destroy(int $id)
     {
-        //
+        $additChar = AdditionalChar::findOrFail($id);
+        try {
+            $additChar->goods()->detach();
+            $additChar->delete();
+            flash("Характеристика &quot;$additChar->name&quot; успешно удалена")->success();
+        } catch (\Exception $e) {
+            flash('Не удалось удалить характеристику')->error();
+        } finally {
+            return Redirect::to($_SERVER['HTTP_REFERER']);
+        }
     }
 
 //Общие функции контроллера-----------------------------------------------------------------
