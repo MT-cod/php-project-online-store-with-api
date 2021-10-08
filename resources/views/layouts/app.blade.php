@@ -23,7 +23,7 @@
 </head>
 <body>
     <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light shadow-lg" style="background-color: #fff6d6">
+        <nav class="navbar navbar-expand-md navbar-light shadow-lg" style="height: 5vh !important; background: url(/back_gray_min.jpg) repeat">
             <div class="container-fluid font-weight-bold">
                 <a class="navbar-brand" href="{{ url('/') }}">
                     {{ config('app.name', 'Online store') }}

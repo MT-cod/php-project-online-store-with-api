@@ -5,10 +5,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/modals.js"></script>
 
-<div class="container-fluid" style="background-color: #e3ffdd">
+<div class="container-fluid" style="height: 95vh !important; background: url(/back_green.jpg) repeat">
     <div class="row text-center">
-        <div class="col-3"><h2>Фильтр</h2></div>
-        <div class="col-8"><h2>Товары</h2></div>
+        <div class="col-3"><h2><b>Фильтр</b></h2></div>
+        <div class="col-8"><h2><b>Товары</b></h2></div>
         <div class="col-1 text-left">
             @guest
                 <button type="button" class="btn btn-success" onclick="return alert('Для создания товара необходимо авторизоваться!')">Новый товар</button>
@@ -23,7 +23,7 @@
         <div class="col-3 text-center" style="max-height:90vh !important; overflow-y:scroll !important;">
             <form class="center m-md-3 p-md-3" method="GET" action="/goods" accept-charset="UTF-8">
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
-                    <label for="category">по категории</label>
+                    <label for="category"><b>по категории</b></label>
                     <select class="form-control @error('filter.category_id') is-invalid @enderror" name="filter[category_id]" id="category">
                         <option selected="selected" value="">-</option>
                         @foreach ($categories as $cat)
@@ -43,7 +43,7 @@
                     @enderror
                 </div>
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
-                    <label for="name">по имени</label>
+                    <label for="name"><b>по имени</b></label>
                     @if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== ''))
                         <input type="text" class="form-control @error('filter.name') is-invalid @enderror" id="name" name="filter[name]" value="{{$_REQUEST['filter']['name']}}">
                     @else
@@ -56,7 +56,7 @@
 
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
                     <div class="col" style="max-height: 50vh !important; overflow-y: scroll !important;">
-                        <label for="additChars">имеет характеристики</label>
+                        <label for="additChars"><b>имеет характеристики</b></label>
                         <table class="table table-sm">
                             <tbody>
                             @foreach($additCharacteristics as $char)
@@ -89,16 +89,16 @@
 
                 <div class="btn-block m-md-2 p-md-2 shadow-lg">
                     <a href="/goods" style="text-decoration: none">
-                        <button class="btn btn-outline-secondary collapse multi_filt show" type="button" id="submit_filt1" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
+                        <button class="btn btn-secondary collapse multi_filt show" type="button" id="submit_filt1" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
                             Сброс фильтра
                         </button>
                     </a>
-                    <button id="submit_filt2" class="btn btn-outline-secondary collapse multi_filt" type="button" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
+                    <button id="submit_filt2" class="btn btn-secondary collapse multi_filt" type="button" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Сброс фильтра
                     </button>
 
-                    <input class="btn btn-outline-secondary collapse multi-collapse show" id="submit1" type="submit" value="Применить" data-toggle="collapse" data-target=".multi-collapse" aria-controls="submit1 submit2">
-                    <button id="submit2" class="btn btn-outline-secondary collapse multi-collapse" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-controls="submit1 submit2">
+                    <input class="btn btn-secondary collapse multi-collapse show" id="submit1" type="submit" value="Применить" data-toggle="collapse" data-target=".multi-collapse" aria-controls="submit1 submit2">
+                    <button id="submit2" class="btn btn-secondary collapse multi-collapse" type="button" data-toggle="collapse" data-target=".multi-collapse" aria-controls="submit1 submit2">
                         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Применить
                     </button>
                 </div>
@@ -108,7 +108,7 @@
         {{--Товары--}}
         <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
             @include('flash::message')
-            <table class="table table-success table-striped table-sm mx-auto">
+            <table class="table table-success table-striped table-sm mx-auto" style="opacity: 0.75">
                 <thead>
                     <tr>
                         <th scope="col">Наименование</th>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdditionalCharsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\GoodsController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -17,9 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('index');
-});
+});*/
+Route::get('/', [ShopController::class, 'index']);
 
 Route::get('goods/regenerateDb', [GoodsController::class, 'regenerateDb'])->name('goods.regenerateDb');
 

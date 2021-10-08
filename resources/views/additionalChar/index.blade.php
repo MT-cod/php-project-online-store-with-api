@@ -5,15 +5,15 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/modals.js"></script>
 
-<div class="container-fluid" style="background-color: #dbfeff">
+<div class="container-fluid" style="height: 95vh !important; background: url(/back_blue.jpg) repeat">
     <div class="text-center">
-        <h2>Дополнительные характеристики</h2>
+        <h2><b>Дополнительные характеристики</b></h2>
     </div>
     {{--Фильтр--}}
-    <form class="center m-md-1 p-md-1" style="background-color: #bbdff1" method="GET" action="/additionalChars" accept-charset="UTF-8">
+    <form class="center m-md-1 p-md-1" style="background-color: rgba(187,223,241,0.5);" method="GET" action="/additionalChars" accept-charset="UTF-8">
         <div class="form-row justify-content-center align-items-center text-center shadow-lg">
             <div class="col-sm text-right">
-                <label for="name">Фильтровать по имени</label>
+                <label for="name"><b>Фильтровать по имени</b></label>
             </div>
             <div class="col-sm">
                 @if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== ''))
@@ -46,7 +46,7 @@
 
     {{--Таблица характеристик--}}
     @include('flash::message')
-    <table class="table table-info table-striped table-sm mx-auto">
+    <table class="table table-info table-striped table-sm mx-auto" style="opacity: 0.75">
         <thead>
             <tr class="text-center">
                 <th scope="col">Наименование</th>

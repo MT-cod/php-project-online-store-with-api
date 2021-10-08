@@ -5,10 +5,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/modals.js"></script>
 
-<div class="container-fluid" style="background-color: #faffbd">
+<div class="container-fluid" style="height: 95vh !important; background: url(/back_sunny.jpg) repeat">
     <div class="row text-center shadow-lg">
-        <div class="col-3"><h2>Категории</h2></div>
-        <div class="col-9"><h2>Подробности</h2></div>
+        <div class="col-3"><h2><b>Категории</b></h2></div>
+        <div class="col-9"><h2><b>Подробности</b></h2></div>
     </div>
     <div class="row accordion">
         <div class="col-3" style="max-height:90vh !important; overflow-y:scroll !important;">
@@ -82,7 +82,7 @@
             @include('flash::message')
             @foreach ($categories as $cat)
                 <div id="cat{{$cat['id']}}" class="collapse">
-                    <ul class="list-group list-group-flush" style="border: 1px #fc0 dashed">
+                    <ul class="list-group list-group-flush" style="border: 1px #fc0 dashed; opacity: 0.75">
                         <li class="list-group-item">
                             <button type="button" class="close" aria-label="Close" data-toggle="collapse" data-target="#cat{{$cat['id']}}">
                                 <span aria-hidden="true">&times;</span>
