@@ -20,7 +20,7 @@
 
     <div class="row">
         {{--Фильтр--}}
-        <div class="col-3 text-center" style="max-height:90vh !important; overflow-y:scroll !important;">
+        <div class="col-3 text-center" style="max-height:90vh !important; overflow-y: auto;">
             <form class="center m-md-3 p-md-3" method="GET" action="/goods" accept-charset="UTF-8">
                 <div class="form-group border m-md-2 p-md-2 shadow-lg">
                     <label for="category"><b>по категории</b></label>
@@ -106,9 +106,9 @@
         </div>
         {{--Фильтр-end--}}
         {{--Товары--}}
-        <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
+        <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: auto;">
             @include('flash::message')
-            <table class="table table-success table-striped table-sm mx-auto" style="opacity: 0.75">
+            <table class="table table-success table-striped table-hover table-sm mx-auto" style="opacity: 0.75">
                 <thead>
                     <tr>
                         <th scope="col">Наименование</th>

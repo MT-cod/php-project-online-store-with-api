@@ -11,7 +11,7 @@
         <div class="col-9"><h2><b>Подробности</b></h2></div>
     </div>
     <div class="row accordion">
-        <div class="col-3" style="max-height:90vh !important; overflow-y:scroll !important;">
+        <div class="col-3" style="max-height:90vh !important; overflow-y: auto;">
             <ul class="list-group list-group-flush">
                 <div class="row" style="background-color: #ffdb5d; border: groove;" >
                     @guest
@@ -78,7 +78,7 @@
             </ul>
         </div>
         {{--Подробности--}}
-        <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: scroll !important;">
+        <div class="col-9 text-left" style="max-height: 90vh !important; overflow-y: auto;">
             @include('flash::message')
             @foreach ($categories as $cat)
                 <div id="cat{{$cat['id']}}" class="collapse">

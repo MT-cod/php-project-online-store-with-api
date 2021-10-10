@@ -46,7 +46,7 @@
 
     {{--Таблица характеристик--}}
     @include('flash::message')
-    <table class="table table-info table-striped table-sm mx-auto" style="opacity: 0.75">
+    <table class="table table-info table-striped table-hover table-sm mx-auto" style="opacity: 0.75">
         <thead>
             <tr class="text-center">
                 <th scope="col">Наименование</th>

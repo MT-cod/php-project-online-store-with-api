@@ -83,7 +83,9 @@
                 </div>
             </div>
         </nav>
-        @yield('content')
+        <div style="height: 95vh !important">
+            @yield('content')
+        </div>
     </div>
 </body>
 </html>
