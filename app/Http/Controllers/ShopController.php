@@ -28,7 +28,14 @@ class ShopController extends Controller
 
         [$categories, $additCharacteristics] = $this->categAndAdditCharsForIndex();
 
-        return view('index', compact('goods', 'categories', 'additCharacteristics'));
+        $carouselData = Goods::where('price', Goods::max('price'))->get()->toArray();
+        $carouselData[] = Goods::where('price', Goods::min('price'))->get()->toArray()[0];
+        $carouselData[] = Goods::where('id', Goods::min('id'))->get()->toArray()[0];
+        $carouselData[] = Goods::where('id', Goods::max('id'))->get()->toArray()[0];
+
+        return view(
+            'index', compact('goods', 'categories', 'additCharacteristics', 'carouselData')
+        );
     }
 
 
