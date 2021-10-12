@@ -5,14 +5,34 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/modals.js"></script>
 
+<style>
+    .carousel-control-prev-icon {
+        filter: invert(100%);
+    }
+    .carousel-control-next-icon {
+        filter: invert(100%);
+    }
+    .carousel-indicators {
+        filter: invert(100%);
+    }
+</style>
+
 <div class="container-fluid" style="background: url(/back_gray.jpg) repeat">
 
     <div class="row justify-content-center" style="height: 4vh !important">
-        <div class="col-2 pl-3 pt-1 text-left collapse filt show">
-            <button type="button" class="btn btn-secondary btn-block btn-sm" id="filt_btn_expand" data-toggle="collapse" data-target=".filt" aria-controls="filter filt_btn_expand filt_btn_collapse"><b>Фильтр >></b></button>
+        @if (isset($_REQUEST['filter_expand']))
+            <div class="col-2 pl-3 pt-1 text-left collapse filt">
+        @else
+            <div class="col-2 pl-3 pt-1 text-left collapse filt show">
+        @endif
+            <button type="button" class="btn btn-secondary btn-block btn-sm" id="filt_btn_expand" data-toggle="collapse" data-target=".filt" aria-controls="filter filt_btn_expand filt_btn_collapse"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Фильтр >></b></button>
         </div>
-        <div class="col-2 pl-3 pt-1 text-left collapse filt">
-            <button type="button" class="btn btn-secondary btn-block btn-sm" id="filt_btn_collapse" data-toggle="collapse" data-target=".filt" aria-controls="filter filt_btn_expand filt_btn_collapse"><b><< Фильтр</b></button>
+        @if (isset($_REQUEST['filter_expand']))
+            <div class="col-2 pl-3 pt-1 text-left collapse filt show">
+        @else
+            <div class="col-2 pl-3 pt-1 text-left collapse filt">
+        @endif
+            <button type="button" class="btn btn-secondary btn-block btn-sm" id="filt_btn_collapse" data-toggle="collapse" data-target=".filt" aria-controls="filter filt_btn_expand filt_btn_collapse"><b><< Фильтр&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></button>
         </div>
         <div class="col-8"></div>
         <div class="col-2 pr-3 pt-1 text-right">
@@ -25,8 +45,13 @@
     </div>
     <div class="row justify-content-center">
         {{--Фильтр--}}
-        <div class="col-2 collapse filt" id="filter" style="height: 91vh !important; overflow-y: auto;">
+        @if (isset($_REQUEST['filter_expand']))
+            <div class="col-2 collapse filt show" id="filter" style="height: 91vh !important; overflow-y: auto;">
+        @else
+            <div class="col-2 collapse filt" id="filter" style="height: 91vh !important; overflow-y: auto;">
+        @endif
             <form class="text-center" method="GET" action="/" accept-charset="UTF-8">
+                <input type="hidden" name="filter_expand" value="1">
                 <div class="form-group border m-md-2 p-md-2 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <label for="category"><b>по категории</b></label>
                     <select class="form-control @error('filter.category_id') is-invalid @enderror" name="filter[category_id]" id="category" style="background-color: rgba(255,255,255,0.3);">
@@ -65,7 +90,12 @@
                         @foreach($additCharacteristics as $char)
                             <div class="form-control p-0 m-0 @error('filter.additChars') is-invalid @enderror" style="background-color: rgba(255,255,255,0);">
                                 <div class="form-check p-0 m-0" style="background-color: rgba(255,255,255,0.1);">
-                                    <label class="col-11 pl-0 ml-0 form-check-label text-left text-break" style="font-size: .7rem;" for="additChars">
+                                    <label class="col-11 pl-0 ml-0 form-check-label text-left text-break"
+                                           style="font-size: .7rem;"
+                                           for="additChars"
+                                           data-toggle="tooltip"
+                                           data-placement="bottom"
+                                           title="Значение характеристики {{$char['name']}}:&#13; {{$char['value']}}">
                                         <strong>{{$char['name']}}</strong>
                                     </label>
                                     @if (
@@ -122,13 +152,11 @@
                                 <td>
                                     <button
                                         type="button"
-                                        class="text-left btn btn-block btn-outline-secondary btn-sm btn-modal_goods_show"
+                                        class="text-left btn btn-block btn-outline-secondary btn-sm btn-modal_shop_goods_show"
                                         data-toggle="tooltip"
                                         data-placement="bottom"
                                         title="Нажать для подробностей/покупки"
                                         data-id="{{$item['id']}}"
-                                        data-edit_route="{{route('goods.update', $item['id'])}}"
-                                        data-delete_route="{{route('goods.destroy', $item['id'])}}"
                                         style="border: none">
                                         <h6><b>{{Str::limit($item['name'], 40)}}</b></h6>
                                     </button>
@@ -141,32 +169,58 @@
                 </table>
             </div>
         @else
-            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            {{--Карусель-товаров--}}
+            <div id="carouselExampleIndicators" class="col carousel slide text-center" data-ride="carousel" style="height: 91vh !important; vertical-align: middle !important;">
                 <ol class="carousel-indicators">
                     <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
                     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
                     <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
                 </ol>
                 <div class="carousel-inner">
                     <div class="carousel-item active">
-                        <img class="d-block w-100" src="..." alt="Первый слайд">
+                        <div class="d-block display-1">
+                            <div class="display-4 p-lg-5">Самый дорогой товар!</div>
+                            <div class="display-4 p-lg-5">{{Str::limit($carouselData[0]['name'], 40)}}</div>
+                            <div><h4><b>{{Str::limit($carouselData[0]['description'], 500)}}</b></h4></div>
+                            <div class="display-4 p-lg-5">Цена: {{Str::limit($carouselData[0]['price'], 40)}}</div>
+                        </div>
                     </div>
                     <div class="carousel-item">
-                        <img class="d-block w-100" src="..." alt="Второй слайд">
+                        <div class="d-block display-1">
+                            <div class="display-4 p-lg-5">Самый дешевый товар!</div>
+                            <div class="display-4 p-lg-5">{{Str::limit($carouselData[1]['name'], 40)}}</div>
+                            <div><h4><b>{{Str::limit($carouselData[1]['description'], 500)}}</b></h4></div>
+                            <div class="display-4 p-lg-5">Цена: {{Str::limit($carouselData[1]['price'], 40)}}</div>
+                        </div>
                     </div>
                     <div class="carousel-item">
-                        <img class="d-block w-100" src="..." alt="Третий слайд">
+                        <div class="d-block display-1">
+                            <div class="display-4 p-lg-5">Самый первый товар!</div>
+                            <div class="display-4 p-lg-5">{{Str::limit($carouselData[2]['name'], 40)}}</div>
+                            <div><h4><b>{{Str::limit($carouselData[2]['description'], 500)}}</b></h4></div>
+                            <div class="display-4 p-lg-5">Цена: {{Str::limit($carouselData[2]['price'], 40)}}</div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="d-block display-1">
+                            <div class="display-4 p-lg-5">Самый свежий товар!</div>
+                            <div class="display-4 p-lg-5">{{Str::limit($carouselData[3]['name'], 40)}}</div>
+                            <div><h4><b>{{Str::limit($carouselData[3]['description'], 500)}}</b></h4></div>
+                            <div class="display-4 p-lg-5">Цена: {{Str::limit($carouselData[3]['price'], 40)}}</div>
+                        </div>
                     </div>
                 </div>
                 <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
+                    <span class="sr-only" style="color: #0b2e13">Previous</span>
                 </a>
                 <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     <span class="sr-only">Next</span>
                 </a>
             </div>
+            {{--Карусель-товаров-end--}}
         @endif
         {{--Товары-end--}}
     </div>
@@ -174,31 +228,23 @@
     <div class="modal fade" id="modal-item-show" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important;">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
-                <div class="modal-header shadow" style="background-color: #c0ffe2">
+                <div class="modal-header shadow" style="background: url(/back_gray.jpg) repeat">
                     <h4 class="modal_goods_show_title"><b></b></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" style="background-color: #d5fdef">
+                <div class="modal-body" style="background: url(/back_gray.jpg) repeat">
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item" style="background-color: #e6fff4">
-                            <div class="row">
-                                <div class="col">
-                                    <h6><b>Имя товара</b></h6>
-                                    <p><span class="modal_goods_show_name"></span></p>
-                                </div>
-                                <div class="col">
-                                    <h6><b>slug товара</b></h6>
-                                    <p><span class="modal_goods_show_slug"></span></p>
-                                </div>
-                            </div>
+                        <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
+                            <h6><b>Имя товара</b></h6>
+                            <p><span class="modal_goods_show_name"></span></p>
                         </li>
-                        <li class="list-group-item" style="background-color: #e6fff4">
+                        <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
                             <h6><b>Описание</b></h6>
                             <p><span class="modal_goods_show_description"></span></p>
                         </li>
-                        <li class="list-group-item" style="background-color: #e6fff4">
+                        <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
                             <div class="row">
                                 <div class="col">
                                     <h6><b>Цена товара</b></h6>
@@ -210,7 +256,7 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item" style="background-color: #e6fff4">
+                        <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
                             <div class="row">
                                 <div class="col">
                                     <h6><b>Время создания товара</b></h6>
@@ -222,25 +268,24 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="list-group-item" style="background-color: #e6fff4">
+                        <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
                             <h6><b><center>Дополнительные характеристики товара</center></b></h6>
                             <span class="modal_goods_show_additional_chars"></span>
                         </li>
                     </ul>
                 </div>
-                <div class="modal-footer shadow" style="background-color: #c0ffe2">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                    @guest
-                        <button type="button" class="btn btn-warning" onclick="return alert('Для изменения товара необходимо авторизоваться!')">Изменить</button>
-                        <button type="button" class="btn btn-danger" onclick="return alert('Для удаления товара необходимо авторизоваться!')">Удалить</button>
-                    @else
-                        <div class="modal_goods_edit_button"></div>
-                        <form class="modal_goods_delete_form" action="/goods/" method="POST">
+                <div class="modal-footer shadow" style="background: url(/back_gray.jpg) repeat">
+                    <div class="text-left col align-middle">
+                        <form class="modal_shop_quantity_add_form d-flex flex-row" action="/goods/">
                             @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger" onclick="return confirm('Вы действительно хотите удалить товар?')">Удалить</button>
+                            <h5><b><label class="p-2 m-2" for="modal_shop_quantity_goods">Кол-во: </label></b></h5>
+                            <input class="form-control modal_shop_quantity_goods w-25 p-2 m-2 text-right" id="modal_shop_quantity_goods" type="number" name="quantity" value="1" min="1" required>
+                            <button type="submit" class="btn btn-sm btn-success p-2 m-2">Добавить в корзину</button>
                         </form>
-                    @endguest
+                    </div>
+                    <div class="text-right col">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
                 </div>
             </div>
         </div>

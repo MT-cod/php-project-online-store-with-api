@@ -34,7 +34,8 @@ class ShopController extends Controller
         $carouselData[] = Goods::where('id', Goods::max('id'))->get()->toArray()[0];
 
         return view(
-            'index', compact('goods', 'categories', 'additCharacteristics', 'carouselData')
+            'index',
+            compact('goods', 'categories', 'additCharacteristics', 'carouselData')
         );
     }
 

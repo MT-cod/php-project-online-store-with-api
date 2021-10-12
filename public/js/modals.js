@@ -4,6 +4,33 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }});
 
+//Модалки по магазину-----------------------------------------------------------------------
+//Открытие товара
+$(document).on("click", ".btn-modal_shop_goods_show", function() {
+    let id = $(this).data('id');
+    $.ajax({
+        url: '/goods/' + id,
+        method: "get",
+        success: function(data, textStatus, jqXHR) {
+            $('.modal_goods_show_title').html('<b>' + data.name + '</b>');
+            $('.modal_goods_show_name').html(data.name);
+            $('.modal_goods_show_description').html(data.description);
+            $('.modal_goods_show_price').html(data.price);
+            $('.modal_goods_show_category').html(data.category);
+            $('.modal_goods_show_created_at').html(data.created_at);
+            $('.modal_goods_show_updated_at').html(data.updated_at);
+            $('.modal_goods_show_additional_chars').html(`${data.additional_chars.map((e) => {return `<b>${e.name}</b> (${e.value})<br/>`;}).join``}`);
+            $('.modal_shop_quantity_add_form').attr("action", '/basket/' + id);
+            $('#modal-item-show').modal('show');
+            //alert(textStatus);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            alert('Ошибка получения данных о товаре<br>(' + textStatus + ')');
+        }});
+});
+//Просмотр товара - end
+
+
 //Модалки по товарам-----------------------------------------------------------------------
 //Просмотр товара
 $(document).on("click", ".btn-modal_goods_show", function() {
