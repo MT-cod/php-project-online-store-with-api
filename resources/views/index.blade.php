@@ -17,6 +17,8 @@
     }
 </style>
 
+{{session_start();}}
+
 <div class="container-fluid" style="background: url(/back_gray.jpg) repeat">
 
     <div class="row justify-content-center" style="height: 4vh !important">
@@ -34,13 +36,11 @@
         @endif
             <button type="button" class="btn btn-secondary btn-block btn-sm" id="filt_btn_collapse" data-toggle="collapse" data-target=".filt" aria-controls="filter filt_btn_expand filt_btn_collapse"><b><< Фильтр&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></button>
         </div>
-        <div class="col-8"></div>
+        <div class="col-8 text-center btn-sm pl-5 pr-5 pt-0">
+            @include('flash::message')
+        </div>
         <div class="col-2 pr-3 pt-1 text-right">
-            @guest
-                <button type="button" class="btn btn-secondary btn-block btn-sm" onclick="return alert('Для создания товара необходимо авторизоваться!')">Корзина</button>
-            @else
-                <button class="btn btn-secondary btn-block btn-modal_goods_create btn-sm" data-toggle="tooltip" data-placement="bottom" title="Создать новый товар">Корзина</button>
-            @endguest
+            <button class="btn btn-secondary btn-block btn-modal_basket_show btn-sm" data-toggle="tooltip" data-placement="bottom" title="Показать Вашу корзину товаров">Корзина</button>
         </div>
     </div>
     <div class="row justify-content-center">
@@ -137,7 +137,6 @@
         {{--Товары--}}
         @if ($goods)
             <div class="col text-left" style="height: 91vh !important; overflow-y: auto;">
-                @include('flash::message')
                 <table class="table table-bordered table-hover table-sm mx-auto">
                     <thead style="background-color: rgba(0,0,0,0.1);">
                         <tr>
@@ -157,6 +156,7 @@
                                         data-placement="bottom"
                                         title="Нажать для подробностей/покупки"
                                         data-id="{{$item['id']}}"
+                                        data-name="{{$item['name']}}"
                                         style="border: none">
                                         <h6><b>{{Str::limit($item['name'], 40)}}</b></h6>
                                     </button>
@@ -224,8 +224,8 @@
         @endif
         {{--Товары-end--}}
     </div>
-    {{--Modal-show--}}
-    <div class="modal fade" id="modal-item-show" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important;">
+    {{--Modal-item-show--}}
+    <div class="modal fade" id="modal-item-show" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y: auto;">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header shadow" style="background: url(/back_gray.jpg) repeat">
@@ -276,9 +276,11 @@
                 </div>
                 <div class="modal-footer shadow" style="background: url(/back_gray.jpg) repeat">
                     <div class="text-left col align-middle">
-                        <form class="modal_shop_quantity_add_form d-flex flex-row" action="/goods/">
+                        <form class="modal_shop_quantity_add_form d-flex flex-row" action="{{route('basket.store')}}" method="POST">
                             @csrf
                             <h5><b><label class="p-2 m-2" for="modal_shop_quantity_goods">Кол-во: </label></b></h5>
+                            <input type="hidden" id="goods_id" name="id" value="">
+                            <input type="hidden" id="goods_name" name="name" value="">
                             <input class="form-control modal_shop_quantity_goods w-25 p-2 m-2 text-right" id="modal_shop_quantity_goods" type="number" name="quantity" value="1" min="1" required>
                             <button type="submit" class="btn btn-sm btn-success p-2 m-2">Добавить в корзину</button>
                         </form>
@@ -290,7 +292,43 @@
             </div>
         </div>
     </div>
-    {{--Modal-show-end--}}
+    {{--Modal-item-show-end--}}
+
+    {{--Modal-basket-show--}}
+    <div class="modal fade" id="modal-basket-show" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y: auto;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="modal-basket-form" method="POST" action="/basket">
+                    @csrf
+                    <div class="modal-header shadow" style="background: url(/back_gray.jpg) repeat">
+                        <h4><b>Корзина товаров</b></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="background: url(/back_gray.jpg) repeat">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
+                                <p><span class="modal_basket_show_goods"></span></p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer shadow" style="background: url(/back_gray.jpg) repeat">
+                        <div class="text-left col">
+                            <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Закрыть</button>
+                        </div>
+                        <div class="text-right col align-middle">
+                            <button type="submit" class="btn btn-sm btn-success btn-block p-2 m-2" data-update="true">Применить изменения</button>
+                        </div>
+                        <div class="text-right col align-middle">
+                            <button type="submit" class="btn btn-sm btn-primary btn-block p-2 m-2" data-update="false">Оформить заказ</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {{--Modal-basket-show-end--}}
 
 </div>
 

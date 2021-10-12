@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdditionalCharsController;
+use App\Http\Controllers\BasketsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\GoodsController;
 use App\Http\Controllers\ShopController;
@@ -28,5 +29,6 @@ Route::get('goods/regenerateDb', [GoodsController::class, 'regenerateDb'])->name
 Route::resource('categories', CategoriesController::class);
 Route::resource('goods', GoodsController::class);
 Route::resource('additionalChars', AdditionalCharsController::class);
+Route::resource('basket', BasketsController::class);
 
 Auth::routes();

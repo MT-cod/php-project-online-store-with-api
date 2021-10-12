@@ -5,9 +5,10 @@ $.ajaxSetup({
     }});
 
 //Модалки по магазину-----------------------------------------------------------------------
-//Открытие товара
+//Подробности товара
 $(document).on("click", ".btn-modal_shop_goods_show", function() {
     let id = $(this).data('id');
+    let name = $(this).data('name');
     $.ajax({
         url: '/goods/' + id,
         method: "get",
@@ -20,15 +21,108 @@ $(document).on("click", ".btn-modal_shop_goods_show", function() {
             $('.modal_goods_show_created_at').html(data.created_at);
             $('.modal_goods_show_updated_at').html(data.updated_at);
             $('.modal_goods_show_additional_chars').html(`${data.additional_chars.map((e) => {return `<b>${e.name}</b> (${e.value})<br/>`;}).join``}`);
-            $('.modal_shop_quantity_add_form').attr("action", '/basket/' + id);
+            $('#goods_id').val(id);
+            $('#goods_name').val(name);
             $('#modal-item-show').modal('show');
-            //alert(textStatus);
         },
         error: function (jqXHR, textStatus, errorThrown) {
             alert('Ошибка получения данных о товаре<br>(' + textStatus + ')');
         }});
 });
-//Просмотр товара - end
+//Подробности товара - end
+
+//Добавление товара в корзину
+/*$(document).ready(function() {
+    $("#modal-basket-form").submit(function(event) {
+        event.preventDefault();
+        let data = new FormData(this);
+        $.ajax({
+            method: 'POST',
+            url: this.action,
+            cache: false,
+            data: data,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('.modal_additChar_edit_save_results').html(
+                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button></div>');
+            },
+            error: function(data) {
+                let errors = '';
+                console.log(data);
+                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
+                    errors += errNote[1][0] + '<br>';
+                });
+                $('.modal_additChar_edit_save_results').html(
+                    '<div class="alert alert-danger text-center" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
+            }
+        });
+    })
+});*/
+//Добавление товара в корзину - end
+
+//Изменение корзины или оформление заказа
+$(document).ready(function() {
+    $("#modal-basket-form").submit(function(event) {
+        event.preventDefault();
+        let data = new FormData(this);
+        if (data.update) {console.log('true');}
+        console.log(data.update);
+
+        /*$.ajax({
+            method: 'POST',
+            url: this.action,
+            cache: false,
+            data: data,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                $('.modal_additChar_edit_save_results').html(
+                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button></div>');
+            },
+            error: function(data) {
+                let errors = '';
+                console.log(data);
+                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
+                    errors += errNote[1][0] + '<br>';
+                });
+                $('.modal_additChar_edit_save_results').html(
+                    '<div class="alert alert-danger text-center" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
+            }
+        });*/
+    })
+});
+//Изменение корзины или оформление заказа - end
+
+//Открытие корзины
+$(document).on("click", ".btn-modal_basket_show", function() {
+    $.ajax({
+        url: '/basket',
+        method: "get",
+        dataType: 'json',
+        success: function(data, textStatus, jqXHR) {
+            let basket_rows = '';
+            for(index_of_item in data.basket){
+                basket_rows += `<b>${data.basket[index_of_item].name}</b> (${data.basket[index_of_item].quantity})<br/>`;
+            }
+            $('.modal_basket_show_goods').html(basket_rows);
+            $('#modal-basket-show').modal('show');
+            //alert(textStatus);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+        }});
+});
+//Открытие корзины - end
 
 
 //Модалки по товарам-----------------------------------------------------------------------
