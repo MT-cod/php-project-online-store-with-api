@@ -33,9 +33,14 @@ class ShopController extends Controller
         $carouselData[] = Goods::where('id', Goods::min('id'))->get()->toArray()[0];
         $carouselData[] = Goods::where('id', Goods::max('id'))->get()->toArray()[0];
 
+        $baskCount = 0;
+        if (session()->has('basket')) {
+            $baskCount = count(session('basket'));
+        }
+
         return view(
             'index',
-            compact('goods', 'categories', 'additCharacteristics', 'carouselData')
+            compact('goods', 'categories', 'additCharacteristics', 'carouselData', 'baskCount')
         );
     }
 

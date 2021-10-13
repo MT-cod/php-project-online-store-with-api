@@ -1,7 +1,8 @@
 //Подключаем токен для запросов ajax глобально
+const csrf_token = $('meta[name="csrf-token"]').attr('content');
 $.ajaxSetup({
     headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        'X-CSRF-TOKEN': csrf_token
     }});
 
 //Модалки по магазину-----------------------------------------------------------------------
@@ -32,38 +33,6 @@ $(document).on("click", ".btn-modal_shop_goods_show", function() {
 //Подробности товара - end
 
 //Добавление товара в корзину
-/*$(document).ready(function() {
-    $("#modal-basket-form").submit(function(event) {
-        event.preventDefault();
-        let data = new FormData(this);
-        $.ajax({
-            method: 'POST',
-            url: this.action,
-            cache: false,
-            data: data,
-            dataType: 'json',
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                $('.modal_additChar_edit_save_results').html(
-                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button></div>');
-            },
-            error: function(data) {
-                let errors = '';
-                console.log(data);
-                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
-                    errors += errNote[1][0] + '<br>';
-                });
-                $('.modal_additChar_edit_save_results').html(
-                    '<div class="alert alert-danger text-center" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
-            }
-        });
-    })
-});*/
 //Добавление товара в корзину - end
 
 //Изменение корзины или оформление заказа
@@ -110,19 +79,50 @@ $(document).on("click", ".btn-modal_basket_show", function() {
         url: '/basket',
         method: "get",
         dataType: 'json',
-        success: function(data, textStatus, jqXHR) {
-            let basket_rows = '';
-            for(index_of_item in data.basket){
-                basket_rows += `<b>${data.basket[index_of_item].name}</b> (${data.basket[index_of_item].quantity})<br/>`;
+        success: function(data) {
+            let basket_items = '';
+            for(i in data.basket){
+                basket_items += `<div class="row"><b>${data.basket[i].name}</b> (${data.basket[i].quantity})<br/>`;
+                basket_items += `<button data-id="${data.basket[i].id}" class="btn btn-sm btn-outline-danger btn-del-item">&times;</button></div>`;
             }
-            $('.modal_basket_show_goods').html(basket_rows);
+            if (basket_items == '') {basket_items = `<b><center>Нет выбранных товаров</center></b>`;}
+            $('.modal_basket_show_goods').html(basket_items);
             $('#modal-basket-show').modal('show');
-            //alert(textStatus);
         },
         error: function (jqXHR, textStatus, errorThrown) {
         }});
 });
 //Открытие корзины - end
+
+//Удаление позиции из корзины
+$(document).on("click", ".btn-del-item", function() {
+    let id = $(this).data('id');
+    var fd = new FormData();
+    fd.append("_method", "DELETE");
+    fd.append("_token", csrf_token);
+
+    $.ajax({
+        method: 'POST',
+        url: '/basket/' + id,
+        cache: false,
+        data: fd,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            let basket_items = '';
+            for(i in data.basket){
+                basket_items += `<div class="row"><b>${data.basket[i].name}</b> (${data.basket[i].quantity})<br/>`;
+                basket_items += `<button data-id="${data.basket[i].id}" class="btn btn-sm btn-outline-danger btn-del-item">&times;</button></div>`;
+            }
+            if (basket_items == '') {basket_items = `<b><center>Нет выбранных товаров</center></b>`;}
+            $('.modal_basket_show_goods').html(basket_items);
+        },
+        error: function(data) {
+        }
+    });
+});
+//Удаление позиции из корзины - end
 
 
 //Модалки по товарам-----------------------------------------------------------------------
@@ -213,7 +213,6 @@ $(document).ready(function() {
 
         // Собираем данные с формы. Здесь будут все поля у которых есть `name`, включая метод `_method` и `_token`.
         let data = new FormData(this);
-
         // Отправляем запрос.
         $.ajax({
             method: 'POST', // начиная с версии 1.9 `type` - псевдоним для `method`.

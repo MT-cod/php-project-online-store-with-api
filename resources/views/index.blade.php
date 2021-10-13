@@ -17,8 +17,6 @@
     }
 </style>
 
-{{session_start();}}
-
 <div class="container-fluid" style="background: url(/back_gray.jpg) repeat">
 
     <div class="row justify-content-center" style="height: 4vh !important">
@@ -40,7 +38,9 @@
             @include('flash::message')
         </div>
         <div class="col-2 pr-3 pt-1 text-right">
-            <button class="btn btn-secondary btn-block btn-modal_basket_show btn-sm" data-toggle="tooltip" data-placement="bottom" title="Показать Вашу корзину товаров">Корзина</button>
+            <button class="btn btn-secondary btn-block btn-modal_basket_show btn-sm" data-toggle="tooltip" data-placement="bottom" title="Показать Вашу корзину товаров">
+                Корзина <span class="badge badge-light">{{$baskCount}}</span>
+            </button>
         </div>
     </div>
     <div class="row justify-content-center">
@@ -298,33 +298,43 @@
     <div class="modal fade" id="modal-basket-show" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y: auto;">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form id="modal-basket-form" method="POST" action="/basket">
-                    @csrf
-                    <div class="modal-header shadow" style="background: url(/back_gray.jpg) repeat">
-                        <h4><b>Корзина товаров</b></h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                <div class="modal-header shadow" style="background: url(/back_gray.jpg) repeat">
+                    <h4><b>Корзина товаров</b></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body pb-0" style="background: url(/back_gray.jpg) repeat">
+                    <ul class="list-group list-group-flush">
+
+                        <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
+                            {{--<form id="test-form" action="/basket/1" method="POST">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">&times;</button>
+                            </form>--}}
+                            <p><span class="modal_basket_show_goods"></span></p>
+                        </li>
+                    </ul>
+                    <div class="text-center col align-middle pt-2">
+                        <button type="submit" class="btn btn-sm btn-success" data-update="true">Применить изменения</button>
                     </div>
-                    <div class="modal-body" style="background: url(/back_gray.jpg) repeat">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
-                                <p><span class="modal_basket_show_goods"></span></p>
-                            </li>
-                        </ul>
+                </div>
+                <div class="modal-footer shadow" style="background: url(/back_gray.jpg) repeat">
+                    <div class="col">
+                        <button type="button" class="btn btn-sm btn-secondary btn-block" data-dismiss="modal">Закрыть</button>
                     </div>
-                    <div class="modal-footer shadow" style="background: url(/back_gray.jpg) repeat">
-                        <div class="text-left col">
-                            <button type="button" class="btn btn-secondary btn-block" data-dismiss="modal">Закрыть</button>
-                        </div>
-                        <div class="text-right col align-middle">
-                            <button type="submit" class="btn btn-sm btn-success btn-block p-2 m-2" data-update="true">Применить изменения</button>
-                        </div>
-                        <div class="text-right col align-middle">
-                            <button type="submit" class="btn btn-sm btn-primary btn-block p-2 m-2" data-update="false">Оформить заказ</button>
-                        </div>
+                    <div class="col">
+                        <form action="{{route('basket.destroy', 0)}}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger btn-block" onclick="return confirm('Вы действительно очистить корзину?')">Очистить</button>
+                        </form>
                     </div>
-                </form>
+                    <div class="col">
+                        <button type="submit" class="btn btn-sm btn-primary btn-block" id="btn-basket-order">Оформить заказ</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

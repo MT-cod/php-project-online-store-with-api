@@ -12,29 +12,27 @@ use Illuminate\Support\Facades\Response;
 class BasketsController extends Controller
 {
     /**
-     * Display the specified resource.
+     * Return all basket.
      *
      * @return array
      */
     public function index()
     {
-        //$data = session()->all();
         $basket = [];
         if (session()->has('basket')) {
-            $basket = ['basket' => session('basket')];
+            $basket = session('basket');
         }
-        //return Response::json($basket, 200);
-        return $basket;//compact('basket');
+        return compact('basket');
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function show()
     {
-        //
+        /*return null;*/
     }
 
     /**
@@ -70,18 +68,27 @@ class BasketsController extends Controller
      */
     public function update(Request $request, int $id)
     {
-        $_SESSION['basket'][] = $request['basket'];
-        return Response::json(['success' => 'Корзина успешно обновлена'], 200);
+        /*$_SESSION['basket'][] = $request['basket'];
+        return Response::json(['success' => 'Корзина успешно обновлена'], 200);*/
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Basket  $basket
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return RedirectResponse|JsonResponse
      */
-    public function destroy(Basket $basket)
+    public function destroy($id)
     {
-        //
+        if ($id == 0) {
+            session()->forget('basket');
+            return Redirect::to($_SERVER['HTTP_REFERER']);
+        }
+        session()->forget('basket.' . $id);
+        $basket = [];
+        if (session()->has('basket')) {
+            $basket = session('basket');
+        }
+        return Response::json(compact('basket'), 200);
     }
 }
