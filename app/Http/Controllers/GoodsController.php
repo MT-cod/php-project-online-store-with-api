@@ -272,9 +272,9 @@ class GoodsController extends Controller
         return [$categories, $additCharacteristics];
     }
 
-    public function regenerateDb(): View|Factory|Application
+    public function regenerateDb(): RedirectResponse
     {
         Artisan::call('migrate:fresh --seed');
-        return view('index');
+        return Redirect::to('/');
     }
 }

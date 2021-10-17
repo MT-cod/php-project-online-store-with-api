@@ -36,4 +36,9 @@ class Goods extends Model
         }
         return $res;
     }
+
+    public function basketOwners(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'baskets', 'goods_id', 'user_id');
+    }
 }

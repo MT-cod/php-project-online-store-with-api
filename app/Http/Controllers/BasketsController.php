@@ -6,6 +6,7 @@ use App\Models\Basket;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
@@ -18,21 +19,13 @@ class BasketsController extends Controller
      */
     public function index()
     {
-        $basket = [];
-        if (session()->has('basket')) {
+        //$basket = [];
+        $user = Auth::user();
+        $basket = $user ? $basket = $user->basket() : [];
+        if (!$basket && session()->has('basket')) {
             $basket = session('basket');
         }
         return compact('basket');
-    }
-
-    /**
-     * Show resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show()
-    {
-        /*return null;*/
     }
 
     /**
@@ -43,18 +36,12 @@ class BasketsController extends Controller
      */
     public function store(Request $request)
     {
-        //$_SESSION['basket'][] = ['id' => $request['id'], 'name' => $request['name'], 'quantity' => $request['quantity']];
-        //$basket_id = 'basket.' . $request['id'];
-        //session()->push('basket.' . $request['id'] . '.id', 'test');
         //session()->flush();
         session([
             'basket.' . $request['id'] . '.id' => $request['id'],
             'basket.' . $request['id'] . '.name' => $request['name'],
             'basket.' . $request['id'] . '.quantity' => $request['quantity']
             ]);
-        //session()->push('basket', ['id' => $request['id'], 'name' => $request['name'], 'quantity' => $request['quantity']]);
-        //session()->push('basket', ['id' => $request['id'], 'name' => $request['name'], 'quantity' => $request['quantity']]);
-        //session(['basket' => $request['name']]);
         flash('Товар "' . $request['name'] . '" добавлен в корзину')->success();
         return Redirect::to($_SERVER['HTTP_REFERER']);
     }
@@ -63,13 +50,17 @@ class BasketsController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param int $id
      * @return JsonResponse
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request)
     {
-        /*$_SESSION['basket'][] = $request['basket'];
-        return Response::json(['success' => 'Корзина успешно обновлена'], 200);*/
+        try {
+            $basket = $request['basket'];
+            array_walk($basket, fn($val, $id) => session(['basket.' . $id . '.quantity' => $val]));
+        } catch (\Exception $e) {
+            return Response::json(['error' => 'Ошибка изменения данных'], 422);
+        }
+        return Response::json(['success' => 'Корзина успешно обновлена'], 200);
     }
 
     /**

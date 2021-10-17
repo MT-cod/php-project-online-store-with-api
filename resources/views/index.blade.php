@@ -38,8 +38,8 @@
             @include('flash::message')
         </div>
         <div class="col-2 pr-3 pt-1 text-right">
-            <button class="btn btn-secondary btn-block btn-modal_basket_show btn-sm" data-toggle="tooltip" data-placement="bottom" title="Показать Вашу корзину товаров">
-                Корзина <span class="badge badge-light">{{$baskCount}}</span>
+            <button class="btn btn-secondary btn-block btn-modal_basket_show btn-sm" data-toggle="tooltip" data-placement="bottom" title="Показать корзину товаров">
+                Корзина <span class="badge badge-light baskCount">{{$baskCount}}</span>
             </button>
         </div>
     </div>
@@ -86,7 +86,7 @@
 
                 <div class="form-group shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <div class="col-sm" style="max-height: 60vh !important; overflow-y: auto;">
-                        <label for="additChars"><b>имеет характеристики</b></label>
+                        <label for="additChars"><b>товар имеет характеристики</b></label>
                         @foreach($additCharacteristics as $char)
                             <div class="form-control p-0 m-0 @error('filter.additChars') is-invalid @enderror" style="background-color: rgba(255,255,255,0);">
                                 <div class="form-check p-0 m-0" style="background-color: rgba(255,255,255,0.1);">
@@ -304,21 +304,17 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body pb-0" style="background: url(/back_gray.jpg) repeat">
+                <div class="modal-body" style="background: url(/back_gray.jpg) repeat">
                     <ul class="list-group list-group-flush">
-
-                        <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
-                            {{--<form id="test-form" action="/basket/1" method="POST">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger">&times;</button>
-                            </form>--}}
-                            <p><span class="modal_basket_show_goods"></span></p>
+                        <li class="list-group-item p-0" style="background-color: rgba(255,255,255,0.25)">
+                            <form class="modal-basket-form" action="/basket/0" method="POST">
+                                @csrf
+                                @method('PATCH')
+                                <p><span class="modal_basket_edit_results" style="font-size: .9rem;"></span></p>
+                                <p><span class="modal_basket_show_goods"></span></p>
+                            </form>
                         </li>
                     </ul>
-                    <div class="text-center col align-middle pt-2">
-                        <button type="submit" class="btn btn-sm btn-success" data-update="true">Применить изменения</button>
-                    </div>
                 </div>
                 <div class="modal-footer shadow" style="background: url(/back_gray.jpg) repeat">
                     <div class="col">
