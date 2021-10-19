@@ -46,15 +46,21 @@ class User extends Authenticatable
 
     public function goodsInBasket(): BelongsToMany
     {
-        return $this->belongsToMany(Goods::class, 'baskets', 'user_id', 'goods_id')->withPivot('quantity');
+        return $this->belongsToMany(
+            Goods::class, 'baskets', 'user_id', 'goods_id'
+        )->withPivot('quantity');
     }
 
     public function basket(): array
     {
         $allBasket = $this->goodsInBasket()->get() ?? [];
         foreach ($allBasket as $item) {
-            $basket[$item->pivot->goods_id] = ['id' => $item->pivot->goods_id, 'name' => $item->name, 'quantity' => $item->pivot->quantity];
+            $basket[$item->pivot->goods_id] = [
+                'id' => $item->pivot->goods_id,
+                'name' => $item->name,
+                'quantity' => $item->pivot->quantity
+            ];
         }
-        return $basket;
+        return $basket ?? [];
     }
 }

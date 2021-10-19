@@ -19,9 +19,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-/*Route::get('/', function () {
-    return view('index');
-});*/
 Route::get('/', [ShopController::class, 'index']);
 
 Route::get('goods/regenerateDb', [GoodsController::class, 'regenerateDb'])->name('goods.regenerateDb');

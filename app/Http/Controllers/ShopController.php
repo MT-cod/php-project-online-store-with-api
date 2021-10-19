@@ -10,6 +10,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class ShopController extends Controller
@@ -33,9 +34,11 @@ class ShopController extends Controller
         $carouselData[] = Goods::where('id', Goods::min('id'))->get()->toArray()[0];
         $carouselData[] = Goods::where('id', Goods::max('id'))->get()->toArray()[0];
 
-        $baskCount = 0;
-        if (session()->has('basket')) {
-            $baskCount = count(session('basket'));
+        $user = Auth::user();
+        if ($user) {
+            $baskCount = count($user->basket());
+        } else {
+            $baskCount = (session()->has('basket')) ? count(session('basket')) : 0;
         }
 
         return view(
