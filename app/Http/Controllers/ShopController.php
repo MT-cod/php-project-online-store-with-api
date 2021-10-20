@@ -16,7 +16,7 @@ use Illuminate\Validation\ValidationException;
 class ShopController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Собираем и выводим все необходимые данные магазина.
      *
      * @return Application|Factory|View
      * @throws ValidationException
@@ -36,8 +36,21 @@ class ShopController extends Controller
 
         $user = Auth::user();
         if ($user) {
-            $baskCount = count($user->basket());
+            //Если пользователь авторизован
+            $baskCount = 0;
+            if ($user->basket()) {
+                $baskCount = count($user->basket());
+            } elseif (session()->has('basket')) {
+                //Пользователь авторизовался после того, как добавил товары в корзину.
+                //Присваиваем неавторизованную корзину авторизованному пользователю
+                $sessBasket = session('basket');
+                $basketToDb = array_map(fn($qua) => ['quantity' => $qua['quantity']], $sessBasket);
+                $user->goodsInBasket()->attach($basketToDb);
+                session()->forget('basket');
+                $baskCount = count($user->basket());
+            }
         } else {
+            //Если пользователь не авторизован - работаем с данными корзины в сессии
             $baskCount = (session()->has('basket')) ? count(session('basket')) : 0;
         }
 

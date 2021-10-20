@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Basket;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
@@ -14,7 +12,7 @@ use Illuminate\Support\Facades\Response;
 class BasketsController extends Controller
 {
     /**
-     * Return all basket.
+     * Возврат корзины.
      *
      * @return array
      */
@@ -23,23 +21,19 @@ class BasketsController extends Controller
         $basket = [];
         $user = Auth::user();
         if ($user) {
+            //Если пользователь авторизован - работаем с табличными данными в БД
             if ($user->basket()) {
                 $basket = $user->basket();
-                return compact('basket');
             }
-            if (session()->has('basket')) {
-                $basket = session('basket');
-                return compact('basket');
-            }
-        }
-        if (session()->has('basket')) {
+        } elseif (session()->has('basket')) {
+            //Если пользователь не авторизован и корзина в сессии присутствует - работаем с данными корзины в сессии
             $basket = session('basket');
         }
         return compact('basket');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Добавление новой позиции товара с кол-вом в корзину.
      *
      * @param Request $request
      * @return RedirectResponse
@@ -63,7 +57,7 @@ class BasketsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Обновление инфы по кол-ву позиций в корзине при корректировке пользователем.
      *
      * @param Request $request
      * @return JsonResponse
