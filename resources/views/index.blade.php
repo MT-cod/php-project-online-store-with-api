@@ -156,7 +156,8 @@
                                         data-placement="bottom"
                                         title="Нажать для подробностей/покупки"
                                         data-id="{{$item['id']}}"
-                                        data-name="{{$item['name']}}"
+                                        {{--data-name="{{$item['name']}}"
+                                        data-price="{{$item['price']}}"--}}
                                         style="border: none">
                                         <h6><b>{{Str::limit($item['name'], 40)}}</b></h6>
                                     </button>
@@ -276,11 +277,12 @@
                 </div>
                 <div class="modal-footer shadow" style="background: url(/back_gray.jpg) repeat">
                     <div class="text-left col align-middle">
-                        <form class="modal_shop_quantity_add_form d-flex flex-row" action="{{route('basket.store')}}" method="POST">
+                        <form class="d-flex flex-row" action="{{route('basket.store')}}" method="POST">
                             @csrf
                             <h5><b><label class="p-2 m-2" for="modal_shop_quantity_goods">Кол-во: </label></b></h5>
                             <input type="hidden" id="goods_id" name="id" value="">
                             <input type="hidden" id="goods_name" name="name" value="">
+                            <input type="hidden" id="goods_price" name="price" value="">
                             <input class="form-control modal_shop_quantity_goods w-25 p-2 m-2 text-right" id="modal_shop_quantity_goods" type="number" name="quantity" value="1" min="1" required>
                             <button type="submit" class="btn btn-sm btn-success p-2 m-2">Добавить в корзину</button>
                         </form>
@@ -296,7 +298,7 @@
 
     {{--Modal-basket-show--}}
     <div class="modal fade" id="modal-basket-show" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y: auto;">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header shadow" style="background: url(/back_gray.jpg) repeat">
                     <h4><b>Корзина товаров</b></h4>
@@ -305,16 +307,12 @@
                     </button>
                 </div>
                 <div class="modal-body" style="background: url(/back_gray.jpg) repeat">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item p-0" style="background-color: rgba(255,255,255,0.25)">
-                            <form class="modal-basket-form" action="/basket/0" method="POST">
-                                @csrf
-                                @method('PATCH')
-                                <p><span class="modal_basket_edit_results" style="font-size: .9rem;"></span></p>
-                                <p><span class="modal_basket_show_goods"></span></p>
-                            </form>
-                        </li>
-                    </ul>
+                    <form class="modal-basket-form" action="/basket/0" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <p><span class="modal_basket_edit_results" style="font-size: .9rem;"></span></p>
+                        <p><span class="modal_basket_show_goods"></span></p>
+                    </form>
                 </div>
                 <div class="modal-footer shadow" style="background: url(/back_gray.jpg) repeat">
                     <div class="col">

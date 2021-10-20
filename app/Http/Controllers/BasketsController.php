@@ -49,6 +49,7 @@ class BasketsController extends Controller
             session([
                 'basket.' . $request['id'] . '.id' => $request['id'],
                 'basket.' . $request['id'] . '.name' => $request['name'],
+                'basket.' . $request['id'] . '.price' => $request['price'],
                 'basket.' . $request['id'] . '.quantity' => $request['quantity']
             ]);
         }
@@ -71,15 +72,17 @@ class BasketsController extends Controller
                 $reqBasket = $request['basket'];
                 $basket = array_map(fn($qua) => ['quantity' => $qua], $reqBasket);
                 $user->goodsInBasket()->sync($basket);
+                $resultBasket = $user->basket();
             } else {
                 //Пользователь не авторизован - работаем с данными корзины в сессии
                 $basket = $request['basket'];
                 array_walk($basket, fn($qua, $id) => session(['basket.' . $id . '.quantity' => $qua]));
+                $resultBasket = session('basket');
             }
         } catch (\Exception $e) {
             return Response::json(['error' => 'Ошибка изменения данных'], 422);
         }
-        return Response::json(['success' => 'Корзина успешно обновлена'], 200);
+        return Response::json(['success' => 'Корзина успешно обновлена', 'basket' => $resultBasket], 200);
     }
 
     /**

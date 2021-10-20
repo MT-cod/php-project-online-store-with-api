@@ -58,6 +58,7 @@ class User extends Authenticatable
             $basket[$item->pivot->goods_id] = [
                 'id' => $item->pivot->goods_id,
                 'name' => $item->name,
+                'price' => $item->price,
                 'quantity' => $item->pivot->quantity
             ];
         }

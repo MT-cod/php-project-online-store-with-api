@@ -9,7 +9,8 @@ $.ajaxSetup({
 //Подробности товара
 $(document).on("click", ".btn-modal_shop_goods_show", function() {
     let id = $(this).data('id');
-    let name = $(this).data('name');
+    /*let name = $(this).data('name');
+    let price = $(this).data('price');*/
     $.ajax({
         url: '/goods/' + id,
         method: "get",
@@ -23,7 +24,8 @@ $(document).on("click", ".btn-modal_shop_goods_show", function() {
             $('.modal_goods_show_updated_at').html(data.updated_at);
             $('.modal_goods_show_additional_chars').html(`${data.additional_chars.map((e) => {return `<b>${e.name}</b> (${e.value})<br/>`;}).join``}`);
             $('#goods_id').val(id);
-            $('#goods_name').val(name);
+            $('#goods_name').val(data.name);
+            $('#goods_price').val(data.price);
             $('#modal-item-show').modal('show');
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -50,6 +52,7 @@ $(document).ready(function() {
                     '<div class="alert alert-success text-center p-0 m-0" role="alert">' + data.success +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                     '<span aria-hidden="true">&times;</span></button></div>');
+                showItemsOfBasket(data);
             },
             error: function(data) {
                 let errors = '';
@@ -60,6 +63,7 @@ $(document).ready(function() {
                     '<div class="alert alert-danger text-center" role="alert">' +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                     '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
+                showItemsOfBasket(data);
             }
         });
     })
@@ -110,16 +114,28 @@ function showItemsOfBasket(data) {
     let basketItems = `<b><div class="text-center">Нет выбранных товаров</div></b>`;
     if (basketLen !== 0) {
         basketItems = '';
+        let basketCost = 0;
+        basketItems = `<table class="table table-bordered table-hover table-sm" style="background-color: rgba(0,0,0,0.05)">
+                        <thead><tr class="text-center" style="background-color: rgba(0,0,0,0.08)">
+                            <th scope="col">Имя</th>
+                            <th scope="col">Цена</th>
+                            <th scope="col">Кол-во</th>
+                            <th scope="col">Сумма</th>
+                            <th scope="col">&times;</th>
+                        </tr></thead><tbody>`;
         for (i in data.basket) {
-            basketItems += `<div class="d-flex flex-row p-1 align-middle">
-                                         <div class="col-8 mt-2 text-break"><b>${data.basket[i].name}</b></div>
-                                         <div class="col-4 form-group row p-0 m-0 text-right">
-                                             <input class="form-control text-right mt-2" type="number" name="basket[${data.basket[i].id}]" value="${data.basket[i].quantity}" min="1" required style="max-width: 80px; max-height: 20px">
-                                             <div class="mt-2">шт.</div>
-                                             <button class="btn btn-sm btn-outline-danger btn-del-item" type="button" data-id="${data.basket[i].id}">&times;</button>
-                                         </div>
-                                     </div>`;
+            let itemCost = Math.round((data.basket[i].price * data.basket[i].quantity)*100)/100;
+            basketCost += itemCost;
+            basketItems += `<tr>
+                                 <td class="text-center text-break"><b>${data.basket[i].name}</b></td>
+                                 <td class="text-center">${data.basket[i].price}</td>
+                                 <td class="text-center"><input class="text-right" type="number" name="basket[${data.basket[i].id}]" value="${data.basket[i].quantity}" min="1" required style="width: 80px; max-height: 20px"></td>
+                                 <td class="text-center">${itemCost}</td>
+                                 <td class="text-center"><button class="btn btn-sm btn-outline-danger btn-del-item" type="button" data-id="${data.basket[i].id}">&times;</button></td>
+                             </tr>`;
         }
+        basketItems += `</tbody></table>`;
+        basketItems += `<div class="col text-right"><b>Итого: ${Math.round(basketCost*100)/100}</b></div>`;
         basketItems += `<div class="col text-center"><button type="submit" class="btn btn-sm btn-success">Применить изменения</button></div>`;
     }
     $('.modal_basket_show_goods').html(basketItems);
@@ -310,6 +326,15 @@ $(document).ready(function() {
     })
 });
 //Создание товара - end
+
+//Доп функции
+function idsInArray(needleId, haystack) {
+    var length = haystack.length;
+    for(var i = 0; i < length; i++) {
+        if (haystack[i]['id'] == needleId) return true;
+    }
+    return false;
+}
 
 
 //Модалки по категориям-----------------------------------------------------------------------
@@ -555,109 +580,3 @@ $(document).ready(function() {
     })
 });
 //Изменение доп характеристики - end
-
-//-----------------------------------------------------------------------------------------------------------
-//Доп функции
-function idsInArray(needleId, haystack) {
-    var length = haystack.length;
-    for(var i = 0; i < length; i++) {
-        if (haystack[i]['id'] == needleId) return true;
-    }
-    return false;
-}
-
-//-----------------------------------------------------------------------------------------------------------
-/*$(function(){
-    var two_modal = function(id_modal_1,id_modal_2) {
-        // определяет, необходимо ли при закрытии текущего модального окна открыть другое
-        // var show_modal_2 = false;
-        // при нажатии на ссылку, содержащей в качестве href селектор модального окна
-        $(document).on("click", ".btn-modal_goods_edit", function(e) {
-            e.preventDefault();
-            show_modal_2 = true;
-            // скрыть текущее модальное окно
-            $(id_modal_1).modal('hide');
-        });
-        // при скрытии текущего модального окна открыть другое, если значение переменной show_modal_2 равно true
-        $(id_modal_1).on('hidden.bs.modal', function (e) {
-            if (show_modal_2) {
-                show_modal_2 = false;
-                $(id_modal_2).modal('show');
-            }
-        })
-    }('#modalItem-show','#modalItem-edit');
-});*/
-
-/*    // при открытии модального окна
-    $('#myModal').on('show.bs.modal', function (event) {
-    // получить кнопку, которая его открыло
-    var button = $(event.relatedTarget)
-    // извлечь информацию из атрибута data-content
-    var content = button.data('content')
-    // вывести эту информацию в элемент, имеющий id="content"
-    //$(this).find('#content').text(content);
-    $(content).modal('hide');
-})*/
-
-/*if (window.jQuery) {
-    var verJquery = jQuery.fn.jquery;
-    // выведем версию jQuery в консоль
-    console.log(verJquery);
-}
-
-    $(function(){
-// #modal_1 - селектор 1 модального окна
-// #modal_2 - селектор 2 модального окна, которое необходимо открыть из первого
-    var two_modal = function(id_modal_1,id_modal_2) {
-    // определяет, необходимо ли при закрытии текущего модального окна открыть другое
-    var show_modal_2 = false;
-    // при нажатии на ссылку, содержащей в качестве href селектор модального окна
-    $('a[href="' + id_modal_2 + '"]').click(function(e) {
-    e.preventDefault();
-    show_modal_2 = true;
-    // скрыть текущее модальное окно
-    $(id_modal_1).modal('hide');
-});
-    // при скрытии текущего модального окна открыть другое, если значение переменной show_modal_2 равно true
-    $(id_modal_1).on('hidden.bs.modal', function (e) {
-    if (show_modal_2) {
-    show_modal_2 = false;
-    $(id_modal_2).modal('show');
-}
-})
-
-}('#modalItem-241','#modalItem-241-edit');
-
-});*/
-
-
-//$("input[name='showName']").val(name);
-
-
-/*$(document).on("click", ".btn-modal_goods_edit_save", function() {
-    //var formData = new FormData(this);
-    var id = $(this).data('id');
-    var route = $(this).data('route');
-    var name = $('.modal_goods_edit_name').val();
-    var slug = $('.modal_goods_edit_slug').val();
-    var description = $('.modal_goods_edit_description').val();
-    var price = $('.modal_goods_edit_price').val();
-    var category_id = $("select[name='modal_goods_edit_category']").val();
-    //var additChars = $("input[type=checkbox]:checked");//$('.additChar').val();
-    /!*$("input[type=checkbox]:checked").each(function(i){
-        console.log("i.value :"+i.value);
-    });*!/
-    $.ajax({
-        url: route,
-        type: "POST",
-        _method: "PATCH",
-        data: {name:name, slug:slug, description:description, price:price, category_id:category_id},//, additChars:additChars
-        success: function (data, textStatus, jqXHR) {
-            //$('#modalItem-edit').modal('hide');
-            alert('Саксус' + textStatus + data);
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            alert('Ошибка' + textStatus + errorThrown);
-        }
-    });
-});*/
