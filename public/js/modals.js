@@ -9,8 +9,6 @@ $.ajaxSetup({
 //Подробности товара
 $(document).on("click", ".btn-modal_shop_goods_show", function() {
     let id = $(this).data('id');
-    /*let name = $(this).data('name');
-    let price = $(this).data('price');*/
     $.ajax({
         url: '/goods/' + id,
         method: "get",

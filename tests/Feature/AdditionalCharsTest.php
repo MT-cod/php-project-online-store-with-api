@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
@@ -65,7 +64,7 @@ class AdditionalCharsTest extends TestCase
 
     public function testDestroy(): void
     {
-        $response = $this->post(route('additionalChars.destroy', 1), ['_method' => 'DELETE']);
+        $this->post(route('additionalChars.destroy', 1), ['_method' => 'DELETE']);
         $this->assertDatabaseMissing('additional_chars', ['name' => 'Тестовая характеристика']);
         $response = $this->get('/additionalChars');
         $response->assertSeeTextInOrder([`Характеристика "Тестовая характеристика" успешно удалена`], true);
