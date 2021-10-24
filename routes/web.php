@@ -4,6 +4,7 @@ use App\Http\Controllers\AdditionalCharsController;
 use App\Http\Controllers\BasketsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\GoodsController;
+use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -27,5 +28,6 @@ Route::resource('categories', CategoriesController::class);
 Route::resource('goods', GoodsController::class);
 Route::resource('additionalChars', AdditionalCharsController::class);
 Route::resource('basket', BasketsController::class);
+Route::resource('orders', OrdersController::class);
 
 Auth::routes();

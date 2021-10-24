@@ -25,12 +25,12 @@ class ShopAndBasketTest extends TestCase
         $this->testUser = User::factory()->create();
     }
 
-    public function testStoreIndex(): void
+    /*public function testShopIndex(): void
     {
         $this->storeTestBasket();
-        $response = $this->get('/basket');
+        $response = $this->get('/');
         $response->assertSeeTextInOrder(['Test item', 333], true);
-    }
+    }*/
 
     public function testBasketIndex(): void
     {
@@ -42,7 +42,8 @@ class ShopAndBasketTest extends TestCase
     public function testStore(): void
     {
         $this->storeTestBasket();
-        $this->assertSame('Test item', session('basket')[1]['name']);
+        $this->assertSame(1, session('basket')[1]['id']);
+        $this->assertSame(333, session('basket')[1]['quantity']);
         Auth::loginUsingId(1);
         $this->storeTestBasket();
         $this->assertDatabaseHas('baskets', ["goods_id" => "1", "user_id" => "1", "quantity" => "333"]);
@@ -89,8 +90,6 @@ class ShopAndBasketTest extends TestCase
     {
         return $this->post(route('basket.store'), [
             'id' => 1,
-            'name' => 'Test item',
-            'price' => 111.11,
             'quantity' => 333
         ]);
     }

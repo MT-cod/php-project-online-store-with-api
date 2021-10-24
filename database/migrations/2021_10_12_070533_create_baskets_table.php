@@ -15,10 +15,10 @@ class CreateBasketsTable extends Migration
     {
         Schema::create('baskets', function (Blueprint $table) {
             $table->index(['goods_id', 'user_id']);
-            $table->integer('goods_id');
-            $table->foreign('goods_id')->references('id')->on('goods');
-            $table->integer('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->integer('goods_id')->unsigned();
+            $table->foreign('goods_id')->references('id')->on('goods')->cascadeOnDelete();
+            $table->integer('user_id')->unsigned();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->unsignedTinyInteger('quantity');
         });
     }

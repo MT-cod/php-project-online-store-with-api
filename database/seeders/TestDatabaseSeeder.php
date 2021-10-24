@@ -27,7 +27,7 @@ class TestDatabaseSeeder extends Seeder
         ]);
 
         Goods::create([
-            'name' => 'Тестовый товар',
+            'name' => 'Test item',
             'description' => 'Тестовое описание',
             'slug' => 'test',
             'price' => 111.11,

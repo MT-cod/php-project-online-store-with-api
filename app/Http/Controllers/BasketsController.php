@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Goods;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class BasketsController extends Controller
             }
         } elseif (session()->has('basket')) {
             //Если пользователь не авторизован и корзина в сессии присутствует - работаем с данными корзины в сессии
-            $basket = session('basket');
+            $basket = $this->getActualDataForSessBasket();
         }
         return compact('basket');
     }
@@ -48,12 +49,10 @@ class BasketsController extends Controller
             //Пользователь не авторизован - работаем с данными корзины в сессии
             session([
                 'basket.' . $request['id'] . '.id' => $request['id'],
-                'basket.' . $request['id'] . '.name' => $request['name'],
-                'basket.' . $request['id'] . '.price' => $request['price'],
                 'basket.' . $request['id'] . '.quantity' => $request['quantity']
             ]);
         }
-        flash('Товар "' . $request['name'] . '" добавлен в корзину')->success();
+        flash('Товар добавлен в корзину')->success();
         return Redirect::to($_SERVER['HTTP_REFERER']);
     }
 
@@ -77,7 +76,7 @@ class BasketsController extends Controller
                 //Пользователь не авторизован - работаем с данными корзины в сессии
                 $basket = $request['basket'];
                 array_walk($basket, fn($qua, $id) => session(['basket.' . $id . '.quantity' => $qua]));
-                $resultBasket = session('basket');
+                $resultBasket = $this->getActualDataForSessBasket();
             }
         } catch (\Exception $e) {
             return Response::json(['error' => 'Ошибка изменения данных'], 422);
@@ -119,5 +118,25 @@ class BasketsController extends Controller
             }
         }
         return Response::json(compact('basket'), 200);
+    }
+
+
+//Общие функции контроллера-----------------------------------------------------------------
+
+    public static function getActualDataForSessBasket(): array
+    {
+        $basket = session('basket');
+        return array_reduce($basket, function ($res, $val): array {
+            $item = Goods::find($val['id']);
+            if ($item) {
+                $res[$val['id']] = [
+                    'id' => $val['id'],
+                    'name' => $item->name,
+                    'price' => $item->price,
+                    'quantity' => $val['quantity']
+                ];
+                return $res;
+            }
+        }, []);
     }
 }

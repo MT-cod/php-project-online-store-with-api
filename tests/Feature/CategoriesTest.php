@@ -6,9 +6,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class CategoriesTest extends TestCase
@@ -89,10 +89,10 @@ class CategoriesTest extends TestCase
         $this->post(route('categories.destroy', 2), ['_method' => 'DELETE']);
         $this->assertDatabaseMissing('categories', ['name' => 'Тестовая категория 2']);
         $response = $this->get('/categories');
-        $response->assertSeeTextInOrder([`Категория "Тестовая категория 2" успешно удалена`], true);
+        $response->assertSeeTextInOrder(['Категория "Тестовая категория 2" успешно удалена'], true);
     }
 
-    private function storeTestCategories(): \Illuminate\Testing\TestResponse
+    private function storeTestCategories(): TestResponse
     {
         return $this->post(route('categories.store'), [
             'name' => 'Тестовая категория',

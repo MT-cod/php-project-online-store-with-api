@@ -15,9 +15,9 @@ class CreateGoodsAdditionalCharsTable extends Migration
     {
         Schema::create('goods_additional_chars', function (Blueprint $table) {
             $table->index(['goods_id', 'additional_char_id']);
-            $table->integer('goods_id');
+            $table->integer('goods_id')->unsigned();
             $table->foreign('goods_id')->references('id')->on('goods');
-            $table->integer('additional_char_id');
+            $table->integer('additional_char_id')->unsigned();
             $table->foreign('additional_char_id')->references('id')->on('additional_chars');
         });
     }

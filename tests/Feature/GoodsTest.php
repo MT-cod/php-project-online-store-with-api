@@ -6,9 +6,9 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class GoodsTest extends TestCase
@@ -30,7 +30,7 @@ class GoodsTest extends TestCase
         $response = $this->get('/goods');
         $response->assertOk();
         $response->assertSeeTextInOrder(
-            ['Тестовый товар', 'Тестовое описание', '111.11'],
+            ['Test item', 'Тестовое описание', '111.11'],
             true
         );
     }
@@ -38,7 +38,7 @@ class GoodsTest extends TestCase
     public function testShow(): void
     {
         $response = $this->get('/goods/1');
-        $this->assertSame('Тестовый товар', $response['name']);
+        $this->assertSame('Test item', $response['name']);
     }
 
     public function testCreate(): void
@@ -55,9 +55,9 @@ class GoodsTest extends TestCase
         $response->assertStatus(403);
         Auth::loginUsingId(1);
         $this->storeTestGoods();
-        $this->assertDatabaseHas('goods', ['name' => 'Тестовый товар']);
+        $this->assertDatabaseHas('goods', ['name' => 'Test item']);
         $response = $this->get('/goods');
-        $response->assertSeeTextInOrder(['Тестовый товар'], true);
+        $response->assertSeeTextInOrder(['Test item'], true);
     }
 
     public function testEdit(): void
@@ -94,13 +94,13 @@ class GoodsTest extends TestCase
         $this->post(route('goods.destroy', 1), ['_method' => 'DELETE']);
         $this->assertDatabaseMissing('goods', ['name' => 'Тестовый товар']);
         $response = $this->get('/goods');
-        $response->assertSeeTextInOrder([`Товар "Тестовый товар" успешно удалён`], true);
+        $response->assertSeeTextInOrder(["успешно удалён"], true);
     }
 
-    private function storeTestGoods(): \Illuminate\Testing\TestResponse
+    private function storeTestGoods(): TestResponse
     {
         return $this->post(route('goods.store'), [
-            'name' => 'Тестовый товар',
+            'name' => 'Test item',
             'description' => 'Тестовое описание',
             'slug' => 'test',
             'price' => 111.11,
