@@ -274,6 +274,7 @@ class GoodsController extends Controller
 
     public function regenerateDb(): RedirectResponse
     {
+        session()->flush();
         Artisan::call('migrate:fresh --seed');
         return Redirect::to('/');
     }

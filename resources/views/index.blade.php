@@ -368,7 +368,7 @@
                                 <div class="row">
                                     <div class="col">
                                         <h6><b><label for="modal_preorder_adress">Адрес доставки</label></b></h6>
-                                        <textarea class="form-control" id="modal_preorder_adress" rows="2" name="adress"></textarea>
+                                        <textarea class="form-control" id="modal_preorder_adress" rows="2" name="address"></textarea>
                                     </div>
                                     <div class="col">
                                         <h6><b><label for="modal_preorder_comment">Комментарий</label></b></h6>

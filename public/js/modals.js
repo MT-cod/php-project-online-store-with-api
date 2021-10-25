@@ -44,6 +44,7 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(data) {
+                $('.modal_basket_edit_results').html('');
                 $('.modal_basket_edit_results').html(
                     '<div class="alert alert-success text-center p-0 m-0" role="alert">' + data.success +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -51,6 +52,7 @@ $(document).ready(function() {
                 showItemsOfBasket(data);
             },
             error: function(data) {
+                $('.modal_basket_edit_results').html('');
                 let errors = '';
                 Object.entries(data.responseJSON.errors).forEach(function(errNote) {
                     errors += errNote[1][0] + '<br>';
@@ -73,6 +75,7 @@ $(document).on("click", ".btn-modal_basket_show", function() {
         method: "get",
         dataType: 'json',
         success: function(data) {
+            $('.modal_basket_edit_results').html('');
             showItemsOfBasket(data);
         },
         error: function (jqXHR, textStatus, errorThrown) {
@@ -95,6 +98,7 @@ $(document).on("click", ".btn-del-item", function() {
         processData: false,
         contentType: false,
         success: function(data) {
+            $('.modal_basket_edit_results').html('');
             showItemsOfBasket(data);
         },
         error: function(data) {
@@ -179,7 +183,6 @@ function showItemsOfBasket(data) {
         basketItems += `<div class="col text-center"><button type="submit" class="btn btn-sm btn-success">Применить изменения</button></div>`;
     }
     $('.modal_basket_show_goods').html(basketItems);
-    $('.modal_basket_edit_results').html('');
     $('#modal-basket-show').modal('show');
 }
 
