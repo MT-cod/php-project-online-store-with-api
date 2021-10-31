@@ -20,19 +20,11 @@ class AdditionalCharsController extends Controller
      */
     public function index()
     {
+        $additCharsSelect = AdditionalChar::select('id', 'name', 'value');
         if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== '')) {
-            $additChars = AdditionalChar::where('name', 'like', '%' . $_REQUEST['filter']['name'] . '%')
-                ->with('goods:name')
-                ->orderBy('name')
-                ->get()
-                ->toArray();
-        } else {
-            $additChars = AdditionalChar::select('id', 'name', 'value')
-                ->with('goods:name')
-                ->orderBy('name')
-                ->get()
-                ->toArray();
+            $additCharsSelect->where('name', 'like', '%' . $_REQUEST['filter']['name'] . '%');
         }
+        $additChars = $additCharsSelect->with('goods:name')->orderBy('name')->get()->toArray();
         return view('additionalChar.index', compact('additChars'));
     }
 

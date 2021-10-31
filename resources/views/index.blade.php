@@ -36,6 +36,11 @@
         </div>
         <div class="col-8 text-center btn-sm pl-5 pr-5 pt-0">
             @include('flash::message')
+            @if ($errors->any())
+                @foreach ($errors->all() as $error)
+                    <div class="alert alert-danger">{{ $error }}</div>
+                @endforeach
+            @endif
         </div>
         <div class="col-2 pr-3 pt-1 text-right">
             <button class="btn btn-secondary btn-block btn-modal_basket_show btn-sm" data-toggle="tooltip" data-placement="bottom" title="Показать корзину товаров">

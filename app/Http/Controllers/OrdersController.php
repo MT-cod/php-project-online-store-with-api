@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,11 +16,23 @@ class OrdersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return array
+     * @return Application|Factory|View
      */
     public function index()
     {
-        return Order::all()->toArray();
+        $orders = [];
+        foreach (Order::all('id', 'created_at', 'name', 'email', 'phone', 'completed') as $order) {
+            $resOrder = $order->toArray();
+            $resOrder['created_at'] = $order->created_at->format('d.m.Y H:i:s');
+            $orders[] = $resOrder;
+        }
+        /*$allOrders = Order::select('id', 'created_at', 'name', 'email', 'phone', 'completed');
+        if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== '')) {
+            $allOrders->where('name', 'like', '%' . $_REQUEST['filter']['name'] . '%');
+        }
+        //$allOrders->created_at->format('d.m.Y H:i:s');
+        $orders = $allOrders->orderByDesc('id')->get()->toArray();*/
+        return view('order.index', compact('orders'));
     }
 
     /**
@@ -49,11 +64,11 @@ class OrdersController extends Controller
     {
         $user = Auth::user();
         $order = new Order();
-        //$data = $this->validateCommonGoodsParams($request, $item);
+        $data = $this->validateInputData($request);
         $data['user_id'] = ($user) ? $user->id : 0;
-        $data['name'] = $request->input('name');
-        $data['email'] = $request->input('email');
-        $data['phone'] = $request->input('phone');
+        //$data['name'] = $request->input('name');
+        //$data['email'] = $request->input('email');
+        //$data['phone'] = $request->input('phone');
         $data['address'] = $request->input('address', '');
         $data['comment'] = $request->input('comment', '');
         $order->fill($data);
@@ -120,5 +135,17 @@ class OrdersController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+//Общие функции контроллера-----------------------------------------------------------------
+
+    private function validateInputData(Request $request): array
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email:rfc',
+            'phone' => 'required|max:10'
+        ]);
+        return $validated;
     }
 }
