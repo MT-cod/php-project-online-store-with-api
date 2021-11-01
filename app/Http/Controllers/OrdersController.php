@@ -20,18 +20,17 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        $orders = [];
-        foreach (Order::all('id', 'created_at', 'name', 'email', 'phone', 'completed') as $order) {
+        //$orders = [];
+        $allOrders = Order::select('id', 'created_at', 'name', 'email', 'phone', 'completed');
+        if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== '')) {
+            $allOrders->where('name', 'like', '%' . $_REQUEST['filter']['name'] . '%');
+        }
+        foreach ($allOrders->get() as $order) {
             $resOrder = $order->toArray();
             $resOrder['created_at'] = $order->created_at->format('d.m.Y H:i:s');
             $orders[] = $resOrder;
         }
-        /*$allOrders = Order::select('id', 'created_at', 'name', 'email', 'phone', 'completed');
-        if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== '')) {
-            $allOrders->where('name', 'like', '%' . $_REQUEST['filter']['name'] . '%');
-        }
-        //$allOrders->created_at->format('d.m.Y H:i:s');
-        $orders = $allOrders->orderByDesc('id')->get()->toArray();*/
+        /*$orders = $allOrders->orderByDesc('id')->get()->toArray();*/
         return view('order.index', compact('orders'));
     }
 
@@ -104,14 +103,19 @@ class OrdersController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Передаём данные для формы работы с заказом.
      *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return array
      */
-    public function edit(Order $order)
+    public function edit($id)
     {
-        //
+        $order = Order::findOrFail($id);
+        $data = $order->toArray();
+        $data['created_at'] = $order->created_at->format('d.m.Y H:i:s');
+        $data['updated_at'] = $order->updated_at->format('d.m.Y H:i:s');
+        $data['basket'] = $order->goods()->get()->toArray();
+        return $data;
     }
 
     /**
@@ -143,8 +147,8 @@ class OrdersController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|max:255',
-            'email' => 'required|email:rfc',
-            'phone' => 'required|max:10'
+            'email' => 'required|email:rfc|max:255',
+            'phone' => 'required|max:20'
         ]);
         return $validated;
     }

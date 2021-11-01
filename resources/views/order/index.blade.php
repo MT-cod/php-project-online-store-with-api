@@ -5,6 +5,10 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/modals.js"></script>
 
+<style>
+    tr.clickableRow {cursor: pointer;}
+</style>
+
 <div class="container-fluid" style="height: 95vh !important; background: url(/back_blue.jpg) repeat">
     <div class="text-center">
         <h2><b>Заказы</b></h2>
@@ -23,7 +27,7 @@
                 @endif
             </div>
             <div class="col-sm text-left">
-                <a href="/additionalChars" style="text-decoration: none">
+                <a href="/orders" style="text-decoration: none">
                     <button class="btn btn-outline-secondary collapse multi_filt show" type="button" id="submit_filt1" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
                         Сброс фильтра
                     </button>
@@ -43,7 +47,7 @@
 
     {{--Таблица заказов--}}
     @include('flash::message')
-    <table class="table table-info table-striped table-hover table-sm mx-auto" style="opacity: 0.75">
+    <table class="table table-info table-striped table-bordered table-hover table-sm mx-auto" style="opacity: 0.75">
         <thead>
             <tr class="text-center">
                 <th scope="col">№</th>
@@ -56,7 +60,7 @@
         </thead>
         <tbody class="text-left">
             @foreach ($orders as $order)
-                <tr class="text-center">
+                <tr class="text-center clickableRow btn-modal_order_edit" data-id="{{$order['id']}}">
                     <td class="text-break"><b>{{Str::limit($order['id'], 40)}}</b></td>
                     <td class="text-break">{{Str::limit($order['created_at'], 60)}}</td>
                     <td class="text-break">{{Str::limit($order['name'], 60)}}</td>
@@ -74,55 +78,67 @@
             @endforeach
         </tbody>
     </table>
-    {{--Таблица характеристик-end--}}
+    {{--Таблица заказов-end--}}
 
-    {{--Modal-edit--}}
-    {{--<div class="modal fade" id="modal-additChar-edit" tabindex="-1" role="dialog">
+    {{--Modal-oder-edit--}}
+    <div class="modal fade" id="modal-order-edit" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y: auto;">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
-                <form id="modal-additChar-edit-form" method="POST" action="/additionalChars">
+                <form class="modal-preorder-form" action="/orders" method="POST">
                     @csrf
-                    @method('PATCH')
-                    <div class="modal-header shadow" style="background-color: #dbfeff">
-                        <h4 class="modal_additChar_edit_title"><b></b></h4>
+                    <div class="modal-header shadow" style="background: url(/back_blue.jpg) repeat">
+                        <h4><b><span id="modal_order_id"></span></b></h4>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body" style="background-color: #dbfeff">
-                        <span class="modal_additChar_edit_save_results"></span>
+                    <div class="modal-body" style="background: url(/back_blue.jpg) repeat">
                         <ul class="list-group list-group-flush">
-                            <li class="list-group-item" style="background-color: #e6f9ff">
-                                <h6><b><label for="modal_additChar_edit_name">Имя характеристики</label></b></h6>
-                                <input class="form-control" id="modal_additChar_edit_name" type="text" name="name">
-                            </li>
-                            <li class="list-group-item" style="background-color: #e6f9ff">
-                                <h6><b><label for="modal_additChar_edit_value">Значение характеристики</label></b></h6>
-                                <textarea class="form-control" id="modal_additChar_edit_value" rows="2" name="value"></textarea>
-                            </li>
-                            <li class="list-group-item" style="background-color: #e6fff4">
+                            <li class="list-group-item" style="background-color: rgba(255,255,255,0.3)">
                                 <div class="row">
                                     <div class="col">
-                                        <h6><b>Время создания характеристики</b></h6>
-                                        <p><span class="modal_additChar_edit_created_at"></span></p>
+                                        <div style="background-color: rgba(0,0,0,0.12)"><h6><b>Имя заказчика:</b></h6></div>
+                                        <b><span class="text-break" id="modal_order_name" style="font-size: 1.2rem;"></span></b>
                                     </div>
                                     <div class="col">
-                                        <h6><b>Время последнего изменения характеристики</b></h6>
-                                        <p><span class="modal_additChar_edit_updated_at"></span></p>
+                                        <div style="background-color: rgba(0,0,0,0.12)"><h6><b>E-mail:</b></h6></div>
+                                        <b><span class="text-break" id="modal_order_email" style="font-size: 1.2rem;"></span></b>
+                                    </div>
+                                    <div class="col">
+                                        <div style="background-color: rgba(0,0,0,0.12)"><h6><b>Телефон:</b></h6></div>
+                                        <b><span class="text-break" id="modal_order_phone" style="font-size: 1.2rem;"></span></b>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item" style="background-color: rgba(255,255,255,0.3)">
+                                <div class="row">
+                                    <div class="col">
+                                        <div style="background-color: rgba(0,0,0,0.12)"><h6><b>Адрес доставки:</b></h6></div>
+                                        <b><span class="text-break" id="modal_order_address" style="font-size: 1.2rem;"></span></b>
+                                    </div>
+                                    <div class="col">
+                                        <div style="background-color: rgba(0,0,0,0.12)"><h6><b>Комментарий:</b></h6></div>
+                                        <b><span class="text-break" id="modal_order_comment" style="font-size: 1.2rem;"></span></b>
                                     </div>
                                 </div>
                             </li>
                         </ul>
+                        <br>
+                        <p><span id="modal_order_basket"></span></p>
                     </div>
-                    <div class="modal-footer shadow" style="background-color: #dbfeff">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                        <div class="btn-modal_additChar_edit_save"></div>
+                    <div class="modal-footer shadow" style="background: url(/back_blue.jpg) repeat">
+                        <div class="col">
+                            <button type="button" class="btn btn-sm btn-secondary btn-block" data-dismiss="modal">Закрыть</button>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-sm btn-primary btn-block">Подтвердить заказ</button>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
-    </div>--}}
-    {{--Modal-edit-end--}}
+    </div>
+    {{--Modal-oder-edit-end--}}
 
 </div>
 

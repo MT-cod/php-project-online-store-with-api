@@ -161,8 +161,6 @@
                                         data-placement="bottom"
                                         title="Нажать для подробностей/покупки"
                                         data-id="{{$item['id']}}"
-                                        {{--data-name="{{$item['name']}}"
-                                        data-price="{{$item['price']}}"--}}
                                         style="border: none">
                                         <h6><b>{{Str::limit($item['name'], 40)}}</b></h6>
                                     </button>
@@ -372,8 +370,8 @@
                             <li class="list-group-item pb-0" style="background-color: rgba(0,0,0,0.05)">
                                 <div class="row">
                                     <div class="col">
-                                        <h6><b><label for="modal_preorder_adress">Адрес доставки</label></b></h6>
-                                        <textarea class="form-control" id="modal_preorder_adress" rows="2" name="address"></textarea>
+                                        <h6><b><label for="modal_preorder_address">Адрес доставки</label></b></h6>
+                                        <textarea class="form-control" id="modal_preorder_address" rows="2" name="address"></textarea>
                                     </div>
                                     <div class="col">
                                         <h6><b><label for="modal_preorder_comment">Комментарий</label></b></h6>
