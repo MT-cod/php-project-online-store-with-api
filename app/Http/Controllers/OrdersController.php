@@ -20,7 +20,7 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        //$orders = [];
+        $orders = [];
         $allOrders = Order::select('id', 'created_at', 'name', 'email', 'phone', 'completed');
         if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== '')) {
             $allOrders->where('name', 'like', '%' . $_REQUEST['filter']['name'] . '%');
@@ -65,17 +65,14 @@ class OrdersController extends Controller
         $order = new Order();
         $data = $this->validateInputData($request);
         $data['user_id'] = ($user) ? $user->id : 0;
-        //$data['name'] = $request->input('name');
-        //$data['email'] = $request->input('email');
-        //$data['phone'] = $request->input('phone');
         $data['address'] = $request->input('address', '');
         $data['comment'] = $request->input('comment', '');
         $order->fill($data);
 
         if ($order->save()) {
             $basket = BasketsController::getActualDataOfBasket();
-            array_walk($basket, fn($val) => $order->goods()
-                ->attach($val['id'], ['price' => $val['price'], 'quantity' => $val['quantity']]));
+            array_walk($basket, fn($item) => $order->goods()
+                ->attach($item['id'], ['price' => $item['price'], 'quantity' => $item['quantity']]));
             //Заказ сделан, корзина больше не нужна - удаляем её
             if ($user) {
                 //Пользователь авторизован - работаем с табличными данными в БД
@@ -89,17 +86,6 @@ class OrdersController extends Controller
             flash('Ошибка данных.')->error();
         }
         return Redirect::to($_SERVER['HTTP_REFERER']);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Order $order)
-    {
-        //
     }
 
     /**
@@ -119,26 +105,29 @@ class OrdersController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Изменяем заказ.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return RedirectResponse
      */
-    public function update(Request $request, Order $order)
+    public function update(Request $request, $id)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Order $order)
-    {
-        //
+        $order = Order::findOrFail($id);
+        $flash = '';
+        if (
+            $request->input('completed') !== null &&
+            ($request->input('completed') == 1 || $request->input('completed') == 0)
+        ) {
+            $order->completed = (int) $request->input('completed');
+            $flash = ($request->input('completed')) ? "Заказ №$id завершён." : "Заказ №$id снова в обработке.";
+        }
+        if ($order->save()) {
+            flash($flash)->success();
+        } else {
+            flash('Ошибка данных.')->error();
+        }
+        return Redirect::to($_SERVER['HTTP_REFERER']);
     }
 
 //Общие функции контроллера-----------------------------------------------------------------

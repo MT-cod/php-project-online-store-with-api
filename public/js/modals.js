@@ -118,7 +118,7 @@ $(document).on("click", "#btn-basket-preorder", function() {
             if (basketLen !== 0) {
                 basketItems = '';
                 let basketCost = 0;
-                basketItems = `<table class="table table-bordered table-sm" style="background-color: rgba(0,0,0,0.05)">
+                basketItems = `<table class="table table-bordered table-sm table-hover" style="background-color: rgba(0,0,0,0.05)">
                         <thead><tr class="text-center" style="background-color: rgba(0,0,0,0.08)">
                             <th scope="col">Имя товара</th>
                             <th scope="col">Цена</th>
@@ -154,7 +154,6 @@ $(document).on("click", "#btn-basket-preorder", function() {
 //Окно заказа
 $(document).on("click", ".btn-modal_order_edit", function() {
     let id = $(this).data('id');
-    //console.log(id);
     $.ajax({
         url: '/orders/' + id + '/edit',
         method: "get",
@@ -162,7 +161,7 @@ $(document).on("click", ".btn-modal_order_edit", function() {
         success: function(data) {
             basketItems = '';
             let basketCost = 0;
-            basketItems = `<table class="table table-bordered table-sm" style="background-color: rgba(0,0,0,0.05)">
+            basketItems = `<table class="table table-bordered table-sm table-hover" style="background-color: rgba(0,0,0,0.05)">
                     <thead><tr class="text-center" style="background-color: rgba(0,0,0,0.08)">
                         <th scope="col">Имя товара</th>
                         <th scope="col">Цена</th>
@@ -189,7 +188,14 @@ $(document).on("click", ".btn-modal_order_edit", function() {
             $('#modal_order_address').html(data.address);
             $('#modal_order_comment').html(data.comment);
             $('#modal_order_basket').html(basketItems);
-
+            $('.modal-order-form').attr('action', '/orders/' + id);
+            if (data.completed == 1) {
+                $('#status').val(0);
+                $('#btn-order-complete').html('Вернуть на доработку ↺');
+            } else {
+                $('#status').val(1);
+                $('#btn-order-complete').html('Завершить заказ ✓');
+            }
             $('#modal-order-edit').modal('show');
         },
         error: function (jqXHR, textStatus, errorThrown) {
