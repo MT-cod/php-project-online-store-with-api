@@ -9,7 +9,7 @@
     tr.clickableRow {cursor: pointer;}
 </style>
 
-<div class="container-fluid" style="height: 95vh !important; background: url(/back_blue.jpg) repeat">
+<div class="container-fluid" style="height: 95vh !important; background: url(/back_blue.jpg) repeat; overflow-y: auto;">
     <div class="text-center">
         <h2><b>Заказы</b></h2>
     </div>
