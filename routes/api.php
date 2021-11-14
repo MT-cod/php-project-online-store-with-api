@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthApiController;
 use App\Http\Controllers\Api\CategoriesApiController;
 use App\Http\Controllers\Api\GoodsApiController;
 use Illuminate\Http\Request;
@@ -16,9 +17,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/*Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});*/
+
+//Гостевые маршруты
+Route::prefix('auth')->group(function () {
+    Route::post('register', [AuthApiController::class,'register']);
+    Route::post('login', [AuthApiController::class,'login']);
 });
 
 Route::get('categories', [CategoriesApiController::class, 'index']);
 Route::get('goods', [GoodsApiController::class, 'index']);
+
+
+//Маршруты с обязательной авторизацией
+Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
+    Route::post('user', [AuthApiController::class,'user']);
+    Route::post('logout', [AuthApiController::class,'logout']);
+});
