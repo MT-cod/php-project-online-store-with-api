@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AuthApiLoginRequest;
+use App\Http\Validators\ApiAuthRegisterValidator;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class AuthApiController extends Controller
@@ -16,21 +19,16 @@ class AuthApiController extends Controller
     /**
      * Регистрация пользователя через api
      *
-     * @param Request $request
+     * @param ApiAuthRegisterValidator $request
      * @return JsonResponse
      */
-    public function register(Request $request)
+    public function register(ApiAuthRegisterValidator $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8']
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+        if ($request->errors()) {
+            return Response::json(['error' => $request->errors()], 401);
         }
 
-        $input = $request->all();
+        $input = $request->request->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $token = $user->createToken('Main token')->plainTextToken;
@@ -40,23 +38,23 @@ class AuthApiController extends Controller
     /**
      * Вход в систему, получение токена пользователя
      *
-     * @param Request $request
+     * @param AuthApiLoginRequest $request
      * @return JsonResponse
      */
-    public function login(Request $request)
+    public function login(AuthApiLoginRequest $request)
     {
-        $validator = Validator::make($request->all(), [
+        /*$validator = Validator::make($request->all(), [
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8']
-        ]);
+        ]);*/
 
-        if ($validator->fails()) {
+        /*if ($validator->fails()) {
             return Response::json(['error' => $validator->errors()], 401);
-        }
+        }*/
 
         $user = User::where('email', $request->email)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return Response::json(['error' => 'Не удалось авторизовать пользователя.'], 401);
+            return Response::json(['error' => 'Не удалось авторизовать пользователя2222.', 'all' => Session::all()], 401);
         }
         $token = $user->createToken('Main token')->plainTextToken;
         return Response::json(['success' => 'Успешная авторизация. Токен выдан.', 'token' => $token], 200);
