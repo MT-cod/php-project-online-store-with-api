@@ -28,7 +28,11 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::get('categories', [CategoriesApiController::class, 'index']);
-Route::get('goods', [GoodsApiController::class, 'index']);
+//Route::get('goods', [GoodsApiController::class, 'index']);
+Route::prefix('goods')->group(function () {
+    Route::get('/', [GoodsApiController::class,'index']);
+    Route::get('slug/{slug}', [GoodsApiController::class,'slug']);
+});
 
 
 //Маршруты с обязательной авторизацией
