@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 
-class ApiAuthRegisterValidator extends \App\Http\Validators\Validator
+class ApiAuthLoginValidator extends \App\Http\Validators\Validator
 {
     /**
     * Валидация запроса
@@ -17,8 +17,7 @@ class ApiAuthRegisterValidator extends \App\Http\Validators\Validator
     public function validate(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8']
         ]);
         return ($validator->fails()) ? $validator->errors() : [];
