@@ -15,17 +15,6 @@ abstract class Validator
     }
 
     /**
-     * Валидация запроса
-     *
-     * @param Request $request
-     * @return MessageBag|array
-     */
-    public function validate(Request $request)
-    {
-        //
-    }
-
-    /**
      * Проверка на ошибки валидации
      *
      * @return array
@@ -34,4 +23,6 @@ abstract class Validator
     {
         return $this->validate($this->request);
     }
+
+    abstract public function validate(Request $request);
 }
