@@ -68,7 +68,8 @@ trait ApiReqGoodsProcessing
         //фильтр по категориям
         if ($this->req->input('filter.category_ids')) {
             $catsWithChildsList = [];
-            function catChildsToList($category, $catsWithChildsList): array {
+            function catChildsToList($category, $catsWithChildsList): array
+            {
                 $catsWithChildsList[] = $category->id;
                 $catChilds = $category->childrens()->get();
                 if (count($catChilds)) {
