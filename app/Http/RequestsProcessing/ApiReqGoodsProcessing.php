@@ -7,6 +7,7 @@ use App\Models\Goods;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 trait ApiReqGoodsProcessing
 {
@@ -31,9 +32,16 @@ trait ApiReqGoodsProcessing
             $filteredGoods = $goods;
         }
 
+        if ($this->req->input('sort')) {
+            if ($this->validateSort()) {
+                return ['errors' => $this->validateSort()];
+            }
+            $sortedGoods = $this->sorting($filteredGoods);
+        } else {
+            $sortedGoods = $filteredGoods;
+        }
 
-
-        return $filteredGoods->get()->toArray();
+        return $sortedGoods->get()->toArray();
     }
 
     private function validateFilter(): array
@@ -47,50 +55,81 @@ trait ApiReqGoodsProcessing
         return ($validator->fails()) ? $validator->errors()->all() : [];
     }
 
-    private function filtering($goods): Builder
+    private function filtering(Builder $data): Builder
     {
         //фильтр по строке в имени
         if ($this->req->input('filter.name')) {
-            $goods->where('name', 'like', '%' . $this->req->input('filter.name') . '%');
+            $data->where('name', 'like', '%' . $this->req->input('filter.name') . '%');
         }
-
         //фильтр по цене
         if ($this->req->input('filter.price')) {
-            $goods->where('price', $this->req->input('filter.price'));
+            $data->where('price', $this->req->input('filter.price'));
         }
-
         //фильтр по категориям
         if ($this->req->input('filter.category_ids')) {
-            $categories = [];
-            $cats = explode(',', $this->req->input('filter.category_ids'));
-            foreach ($cats as $cat) {
-                if (Category::whereId($cat)->first()) {
-                    $categories[] = $cat;
-                    if (count(Category::whereId($cat)->first()->childrens()->get()) > 0) {
-                        foreach (Category::whereId($cat)->first()->childrens()->get() as $cat2) {
-                            $categories[] = $cat2['id'];
-                            if (count(Category::whereId($cat2['id'])->first()->childrens()->get()) > 0) {
-                                foreach (Category::whereId($cat2['id'])->first()->childrens()->get() as $cat3) {
-                                    $categories[] = $cat3['id'];
-                                }
-                            }
-                        }
+            $catsWithChildsList = [];
+            function catChildsToList($category, $catsWithChildsList): array {
+                $catsWithChildsList[] = $category->id;
+                $catChilds = $category->childrens()->get();
+                if (count($catChilds)) {
+                    foreach ($catChilds as $cat) {
+                        $catsWithChildsList = catChildsToList($cat, $catsWithChildsList);
                     }
                 }
+                return $catsWithChildsList;
             }
-            $goods->whereIn('category_id', $categories);
+            foreach (explode(',', $this->req->input('filter.category_ids')) as $catId) {
+                $category = Category::whereId($catId)->first();
+                if ($category) {
+                    $catsWithChildsList = catChildsToList($category, $catsWithChildsList);
+                }
+            }
+            $data->whereIn('category_id', $catsWithChildsList);
         }
-
         //фильтр по доп. характеристикам
         if ($this->req->input('filter.additСhar_ids')) {
             $chars = explode(',', $this->req->input('filter.additСhar_ids'));
             foreach ($chars as $char) {
-                $goods->whereHas('additionalChars', function (Builder $query) use ($char) {
+                $data->whereHas('additionalChars', function (Builder $query) use ($char) {
                     $query->where('additional_char_id', $char);
                 });
             }
         }
+        return $data;
+    }
 
-        return $goods;
+    private function validateSort(): array
+    {
+        $validator = Validator::make($this->req->all(), [
+            'sort.*' => ['nullable', 'string', 'max:10', Rule::in(['name', 'price'])]
+        ]);
+        return ($validator->fails()) ? $validator->errors()->all() : [];
+    }
+
+    private function sorting(Builder $data): Builder
+    {
+        if ($this->req->input('sort.asc')) {
+            $sortBy = $this->req->input('sort.asc');
+            switch ($sortBy) {
+                case 'name':
+                    $data->orderBy('name');
+                    break;
+                case 'price':
+                    $data->orderBy('price');
+                    break;
+            }
+        }
+        if ($this->req->input('sort.desc')) {
+            $sortBy = $this->req->input('sort.desc');
+            switch ($sortBy) {
+                case 'name':
+                    $data->orderBy('name', 'desc');
+                    break;
+                case 'price':
+                    $data->orderBy('price', 'desc');
+                    break;
+            }
+        }
+        return $data;
     }
 }
