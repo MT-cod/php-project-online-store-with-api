@@ -20,7 +20,7 @@ class CreateOrdersGoodsTable extends Migration
             $table->bigInteger('goods_id')->unsigned();
             $table->foreign('goods_id')->references('id')->on('goods');
             $table->decimal('price', 10, 2)->unsigned();
-            $table->unsignedTinyInteger('quantity');
+            $table->unsignedDecimal('quantity', $total = 20, $places = 3);
         });
     }
 

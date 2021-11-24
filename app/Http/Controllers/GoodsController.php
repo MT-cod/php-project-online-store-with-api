@@ -225,6 +225,9 @@ class GoodsController extends Controller
         }, Goods::orderBy('name'));
     }
 
+    /**
+     * @throws ValidationException
+     */
     private function validateCommonGoodsParams(Request $request, Goods $item): array
     {
         return $this->validate($request, [

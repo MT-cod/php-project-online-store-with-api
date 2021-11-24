@@ -19,7 +19,7 @@ class CreateBasketsTable extends Migration
             $table->foreign('goods_id')->references('id')->on('goods')->cascadeOnDelete();
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-            $table->unsignedTinyInteger('quantity');
+            $table->unsignedDecimal('quantity', $total = 20, $places = 3);
         });
     }
 

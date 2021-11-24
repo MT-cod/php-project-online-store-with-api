@@ -44,5 +44,7 @@ Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
 
 Route::prefix('basket')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [BasketsApiController::class,'index']);
-    //Route::post('logout', [AuthApiController::class,'logout']);
+    Route::post('store', [BasketsApiController::class,'store']);
+    /*Route::post('delete', [BasketsApiController::class,'delete']);
+    Route::post('purge', [BasketsApiController::class,'purge']);*/
 });
