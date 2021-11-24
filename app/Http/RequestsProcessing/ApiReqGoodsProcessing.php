@@ -22,7 +22,7 @@ trait ApiReqGoodsProcessing
     {
         $this->req = request();
         $goods = Goods::select();
-
+    //отфильтруем
         if ($this->req->input('filter')) {
             if ($this->validateFilter()) {
                 return ['errors' => $this->validateFilter()];
@@ -31,7 +31,7 @@ trait ApiReqGoodsProcessing
         } else {
             $filteredGoods = $goods;
         }
-
+    //отсортируем
         if ($this->req->input('sort')) {
             if ($this->validateSort()) {
                 return ['errors' => $this->validateSort()];
@@ -40,8 +40,19 @@ trait ApiReqGoodsProcessing
         } else {
             $sortedGoods = $filteredGoods;
         }
+    //добавим доп характеристики товаров в результат
+        $sortedGoods->with('additionalChars:id,name,value');
+    //разобьём результат на страницы
+        if ($this->req->input('perpage')) {
+            if ($this->validatePerpage()) {
+                return ['errors' => $this->validatePerpage()];
+            }
+            $result = $sortedGoods->paginate($this->req->input('perpage'));
+        } else {
+            $result = $sortedGoods->get();
+        }
 
-        return $sortedGoods->get()->toArray();
+        return $result->toArray();
     }
 
     private function validateFilter(): array
@@ -102,7 +113,7 @@ trait ApiReqGoodsProcessing
     private function validateSort(): array
     {
         $validator = Validator::make($this->req->all(), [
-            'sort.*' => ['nullable', 'string', 'max:10', Rule::in(['name', 'price'])]
+            'sort.*' => ['nullable', 'string', 'max:255', Rule::in(['name', 'price'])]
         ]);
         return ($validator->fails()) ? $validator->errors()->all() : [];
     }
@@ -132,5 +143,11 @@ trait ApiReqGoodsProcessing
             }
         }
         return $data;
+    }
+
+    private function validatePerpage(): array
+    {
+        $validator = Validator::make($this->req->all(), ['perpage' => ['nullable', 'integer']]);
+        return ($validator->fails()) ? $validator->errors()->all() : [];
     }
 }

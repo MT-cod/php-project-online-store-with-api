@@ -5,11 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\RequestsProcessing\ApiReqGoodsProcessing;
 use App\Models\Goods;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class GoodsApiController extends Controller
 {
@@ -17,27 +14,6 @@ class GoodsApiController extends Controller
 
     public function index(): JsonResponse
     {
-        /*$goods = QueryBuilder::for(Goods::class)
-            ->allowedFilters([
-                'name',
-                AllowedFilter::exact('category_id'),
-                AllowedFilter::exact('price'),
-                AllowedFilter::callback('has_addit_chars', function (Builder $query, $value) {
-                    $query->whereHas('additionalChars', function (Builder $query) use ($value) {
-                        $query->where('additional_char_id', $value);
-                    });
-                }),
-                //AllowedFilter::exact('additionalChars.additional_char_id')
-            ])
-            ->allowedFields('additional_chars.name', 'additional_chars.value')
-            ->allowedIncludes(['additionalChars'])
-            ->paginate(50);*/
-        /*$appendss = request()->query();
-        if ($appendss != null) {
-            $goods->appends($appendss);
-        }*/
-
-        //$data = Goods::all();
         $data = self::reqProcessingForIndex();
         if (isset($data['errors'])) {
             return Response::json(['error' => $data['errors']], 400);
@@ -54,7 +30,7 @@ class GoodsApiController extends Controller
      * @param string $slug
      * @return JsonResponse
      */
-    public function slug($slug)
+    public function slug(string $slug): JsonResponse
     {
         $data = Goods::where('slug', $slug)->first();
         if ($data) {
