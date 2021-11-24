@@ -7,7 +7,6 @@ use App\Http\Validators\ApiAuthLoginValidator;
 use App\Http\Validators\ApiAuthRegisterValidator;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Response;
 
@@ -19,7 +18,7 @@ class AuthApiController extends Controller
      * @param ApiAuthRegisterValidator $request
      * @return JsonResponse
      */
-    public function register(ApiAuthRegisterValidator $request)
+    public function register(ApiAuthRegisterValidator $request): JsonResponse
     {
         if ($request->errors()) {
             return Response::json(['error' => $request->errors()], 401);
@@ -29,7 +28,10 @@ class AuthApiController extends Controller
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $token = $user->createToken('Main token')->plainTextToken;
-        return Response::json(['success' => 'Пользователь успешно зарегистрирован. Токен выдан.', 'token' => $token], 200);
+        return Response::json(
+            ['success' => 'Пользователь успешно зарегистрирован. Токен выдан.', 'token' => $token],
+            200
+        );
     }
 
     /**
@@ -38,7 +40,7 @@ class AuthApiController extends Controller
      * @param ApiAuthLoginValidator $request
      * @return JsonResponse
      */
-    public function login(ApiAuthLoginValidator $request)
+    public function login(ApiAuthLoginValidator $request): JsonResponse
     {
         if ($request->errors()) {
             return Response::json(['error' => $request->errors()], 401);
@@ -56,24 +58,25 @@ class AuthApiController extends Controller
     /**
      * Отдаем данные пользователя по запросу
      *
-     * @param Request $request
      * @return JsonResponse
      */
-    public function user(Request $request)
+    public function user(): JsonResponse
     {
-        $data = $request->user()->toArray();
-        return Response::json(['success' => 'Данные пользователя ' . $data['name'] . '.', 'data' => $data], 200);
+        $data = request()->user()->toArray();
+        return Response::json(
+            ['success' => 'Данные пользователя ' . $data['name'] . ' успешно получены.', 'data' => $data],
+            200
+        );
     }
 
     /**
      * Выход с удалением токена пользователя
      *
-     * @param Request $request
      * @return JsonResponse
      */
-    public function logout(Request $request)
+    public function logout(): JsonResponse
     {
-        $request->user()->tokens()->delete();
+        request()->user()->tokens()->delete();
         return Response::json(['success' => 'Успешный выход из системы.'], 200);
     }
 }

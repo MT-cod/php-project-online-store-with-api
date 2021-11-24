@@ -64,4 +64,18 @@ class User extends Authenticatable
         }
         return $basket ?? [];
     }
+
+    public function basketForApi(): array
+    {
+        $allBasket = $this->goodsInBasket()->orderBy('name')->get() ?? [];
+        foreach ($allBasket as $item) {
+            $basket[] = [
+                'id' => $item->pivot->goods_id,
+                'name' => $item->name,
+                'price' => $item->price,
+                'quantity' => $item->pivot->quantity
+            ];
+        }
+        return $basket ?? [];
+    }
 }

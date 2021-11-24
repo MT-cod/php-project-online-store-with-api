@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthApiController;
+use App\Http\Controllers\Api\BasketsApiController;
 use App\Http\Controllers\Api\CategoriesApiController;
 use App\Http\Controllers\Api\GoodsApiController;
 use Illuminate\Http\Request;
@@ -28,15 +29,20 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::get('categories', [CategoriesApiController::class, 'index']);
-//Route::get('goods', [GoodsApiController::class, 'index']);
+
 Route::prefix('goods')->group(function () {
     Route::get('/', [GoodsApiController::class,'index']);
     Route::get('slug/{slug}', [GoodsApiController::class,'slug']);
 });
 
 
-//Маршруты с обязательной авторизацией
+//Авторизованные маршруты
 Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
     Route::post('user', [AuthApiController::class,'user']);
     Route::post('logout', [AuthApiController::class,'logout']);
+});
+
+Route::prefix('basket')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [BasketsApiController::class,'index']);
+    //Route::post('logout', [AuthApiController::class,'logout']);
 });
