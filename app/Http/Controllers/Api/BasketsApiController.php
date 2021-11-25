@@ -32,10 +32,39 @@ class BasketsApiController extends Controller
         if ($request->errors()) {
             return Response::json(['error' => $request->errors()], 401);
         }
-        $data = self::reqProcessingForStore(request());
+        $data = self::reqProcessingForStore();
         return Response::json(
             ['success' => 'Корзина успешно сохранена.', 'data' => $data],
             200
         );
+    }
+
+    /**
+     * Удаляем позицию из корзины.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $data = self::reqProcessingForDestroy($id);
+        if (!$data) {
+            return Response::json(['error' => 'Неверный идентификатор товара для удаления.'], 401);
+        }
+        return Response::json(['success' => 'Позиция успешно удалена.', 'data' => $data], 200);
+    }
+
+    /**
+     * Полная очистка корзины.
+     *
+     * @return JsonResponse
+     */
+    public function purge(): JsonResponse
+    {
+        $result = request()->user()->goodsInBasket()->detach();
+        if (!$result) {
+            return Response::json(['error' => 'Не удалось очистить корзину.'], 500);
+        }
+        return Response::json(['success' => 'Корзина полностью очищена.'], 200);
     }
 }

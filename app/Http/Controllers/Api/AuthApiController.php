@@ -24,7 +24,7 @@ class AuthApiController extends Controller
             return Response::json(['error' => $request->errors()], 401);
         }
 
-        $input = $request->request->all();
+        $input = request()->all();
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $token = $user->createToken('Main token')->plainTextToken;
@@ -46,7 +46,7 @@ class AuthApiController extends Controller
             return Response::json(['error' => $request->errors()], 401);
         }
 
-        $request = $request->request;
+        $request = request();
         $user = User::where('email', $request->email)->first();
         if (!$user || !Hash::check($request->password, $user->password)) {
             return Response::json(['error' => 'Не удалось авторизовать пользователя.'], 401);

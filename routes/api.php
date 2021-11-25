@@ -45,6 +45,6 @@ Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
 Route::prefix('basket')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [BasketsApiController::class,'index']);
     Route::post('store', [BasketsApiController::class,'store']);
-    /*Route::post('delete', [BasketsApiController::class,'delete']);
-    Route::post('purge', [BasketsApiController::class,'purge']);*/
+    Route::post('destroy/{id}', [BasketsApiController::class,'destroy']);
+    Route::post('purge', [BasketsApiController::class,'purge']);
 });
