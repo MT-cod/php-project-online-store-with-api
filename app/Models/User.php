@@ -11,7 +11,9 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -46,9 +48,9 @@ class User extends Authenticatable
 
     public function goodsInBasket(): BelongsToMany
     {
-        return $this->belongsToMany(
-            Goods::class, 'baskets', 'user_id', 'goods_id'
-        )->withPivot('quantity');
+        return $this
+            ->belongsToMany(Goods::class, 'baskets', 'user_id', 'goods_id')
+            ->withPivot('quantity');
     }
 
     public function basket(): array

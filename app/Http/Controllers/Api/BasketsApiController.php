@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Validators\ApiBasketsStoreValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 use App\Http\RequestsProcessing\ApiReqBasketsProcessing;
@@ -16,7 +16,7 @@ class BasketsApiController extends Controller
     {
         $data = request()->user()->basketForApi();
         return Response::json([
-            'success' => 'Корзина пользователя успешно получена из БД.',
+            'success' => 'Корзина пользователя успешно получена.',
             'data' => $data
         ], 200);
     }
@@ -24,17 +24,17 @@ class BasketsApiController extends Controller
     /**
      * Добавление новой позиции товара с кол-вом в корзину.
      *
-     * @param Request $request
+     * @param ApiBasketsStoreValidator $request
      * @return JsonResponse
      */
-    public function store(Request $request): JsonResponse
+    public function store(ApiBasketsStoreValidator $request): JsonResponse
     {
-        $data = self::reqProcessingForStore($request);
-        if (isset($data['errors'])) {
-            return Response::json(['error' => $data['errors']], 400);
+        if ($request->errors()) {
+            return Response::json(['error' => $request->errors()], 401);
         }
+        $data = self::reqProcessingForStore(request());
         return Response::json(
-            ['success' => 'Позиция успешно добавлена в корзину.', 'data' => $data],
+            ['success' => 'Корзина успешно сохранена.', 'data' => $data],
             200
         );
     }
