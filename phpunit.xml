@@ -30,8 +30,11 @@
         <include>
             <directory suffix=".php">tests/Feature</directory>
             <file>routes/web.php</file>
+            <directory suffix=".php">app/Http/Controllers/Api</directory>
             <directory suffix=".php">app/Http/Controllers</directory>
             <directory suffix=".php">app/Http/Models</directory>
+            <directory suffix=".php">app/Http/RequestsProcessing</directory>
+            <directory suffix=".php">app/Http/Validators</directory>
         </include>
     </coverage>
 </phpunit>
