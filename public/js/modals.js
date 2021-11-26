@@ -191,7 +191,7 @@ $(document).on("click", ".btn-modal_order_edit", function() {
             $('.modal-order-form').attr('action', '/orders/' + id);
             if (data.completed == 1) {
                 $('#status').val(0);
-                $('#btn-order-complete').html('Вернуть на доработку ↺');
+                $('#btn-order-complete').html('Вернуть в обработку ↺');
             } else {
                 $('#status').val(1);
                 $('#btn-order-complete').html('Завершить заказ ✓');
