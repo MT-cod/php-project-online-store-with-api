@@ -113,33 +113,17 @@ trait ApiReqGoodsProcessing
     private function validateSort(): array
     {
         $validator = Validator::make($this->req->all(), [
-            'sort.*' => ['nullable', 'string', 'max:255', Rule::in(['name', 'price'])]
+            'sort.*' => ['nullable', 'string', 'max:255', Rule::in(['asc', 'desc'])]
         ]);
         return ($validator->fails()) ? $validator->errors()->all() : [];
     }
 
     private function sorting(Builder $data): Builder
     {
-        if ($this->req->input('sort.asc')) {
-            $sortBy = $this->req->input('sort.asc');
-            switch ($sortBy) {
-                case 'name':
-                    $data->orderBy('name');
-                    break;
-                case 'price':
-                    $data->orderBy('price');
-                    break;
-            }
-        }
-        if ($this->req->input('sort.desc')) {
-            $sortBy = $this->req->input('sort.desc');
-            switch ($sortBy) {
-                case 'name':
-                    $data->orderBy('name', 'desc');
-                    break;
-                case 'price':
-                    $data->orderBy('price', 'desc');
-                    break;
+        $sortColumns = ['created_at', 'updated_at', 'name', 'price'];
+        foreach ($sortColumns as $column) {
+            if ($this->req->input('sort.' . $column)) {
+                $data->orderBy($column, $this->req->input('sort.' . $column));
             }
         }
         return $data;
