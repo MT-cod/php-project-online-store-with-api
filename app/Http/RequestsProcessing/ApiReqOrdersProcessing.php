@@ -14,7 +14,7 @@ trait ApiReqOrdersProcessing
     private Request $req;
 
     /**
-     * Обработка запроса в контроллере.
+     * Обработка запроса на список заказов с фильтрацией, сортировкой и разбитием на страницы.
      *
      * @return array
      */
@@ -53,6 +53,42 @@ trait ApiReqOrdersProcessing
         return $result->toArray();
     }
 
+    /**
+     * Обработка запроса создания заказа.
+     *
+     * @return array
+     */
+    public function reqProcessingForStore(): array
+    {
+        $this->req = request();
+        $order = new Order();
+        $user = $this->req->user();
+        $basket = ($user->basket()) ?: [];
+        if (!$basket) {
+            return ['errors' => 'Ошибка создания заказа. Корзина пользователя пуста.'];
+        }
+        $data['name'] = $this->req->input('name');
+        $data['email'] = $this->req->input('email');
+        $data['phone'] = $this->req->input('phone');
+        $data['user_id'] = $user->id;
+        $data['address'] = $this->req->input('address', '');
+        $data['comment'] = $this->req->input('comment', '');
+        $order->fill($data);
+        if ($order->save()) {
+            //$basket = BasketsController::getActualDataOfBasket();
+            array_walk($basket, fn($item) => $order->goods()
+                ->attach($item['id'], ['price' => $item['price'], 'quantity' => $item['quantity']]));
+            //Заказ сделан, корзина больше не нужна - удаляем её
+            $user->goodsInBasket()->detach();
+        } else {
+            return ['errors' => 'Не удалось создать заказ.'];
+        }
+
+        return $order->toArray();
+    }
+
+
+//-----------------------------------------------------------------------------------------
     private function validateFilter(): array
     {
         $validator = Validator::make($this->req->all(), [

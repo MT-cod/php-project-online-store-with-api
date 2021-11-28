@@ -54,7 +54,7 @@ class OrdersController extends Controller
     }
 
     /**
-     * Создаём новый заказ в БД.
+     * Создаём новый заказ из корзины.
      *
      * @param Request $request
      * @return RedirectResponse

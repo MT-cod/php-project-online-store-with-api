@@ -21,7 +21,7 @@ class AuthApiController extends Controller
     public function register(ApiAuthRegisterValidator $request): JsonResponse
     {
         if ($request->errors()) {
-            return Response::json(['error' => $request->errors()], 401);
+            return Response::json(['error' => $request->errors()], 400);
         }
 
         $input = request()->all();
@@ -43,7 +43,7 @@ class AuthApiController extends Controller
     public function login(ApiAuthLoginValidator $request): JsonResponse
     {
         if ($request->errors()) {
-            return Response::json(['error' => $request->errors()], 401);
+            return Response::json(['error' => $request->errors()], 400);
         }
 
         $request = request();

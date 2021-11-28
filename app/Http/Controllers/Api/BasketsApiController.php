@@ -30,7 +30,7 @@ class BasketsApiController extends Controller
     public function store(ApiBasketsStoreValidator $request): JsonResponse
     {
         if ($request->errors()) {
-            return Response::json(['error' => $request->errors()], 401);
+            return Response::json(['error' => $request->errors()], 400);
         }
         $data = self::reqProcessingForStore();
         return Response::json(
@@ -49,7 +49,7 @@ class BasketsApiController extends Controller
     {
         $data = self::reqProcessingForDestroy($id);
         if (!$data) {
-            return Response::json(['error' => 'Неверный идентификатор товара для удаления.'], 401);
+            return Response::json(['error' => 'Неверный идентификатор товара для удаления.'], 400);
         }
         return Response::json(['success' => 'Позиция успешно удалена.', 'data' => $data], 200);
     }

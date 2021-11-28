@@ -52,7 +52,5 @@ Route::prefix('basket')->middleware('auth:sanctum')->group(function () {
 Route::prefix('orders')->middleware('auth:sanctum')->group(function () {
     Route::post('/', [OrdersApiController::class, 'index']);
     Route::post('own_orders', [OrdersApiController::class, 'ownOrders']);
-    /*Route::post('store', [OrdersApiController::class, 'store']);
-    Route::post('destroy/{id}', [OrdersApiController::class, 'destroy']);
-    Route::post('purge', [OrdersApiController::class, 'purge']);*/
+    Route::post('store', [OrdersApiController::class, 'store']);
 });
