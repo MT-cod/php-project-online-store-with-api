@@ -21,7 +21,7 @@ trait Filter
                 'address' => fn($val, $data) => $data->where('address', 'like', '%' . $val . '%'),
                 'completed' => fn($val, $data) => $data->where('completed', $val),
                 'price' => fn($val, $data) => $data->where('price', $val),
-                'category_ids' => function($val, $data): void {
+                'category_ids' => function ($val, $data): void {
                     $catsWithChildsList = [];
                     function catChildsToList($category, $catsWithChildsList): array
                     {
@@ -42,7 +42,7 @@ trait Filter
                     }
                     $data->whereIn('category_id', $catsWithChildsList);
                 },
-                'additСhar_ids' => function($val, $data): void {
+                'additСhar_ids' => function ($val, $data): void {
                     $chars = explode(',', $val);
                     foreach ($chars as $char) {
                         $data->whereHas('additionalChars', function (Builder $query) use ($char) {
