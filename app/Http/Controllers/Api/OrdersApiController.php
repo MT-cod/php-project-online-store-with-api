@@ -14,7 +14,7 @@ class OrdersApiController extends Controller
 
     public function index(): JsonResponse
     {
-        $data = self::reqProcessingForIndex();
+        $data = $this->reqProcessingForIndex();
         if (isset($data['errors'])) {
             return Response::json(['error' => $data['errors']], 400);
         }
@@ -25,7 +25,7 @@ class OrdersApiController extends Controller
     }
 
     /**
-     * Получение списка заказов запрашивающего авторизированного пользователя
+     * Получение списка заказов авторизированного пользователя
      *
      * @return JsonResponse
      */
@@ -39,7 +39,7 @@ class OrdersApiController extends Controller
     }
 
     /**
-     * Создаём новый заказ из корзины авторизованного пользователя.
+     * Создаём новый заказ пользователя.
      *
      * @param ApiOrdersStoreValidator $request
      * @return JsonResponse
@@ -49,7 +49,7 @@ class OrdersApiController extends Controller
         if ($request->errors()) {
             return Response::json(['error' => $request->errors()], 400);
         }
-        $data = self::reqProcessingForStore();
+        $data = $this->reqProcessingForStore();
         if (isset($data['errors'])) {
             return Response::json(['error' => $data['errors']], 400);
         }

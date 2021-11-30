@@ -3,7 +3,6 @@
 namespace App\Http\Validators;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\MessageBag;
 
 abstract class Validator
 {

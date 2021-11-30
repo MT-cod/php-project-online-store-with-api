@@ -2,8 +2,6 @@
 
 namespace App\Http\RequestsProcessing;
 
-use App\Models\Goods;
-
 trait ApiReqBasketsProcessing
 {
     /**

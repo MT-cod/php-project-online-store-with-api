@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class OrdersTest extends TestCase
@@ -44,7 +43,7 @@ class OrdersTest extends TestCase
         ]);
         $response = $this->get('/orders/create');
         $this->assertSame($this->testUser->name, $response['user_data']['name']);
-        $this->assertSame('333', $response['basket'][1]['quantity']);
+        $this->assertSame(333, $response['basket'][1]['quantity']);
     }
 
     public function testStore(): void
