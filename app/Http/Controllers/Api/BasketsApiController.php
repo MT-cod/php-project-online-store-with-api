@@ -22,7 +22,7 @@ class BasketsApiController extends Controller
     }
 
     /**
-     * Добавление новой позиции товара с кол-вом в корзину.
+     * Создание(обновление данных) корзины.
      *
      * @param ApiBasketsStoreValidator $request
      * @return JsonResponse
@@ -32,10 +32,10 @@ class BasketsApiController extends Controller
         if ($request->errors()) {
             return Response::json(['error' => $request->errors()], 400);
         }
-        $data = self::reqProcessingForStore();
+        $data = $this->reqProcessingForStore();
         return Response::json(
             ['success' => 'Корзина успешно сохранена.', 'data' => $data],
-            200
+            201
         );
     }
 
@@ -47,7 +47,7 @@ class BasketsApiController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
-        $data = self::reqProcessingForDestroy($id);
+        $data = $this->reqProcessingForDestroy($id);
         if (!$data) {
             return Response::json(['error' => 'Неверный идентификатор товара для удаления.'], 400);
         }

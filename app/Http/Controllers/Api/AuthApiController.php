@@ -30,7 +30,7 @@ class AuthApiController extends Controller
         $token = $user->createToken('Main token')->plainTextToken;
         return Response::json(
             ['success' => 'Пользователь успешно зарегистрирован. Токен выдан.', 'token' => $token],
-            200
+            201
         );
     }
 

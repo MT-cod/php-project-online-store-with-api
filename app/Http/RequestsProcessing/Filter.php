@@ -42,7 +42,7 @@ trait Filter
                     }
                     $data->whereIn('category_id', $catsWithChildsList);
                 },
-                'additСhar_ids' => function ($val, $data): void {
+                'additChar_ids' => function ($val, $data): void {
                     $chars = explode(',', $val);
                     foreach ($chars as $char) {
                         $data->whereHas('additionalChars', function (Builder $query) use ($char) {

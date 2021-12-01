@@ -14,7 +14,7 @@ class GoodsApiController extends Controller
 
     public function index(): JsonResponse
     {
-        $data = self::reqProcessingForIndex();
+        $data = $this->reqProcessingForIndex();
         if (isset($data['errors'])) {
             return Response::json(['error' => $data['errors']], 400);
         }

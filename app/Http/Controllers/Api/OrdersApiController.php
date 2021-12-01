@@ -56,6 +56,6 @@ class OrdersApiController extends Controller
         return Response::json([
             'success' => 'Заказ успешно создан.',
             'data' => $data
-        ], 200);
+        ], 201);
     }
 }

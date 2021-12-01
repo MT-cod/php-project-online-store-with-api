@@ -4,14 +4,11 @@ namespace App\Http\RequestsProcessing;
 
 use App\Http\Validators\ApiOrdersIndexValidator;
 use App\Models\Order;
-use Illuminate\Http\Request;
 
 trait ApiReqOrdersProcessing
 {
     use Filter;
     use Sorter;
-
-    private Request $req;
 
     /**
      * Обработка запроса на список заказов с фильтрацией, сортировкой и разбитием на страницы.
