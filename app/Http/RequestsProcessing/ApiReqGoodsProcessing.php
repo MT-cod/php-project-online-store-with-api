@@ -33,7 +33,5 @@ trait ApiReqGoodsProcessing
         $result = $sortedData->paginate($req->input('perpage') ?? 1000);
 
         return $result->toArray();
-
-
     }
 }
