@@ -49,7 +49,7 @@ class BasketsApiController extends Controller
     {
         $data = $this->reqProcessingForDestroy($id);
         if (!$data) {
-            return Response::json(['error' => 'Неверный идентификатор товара для удаления.'], 400);
+            return Response::json(['error' => "Не удалось удалить позицию с идентификатором товара $id."], 400);
         }
         return Response::json(['success' => 'Позиция успешно удалена.', 'data' => $data], 200);
     }

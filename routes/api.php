@@ -44,13 +44,14 @@ Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
 
 Route::prefix('basket')->middleware('auth:sanctum')->group(function () {
     Route::post('/', [BasketsApiController::class, 'index']);
-    Route::post('store', [BasketsApiController::class, 'store']);
-    Route::post('destroy/{id}', [BasketsApiController::class, 'destroy']);
-    Route::post('purge', [BasketsApiController::class, 'purge']);
+    Route::post('/', [BasketsApiController::class, 'store']);
+    Route::delete('{id}', [BasketsApiController::class, 'destroy']);
+    Route::delete('purge', [BasketsApiController::class, 'purge']);
 });
 
 Route::prefix('orders')->middleware('auth:sanctum')->group(function () {
-    Route::post('/', [OrdersApiController::class, 'index']);
-    Route::post('own_orders', [OrdersApiController::class, 'ownOrders']);
-    Route::post('store', [OrdersApiController::class, 'store']);
+    Route::get('/', [OrdersApiController::class, 'index']);
+    Route::get('own_orders', [OrdersApiController::class, 'ownOrders']);
+    Route::post('/', [OrdersApiController::class, 'store']);
+    Route::patch('{id}', [OrdersApiController::class, 'update']);
 });

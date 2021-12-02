@@ -21,14 +21,29 @@ trait ApiReqOrdersProcessing
 
         $validated = new ApiOrdersIndexValidator($req);
         if ($validated->errors()) {
-            return ['errors' => $validated->errors()];
+            return ['errors' => $validated->errors(), 'status' => 400];
         }
 
         $filteredData = $this->filtering($req->input('filter'), Order::select());
         $sortedData = $this->sorting($req->input('sort'), $filteredData);
         $result = $sortedData->paginate($req->input('perpage') ?? 1000);
 
-        return $result->toArray();
+        return ['success' => 'Список заказов успешно получен.', 'data' => $result->toArray(), 'status' => 200];
+    }
+
+    /**
+     * Обработка запроса на получение списка заказов авторизированного пользователя.
+     *
+     * @return array
+     */
+    public function reqProcessingForOwnOrders(): array
+    {
+        $result = request()->user()->orders()->get();
+        return [
+            'success' => 'Список заказов пользователя успешно получен.',
+            'data' => $result->toArray(),
+            'status' => 200
+        ];
     }
 
     /**
@@ -43,7 +58,7 @@ trait ApiReqOrdersProcessing
         $user = $req->user();
         $basket = ($user->basket()) ?: [];
         if (!$basket) {
-            return ['errors' => 'Ошибка создания заказа. Корзина пользователя пуста.'];
+            return ['errors' => 'Ошибка создания заказа. Корзина пользователя пуста.', 'status' => 400];
         }
         $data['name'] = $req->input('name');
         $data['email'] = $req->input('email');
@@ -57,10 +72,28 @@ trait ApiReqOrdersProcessing
                 ->attach($item['id'], ['price' => $item['price'], 'quantity' => $item['quantity']]));
             //Заказ сделан, корзина больше не нужна - удаляем её
             $user->goodsInBasket()->detach();
-        } else {
-            return ['errors' => 'Не удалось создать заказ.'];
+            return ['success' => 'Заказ успешно создан.', 'data' => $order->toArray(), 'status' => 201];
         }
+        return ['errors' => 'Не удалось создать заказ.', 'status' => 500];
+    }
 
-        return $order->toArray();
+    /**
+     * Обработка запроса на изменение заказа.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function reqProcessingForUpdate(int $id): array
+    {
+        $req = request();
+        $order = Order::find($id);
+        if ($order) {
+            $order->completed = $req->input('completed');
+            if ($order->save()) {
+                return ['success' => 'Заказ успешно обновлен.', 'data' => $order->toArray(), 'status' => 200];
+            }
+            return ['errors' => "Не удалось обновить заказ id:$id.", 'status' => 500];
+        }
+        return ['errors' => "Не удалось обновить заказ id:$id.", 'status' => 400];
     }
 }

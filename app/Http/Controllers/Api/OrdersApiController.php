@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\RequestsProcessing\ApiReqOrdersProcessing;
 use App\Http\Validators\ApiOrdersStoreValidator;
+use App\Http\Validators\ApiOrdersUpdateValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 
@@ -14,14 +15,11 @@ class OrdersApiController extends Controller
 
     public function index(): JsonResponse
     {
-        $data = $this->reqProcessingForIndex();
-        if (isset($data['errors'])) {
-            return Response::json(['error' => $data['errors']], 400);
+        $result = $this->reqProcessingForIndex();
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
         }
-        return Response::json([
-            'success' => 'Список заказов успешно получен.',
-            'data' => $data
-        ], 200);
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
     }
 
     /**
@@ -31,11 +29,8 @@ class OrdersApiController extends Controller
      */
     public function ownOrders(): JsonResponse
     {
-        $data = request()->user()->orders()->get();
-        return Response::json([
-            'success' => 'Список заказов пользователя успешно получен.',
-            'data' => $data
-        ], 200);
+        $result = $this->reqProcessingForOwnOrders();
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
     }
 
     /**
@@ -49,13 +44,29 @@ class OrdersApiController extends Controller
         if ($request->errors()) {
             return Response::json(['error' => $request->errors()], 400);
         }
-        $data = $this->reqProcessingForStore();
-        if (isset($data['errors'])) {
-            return Response::json(['error' => $data['errors']], 400);
+        $result = $this->reqProcessingForStore();
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
         }
-        return Response::json([
-            'success' => 'Заказ успешно создан.',
-            'data' => $data
-        ], 201);
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+    }
+
+    /**
+     * Изменяем заказ.
+     *
+     * @param ApiOrdersUpdateValidator $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(ApiOrdersUpdateValidator $request, int $id): JsonResponse
+    {
+        if ($request->errors()) {
+            return Response::json(['error' => $request->errors()], 400);
+        }
+        $result = $this->reqProcessingForUpdate($id);
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
+        }
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
     }
 }

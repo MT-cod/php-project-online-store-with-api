@@ -2,7 +2,6 @@
 
 namespace App\Http\Validators;
 
-use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
@@ -43,7 +42,7 @@ class ApiOrdersIndexValidator extends \App\Http\Validators\Validator
                     'completed'
                 ];
                 if (!in_array(explode('.', $attr)[1], $permitAttrs)) {
-                    $fail("Фильтрация данных по полю $attr некорректна");
+                    $fail("Фильтрация данных по полю $attr некорректна.");
                 }
             }
         ]);
