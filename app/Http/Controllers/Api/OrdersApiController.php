@@ -30,6 +30,9 @@ class OrdersApiController extends Controller
     public function ownOrders(): JsonResponse
     {
         $result = $this->reqProcessingForOwnOrders();
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
+        }
         return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
     }
 

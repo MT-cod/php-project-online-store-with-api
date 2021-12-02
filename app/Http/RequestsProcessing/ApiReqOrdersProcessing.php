@@ -38,7 +38,17 @@ trait ApiReqOrdersProcessing
      */
     public function reqProcessingForOwnOrders(): array
     {
-        $result = request()->user()->orders()->get();
+        $req = request();
+
+        $validated = new ApiOrdersIndexValidator($req);
+        if ($validated->errors()) {
+            return ['errors' => $validated->errors(), 'status' => 400];
+        }
+
+        $filteredData = $this->filtering($req->input('filter'), Order::where('user_id', $req->user()->id));
+        $sortedData = $this->sorting($req->input('sort'), $filteredData);
+        $result = $sortedData->paginate($req->input('perpage') ?? 1000);
+
         return [
             'success' => 'Список заказов пользователя успешно получен.',
             'data' => $result->toArray(),
