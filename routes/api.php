@@ -52,6 +52,7 @@ Route::prefix('basket')->middleware('auth:sanctum')->group(function () {
 Route::prefix('orders')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [OrdersApiController::class, 'index']);
     Route::get('own_orders', [OrdersApiController::class, 'ownOrders']);
+    Route::get('{id}', [OrdersApiController::class, 'show']);
     Route::post('/', [OrdersApiController::class, 'store']);
     Route::patch('{id}', [OrdersApiController::class, 'update']);
 });

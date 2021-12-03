@@ -37,6 +37,21 @@ class OrdersApiController extends Controller
     }
 
     /**
+     * Данные заказа с товарами.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        $result = $this->reqProcessingForShow($id);
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
+        }
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+    }
+
+    /**
      * Создаём новый заказ пользователя.
      *
      * @param ApiOrdersStoreValidator $request

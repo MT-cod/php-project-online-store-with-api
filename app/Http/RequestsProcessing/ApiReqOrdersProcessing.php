@@ -57,6 +57,24 @@ trait ApiReqOrdersProcessing
     }
 
     /**
+     * Обработка запроса на получение данных заказа с товарами.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function reqProcessingForShow(int $id): array
+    {
+        //$req = request();
+        $order = Order::find($id);
+        if ($order) {
+            $data = $order->toArray();
+            $data['basket'] = $order->goods()->get()->toArray();
+            return ['success' => 'Заказ успешно получен.', 'data' => $data, 'status' => 200];
+        }
+        return ['errors' => "Не удалось найти заказ id:$id.", 'status' => 400];
+    }
+
+    /**
      * Обработка запроса создания заказа.
      *
      * @return array
