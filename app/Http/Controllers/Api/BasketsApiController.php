@@ -19,7 +19,7 @@ class BasketsApiController extends Controller
     }
 
     /**
-     * Создание(обновление данных) корзины.
+     * Создание(обновление данных) корзины пользователя.
      *
      * @param ApiBasketsStoreValidator $request
      * @return JsonResponse
@@ -34,31 +34,31 @@ class BasketsApiController extends Controller
     }
 
     /**
-     * Удаляем позицию из корзины.
+     * Удаление позиции из корзины пользователя.
      *
      * @param int $id
      * @return JsonResponse
      */
     public function destroy(int $id): JsonResponse
     {
-        $data = $this->reqProcessingForDestroy($id);
-        if (!$data) {
-            return Response::json(['error' => "Не удалось удалить позицию с идентификатором товара $id."], 400);
+        $result = $this->reqProcessingForDestroy($id);
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
         }
-        return Response::json(['success' => 'Позиция успешно удалена.', 'data' => $data], 200);
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
     }
 
     /**
-     * Полная очистка корзины.
+     * Полная очистка корзины пользователя.
      *
      * @return JsonResponse
      */
     public function purge(): JsonResponse
     {
-        $result = request()->user()->goodsInBasket()->detach();
-        if (!$result) {
-            return Response::json(['error' => 'Не удалось очистить корзину.'], 500);
+        $result = $this->reqProcessingForPurge();
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
         }
-        return Response::json(['success' => 'Корзина полностью очищена.'], 200);
+        return Response::json(['success' => $result['success']], $result['status']);
     }
 }

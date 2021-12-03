@@ -49,7 +49,6 @@ trait Filter
                             $query->where('additional_char_id', $char);
                         });
                     }
-                    //return $data;
                 }
             ];
 
