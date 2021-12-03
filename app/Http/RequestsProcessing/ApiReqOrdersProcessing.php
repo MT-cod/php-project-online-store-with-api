@@ -64,7 +64,6 @@ trait ApiReqOrdersProcessing
      */
     public function reqProcessingForShow(int $id): array
     {
-        //$req = request();
         $order = Order::find($id);
         if ($order) {
             $data = $order->toArray();

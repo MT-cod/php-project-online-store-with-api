@@ -5,18 +5,45 @@ namespace App\Http\RequestsProcessing;
 trait ApiReqBasketsProcessing
 {
     /**
-     * Обработка запроса на добавление позиции.
+     * Обработка запроса корзины пользователя.
+     *
+     * @return array
+     */
+    public function reqProcessingForOwnBasket(): array
+    {
+        $data = request()->user()->basketForApi();
+        if ($data) {
+            return [
+                'success' => 'Корзина пользователя успешно получена.',
+                'data' => $data,
+                'status' => 200
+            ];
+        }
+        return [
+            'success' => 'Корзина пользователя пуста.',
+            'data' => $data,
+            'status' => 200
+        ];
+    }
+
+    /**
+     * Обработка запроса на создание(обновление данных) корзины.
      *
      * @return array
      */
     public function reqProcessingForStore(): array
     {
-        $request = request();
-        if ($request->input('basket')) {
-            $basket = array_map(fn($qua) => ['quantity' => $qua], $request->input('basket'));
-            $request->user()->goodsInBasket()->sync($basket);
+        $req = request();
+        if ($req->input('basket')) {
+            $basket = array_map(static fn($qua) => ['quantity' => $qua], $req->input('basket'));
+            $req->user()->goodsInBasket()->sync($basket);
         }
-        return $request->user()->basketForApi();
+        $result = $req->user()->basketForApi();
+        return [
+            'success' => 'Корзина успешно сохранена.',
+            'data' => $result,
+            'status' => 200
+        ];
     }
 
     /**

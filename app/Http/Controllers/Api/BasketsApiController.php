@@ -12,13 +12,10 @@ class BasketsApiController extends Controller
 {
     use ApiReqBasketsProcessing;
 
-    public function index(): JsonResponse
+    public function ownBasket(): JsonResponse
     {
-        $data = request()->user()->basketForApi();
-        return Response::json([
-            'success' => 'Корзина пользователя успешно получена.',
-            'data' => $data
-        ], 200);
+        $result = $this->reqProcessingForOwnBasket();
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
     }
 
     /**
@@ -32,11 +29,8 @@ class BasketsApiController extends Controller
         if ($request->errors()) {
             return Response::json(['error' => $request->errors()], 400);
         }
-        $data = $this->reqProcessingForStore();
-        return Response::json(
-            ['success' => 'Корзина успешно сохранена.', 'data' => $data],
-            201
-        );
+        $result = $this->reqProcessingForStore();
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
     }
 
     /**
