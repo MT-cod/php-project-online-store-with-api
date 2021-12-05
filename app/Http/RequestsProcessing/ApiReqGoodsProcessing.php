@@ -21,7 +21,7 @@ trait ApiReqGoodsProcessing
 
         $validated = new ApiGoodsIndexValidator($req);
         if ($validated->errors()) {
-            return ['errors' => $validated->errors()];
+            return ['errors' => $validated->errors(), 'status' => 400];
         }
 
         $filteredData = $this->filtering($req->input('filter'), Goods::select());
@@ -32,6 +32,49 @@ trait ApiReqGoodsProcessing
 
         $result = $sortedData->paginate($req->input('perpage') ?? 1000);
 
-        return $result->toArray();
+        return [
+            'success' => 'Список товаров с дополнительными характеристиками успешно получен.',
+            'data' => $result->toArray(),
+            'status' => 200
+        ];
+    }
+
+    /**
+     * Обработка запроса на получение товара по запрошенному slug.
+     *
+     * @param string $slug
+     * @return array
+     */
+    public function reqProcessingForSlug(string $slug): array
+    {
+        $item = Goods::where('slug', $slug)->with('additionalChars:id,name,value')->first();
+        if ($item) {
+            return ['success' => 'Товар успешно получен.', 'data' => $item, 'status' => 200];
+        }
+        return ['errors' => 'Не удалось получить товар по запрошенному slug', 'status' => 400];
+    }
+
+    /**
+     * Обработка запроса на создание товара.
+     *
+     * @return array
+     */
+    public function reqProcessingForStore(): array
+    {
+        $req = request();
+        $item = new Goods();
+        $data['name'] = $req->input('name');
+        $data['slug'] = $req->input('slug');
+        $data['description'] = $req->input('description', '');
+        $data['price'] = $req->input('price');
+        $data['category_id'] = $req->input('category_id');
+        $item->fill($data);
+        $additChars = $req->input('additChars', []);
+        if ($item->save()) {
+            $item->additionalChars()->attach($additChars);
+            $result = Goods::whereId($item->id)->with('additionalChars:id,name,value')->first();
+            return ['success' => "Товар $item->name успешно создан.", 'data' => $result, 'status' => 200];
+        }
+        return ['errors' => 'Не удалось создать товар.', 'status' => 400];
     }
 }

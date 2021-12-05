@@ -19,7 +19,7 @@ class CreateGoodsTable extends Migration
             $table->string('name', 100);
             $table->text('description')->nullable();
             $table->string('slug', 100)->unique();
-            $table->decimal('price', 10, 2, true)->default(0)->unsigned();
+            $table->decimal('price', 10, 2, true)->default(0);
             $table->bigInteger('category_id')->nullable()->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->nullOnDelete();
         });

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\RequestsProcessing\ApiReqGoodsProcessing;
-use App\Models\Goods;
+use App\Http\Validators\ApiGoodsStoreValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
 
@@ -14,14 +14,11 @@ class GoodsApiController extends Controller
 
     public function index(): JsonResponse
     {
-        $data = $this->reqProcessingForIndex();
-        if (isset($data['errors'])) {
-            return Response::json(['error' => $data['errors']], 400);
+        $result = $this->reqProcessingForIndex();
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
         }
-        return Response::json([
-            'success' => 'Список товаров с дополнительными характеристиками успешно получен.',
-            'data' => $data
-        ], 200);
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
     }
 
     /**
@@ -32,10 +29,28 @@ class GoodsApiController extends Controller
      */
     public function slug(string $slug): JsonResponse
     {
-        $data = Goods::where('slug', $slug)->first();
-        if ($data) {
-            return Response::json(['success' => 'Товар успешно получен.', 'data' => $data], 200);
+        $result = $this->reqProcessingForSlug($slug);
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
         }
-        return Response::json(['error' => 'Не удалось получить товар по запрошенному slug'], 400);
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+    }
+
+    /**
+     * Создание товара.
+     *
+     * @param ApiGoodsStoreValidator $request
+     * @return JsonResponse
+     */
+    public function store(ApiGoodsStoreValidator $request): JsonResponse
+    {
+        if ($request->errors()) {
+            return Response::json(['error' => $request->errors()], 400);
+        }
+        $result = $this->reqProcessingForStore();
+        if (isset($result['errors'])) {
+            return Response::json(['error' => $result['errors']], $result['status']);
+        }
+        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
     }
 }

@@ -1,4 +1,4 @@
-## Учебный проект «Online shop» (PHP(Laravel)/Bootstrap/JS/REST API)
+## Учебный проект «Online store» (PHP(Laravel)/Bootstrap/JS/REST API)
 
 [![PHP%20CI](https://github.com/MT-cod/php-project-online-store-with-api/workflows/PHP%20CI/badge.svg)](https://github.com/MT-cod/php-project-online-store-with-api/actions)
 <br>

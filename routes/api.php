@@ -42,6 +42,11 @@ Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthApiController::class, 'logout']);
 });
 
+Route::prefix('goods')->group(function () {
+    Route::post('/', [GoodsApiController::class, 'store']);
+    //Route::get('slug/{slug}', [GoodsApiController::class, 'slug']);
+});
+
 Route::prefix('baskets')->middleware('auth:sanctum')->group(function () {
     Route::get('own_basket', [BasketsApiController::class, 'ownBasket']);
     Route::post('/', [BasketsApiController::class, 'store']);

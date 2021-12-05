@@ -174,17 +174,18 @@ class GoodsController extends Controller
             'filter.category_id' => [function ($attribute, $value, $fail): void {
                 if ($value != null && Category::whereId($value)->first() === null) {
                     unset($_REQUEST['filter']['category_id']);
-                    $fail('Запрошена некорректная категория для фильтра');
+                    $fail('Запрошена некорректная категория для фильтра.');
                 }
             }],
             'filter.name' => 'nullable|max:255',
             'filter.additChars' => [function ($attribute, $value, $fail): void {
-                if (AdditionalChar::whereId($value)->first() == null) {
-                    unset($_REQUEST['filter']['additChars']);
-                    $fail('Запрошена некорректная доп. характеристика для фильтра');
+                foreach ($value as $id) {
+                    if (!AdditionalChar::whereId($id)->first()) {
+                        unset($_REQUEST['filter']['additChars']);
+                        $fail('Запрошена некорректная доп. характеристика для фильтра.');
+                    }
                 }
-            }
-            ]
+            }]
         ]);
     }
 
