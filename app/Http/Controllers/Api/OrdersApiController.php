@@ -4,22 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\RequestsProcessing\ApiReqOrdersProcessing;
+use App\Http\RequestsProcessing\ApiResponses;
 use App\Http\Validators\ApiOrdersStoreValidator;
 use App\Http\Validators\ApiOrdersUpdateValidator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Response;
 
 class OrdersApiController extends Controller
 {
     use ApiReqOrdersProcessing;
+    use ApiResponses;
 
     public function index(): JsonResponse
     {
-        $result = $this->reqProcessingForIndex();
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForIndex());
     }
 
     /**
@@ -29,11 +26,7 @@ class OrdersApiController extends Controller
      */
     public function ownOrders(): JsonResponse
     {
-        $result = $this->reqProcessingForOwnOrders();
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForOwnOrders());
     }
 
     /**
@@ -44,11 +37,7 @@ class OrdersApiController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        $result = $this->reqProcessingForShow($id);
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForShow($id));
     }
 
     /**
@@ -59,14 +48,8 @@ class OrdersApiController extends Controller
      */
     public function store(ApiOrdersStoreValidator $request): JsonResponse
     {
-        if ($request->errors()) {
-            return Response::json(['error' => $request->errors()], 400);
-        }
-        $result = $this->reqProcessingForStore();
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendErrRespOnInvalidValidate($request)
+            ?? $this->sendResultRespAfterProcessing($this->reqProcessingForStore());
     }
 
     /**
@@ -78,13 +61,7 @@ class OrdersApiController extends Controller
      */
     public function update(ApiOrdersUpdateValidator $request, int $id): JsonResponse
     {
-        if ($request->errors()) {
-            return Response::json(['error' => $request->errors()], 400);
-        }
-        $result = $this->reqProcessingForUpdate($id);
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendErrRespOnInvalidValidate($request)
+            ?? $this->sendResultRespAfterProcessing($this->reqProcessingForUpdate($id));
     }
 }

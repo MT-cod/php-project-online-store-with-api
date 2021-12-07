@@ -33,6 +33,7 @@ Route::get('categories', [CategoriesApiController::class, 'index']);
 Route::prefix('goods')->group(function () {
     Route::get('/', [GoodsApiController::class, 'index']);
     Route::get('slug/{slug}', [GoodsApiController::class, 'slug']);
+    Route::get('{id}', [GoodsApiController::class, 'show']);
 });
 
 
@@ -42,9 +43,9 @@ Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthApiController::class, 'logout']);
 });
 
-Route::prefix('goods')->group(function () {
+Route::prefix('goods')->middleware('auth:sanctum')->group(function () {
     Route::post('/', [GoodsApiController::class, 'store']);
-    //Route::get('slug/{slug}', [GoodsApiController::class, 'slug']);
+    Route::patch('{id}', [GoodsApiController::class, 'update']);
 });
 
 Route::prefix('baskets')->middleware('auth:sanctum')->group(function () {

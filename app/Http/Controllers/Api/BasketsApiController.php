@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\RequestsProcessing\ApiResponses;
 use App\Http\Validators\ApiBasketsStoreValidator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;
@@ -11,11 +12,11 @@ use App\Http\RequestsProcessing\ApiReqBasketsProcessing;
 class BasketsApiController extends Controller
 {
     use ApiReqBasketsProcessing;
+    use ApiResponses;
 
     public function ownBasket(): JsonResponse
     {
-        $result = $this->reqProcessingForOwnBasket();
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForOwnBasket());
     }
 
     /**
@@ -26,11 +27,8 @@ class BasketsApiController extends Controller
      */
     public function store(ApiBasketsStoreValidator $request): JsonResponse
     {
-        if ($request->errors()) {
-            return Response::json(['error' => $request->errors()], 400);
-        }
-        $result = $this->reqProcessingForStore();
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendErrRespOnInvalidValidate($request)
+            ?? $this->sendResultRespAfterProcessing($this->reqProcessingForStore());
     }
 
     /**
@@ -41,11 +39,7 @@ class BasketsApiController extends Controller
      */
     public function destroy(int $id): JsonResponse
     {
-        $result = $this->reqProcessingForDestroy($id);
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForDestroy($id));
     }
 
     /**
@@ -55,10 +49,6 @@ class BasketsApiController extends Controller
      */
     public function purge(): JsonResponse
     {
-        $result = $this->reqProcessingForPurge();
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success']], $result['status']);
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForPurge());
     }
 }

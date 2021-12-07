@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\MessageBag;
 
-class ApiGoodsStoreValidator extends \App\Http\Validators\Validator
+class ApiGoodsUpdateValidator extends \App\Http\Validators\Validator
 {
     /**
     * Валидация запроса
@@ -21,14 +21,12 @@ class ApiGoodsStoreValidator extends \App\Http\Validators\Validator
     {
         $validator = Validator::make($request->all(), [
             'name' => [
-                'required',
                 function ($attribute, $value, $fail): void {
                     if (Goods::where($attribute, $value)->first()) {
                         $fail("Товар с именем $value уже существует.");
                     }
                 }],
             'slug' => [
-                'required',
                 function ($attribute, $value, $fail): void {
                     if (Goods::where($attribute, $value)->first()) {
                         $fail("Товар со slug $value уже существует.");
@@ -36,7 +34,6 @@ class ApiGoodsStoreValidator extends \App\Http\Validators\Validator
                 }],
             'price' => ['regex:/^\d*\.?\d{0,2}$/'],
             'category_id' => [
-                'required',
                 function ($attribute, $value, $fail): void {
                     if (!Category::find($value)) {
                         $fail("Категория с id:$value не найдена.");

@@ -4,21 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\RequestsProcessing\ApiReqGoodsProcessing;
+use App\Http\RequestsProcessing\ApiResponses;
 use App\Http\Validators\ApiGoodsStoreValidator;
+use App\Http\Validators\ApiGoodsUpdateValidator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Response;
 
 class GoodsApiController extends Controller
 {
     use ApiReqGoodsProcessing;
+    use ApiResponses;
 
     public function index(): JsonResponse
     {
-        $result = $this->reqProcessingForIndex();
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForIndex());
     }
 
     /**
@@ -29,11 +27,18 @@ class GoodsApiController extends Controller
      */
     public function slug(string $slug): JsonResponse
     {
-        $result = $this->reqProcessingForSlug($slug);
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForSlug($slug));
+    }
+
+    /**
+     * Данные товара.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function show(int $id): JsonResponse
+    {
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForShow($id));
     }
 
     /**
@@ -44,13 +49,20 @@ class GoodsApiController extends Controller
      */
     public function store(ApiGoodsStoreValidator $request): JsonResponse
     {
-        if ($request->errors()) {
-            return Response::json(['error' => $request->errors()], 400);
-        }
-        $result = $this->reqProcessingForStore();
-        if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
-        }
-        return Response::json(['success' => $result['success'], 'data' => $result['data']], $result['status']);
+        return ($this->sendErrRespOnInvalidValidate($request))
+            ?? $this->sendResultRespAfterProcessing($this->reqProcessingForStore());
+    }
+
+    /**
+     * Изменение товара.
+     *
+     * @param ApiGoodsUpdateValidator $request
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function update(ApiGoodsUpdateValidator $request, int $id): JsonResponse
+    {
+        return ($this->sendErrRespOnInvalidValidate($request))
+            ?? $this->sendResultRespAfterProcessing($this->reqProcessingForUpdate($id));
     }
 }
