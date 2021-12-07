@@ -133,4 +133,28 @@ trait ApiReqGoodsProcessing
         }
         return ['errors' => 'Ошибка изменения данных.', 'status' => 400];
     }
+
+    /**
+     * Обработка запроса на удаление товара.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function reqProcessingForDestroy(int $id): array
+    {
+        $item = Goods::whereId($id)->first();
+        if ($item) {
+            try {
+                $item->additionalChars()->detach();
+                $item->delete();
+                return ['success' => 'Товар успешно удален.', 'status' => 200];
+            } catch (\Exception $e) {
+                return [
+                    'errors' => "Не удалось удалить товар с id:$id. Товар может участвовать в транзакциях.",
+                    'status' => 400
+                ];
+            }
+        }
+        return ['errors' => "Не удалось найти товар с id:$id.", 'status' => 400];
+    }
 }

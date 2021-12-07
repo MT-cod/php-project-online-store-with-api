@@ -46,6 +46,7 @@ Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
 Route::prefix('goods')->middleware('auth:sanctum')->group(function () {
     Route::post('/', [GoodsApiController::class, 'store']);
     Route::patch('{id}', [GoodsApiController::class, 'update']);
+    Route::delete('{id}', [GoodsApiController::class, 'destroy']);
 });
 
 Route::prefix('baskets')->middleware('auth:sanctum')->group(function () {

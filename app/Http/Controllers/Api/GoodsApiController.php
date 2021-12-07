@@ -65,4 +65,15 @@ class GoodsApiController extends Controller
         return ($this->sendErrRespOnInvalidValidate($request))
             ?? $this->sendResultRespAfterProcessing($this->reqProcessingForUpdate($id));
     }
+
+    /**
+     * Удаление товара.
+     *
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        return $this->sendResultRespAfterProcessing($this->reqProcessingForDestroy($id));
+    }
 }
