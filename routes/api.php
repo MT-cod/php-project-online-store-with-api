@@ -28,7 +28,11 @@ Route::prefix('auth')->group(function () {
     Route::post('login', [AuthApiController::class, 'login']);
 });
 
-Route::get('categories', [CategoriesApiController::class, 'index']);
+Route::prefix('categories')->group(function () {
+    Route::get('tree', [CategoriesApiController::class, 'tree']);
+    Route::get('/', [CategoriesApiController::class, 'index']);
+    Route::get('{id}', [CategoriesApiController::class, 'show']);
+});
 
 Route::prefix('goods')->group(function () {
     Route::get('/', [GoodsApiController::class, 'index']);
@@ -37,10 +41,16 @@ Route::prefix('goods')->group(function () {
 });
 
 
-//Авторизованные маршруты
+//Маршруты с авторизацией
 Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
     Route::post('user', [AuthApiController::class, 'user']);
     Route::post('logout', [AuthApiController::class, 'logout']);
+});
+
+Route::prefix('categories')->middleware('auth:sanctum')->group(function () {
+    Route::post('/', [CategoriesApiController::class, 'store']);
+    Route::patch('{id}', [CategoriesApiController::class, 'update']);
+    Route::delete('{id}', [CategoriesApiController::class, 'destroy']);
 });
 
 Route::prefix('goods')->middleware('auth:sanctum')->group(function () {

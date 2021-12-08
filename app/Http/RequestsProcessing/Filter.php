@@ -21,6 +21,8 @@ trait Filter
                 'address' => fn($val, $data) => $data->where('address', 'like', '%' . $val . '%'),
                 'completed' => fn($val, $data) => $data->where('completed', $val),
                 'price' => fn($val, $data) => $data->where('price', $val),
+                'level' => fn($val, $data) => $data->where('level', $val),
+                'parent_id' => fn($val, $data) => $data->where('parent_id', $val),
                 'category_ids' => function ($val, $data): void {
                     $catsWithChildsList = [];
                     function catChildsToList($category, $catsWithChildsList): array

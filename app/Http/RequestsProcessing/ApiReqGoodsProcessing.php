@@ -103,6 +103,9 @@ trait ApiReqGoodsProcessing
     {
         $req = request();
         $item = Goods::whereId($id)->first();
+        if (!$item) {
+            return ['errors' => "Не удалось найти товар с id:$id", 'status' => 400];
+        }
         $data = [];
         foreach ($req->input() as $row => $val) {
             switch ($row) {
@@ -128,7 +131,7 @@ trait ApiReqGoodsProcessing
         }
         $item->fill($data);
         if ($item->save()) {
-            $result = Goods::whereId($item->id)->with('additionalChars:id,name,value')->first();
+            $result = Goods::whereId($id)->with('additionalChars:id,name,value')->first();
             return ['success' => "Параметры товара успешно изменены.", 'data' => $result, 'status' => 200];
         }
         return ['errors' => 'Ошибка изменения данных.', 'status' => 400];

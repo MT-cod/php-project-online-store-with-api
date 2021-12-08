@@ -3,6 +3,7 @@
 namespace App\Http\Validators;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
 
 abstract class Validator
 {
@@ -16,12 +17,12 @@ abstract class Validator
     /**
      * Проверка на ошибки валидации
      *
-     * @return array
+     * @return array|MessageBag
      */
-    public function errors()
+    public function errors(): array|MessageBag
     {
         return $this->validate($this->request);
     }
 
-    abstract public function validate(Request $request);
+    abstract public function validate(Request $request): array|MessageBag;
 }
