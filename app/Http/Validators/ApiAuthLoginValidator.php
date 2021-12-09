@@ -12,9 +12,9 @@ class ApiAuthLoginValidator extends \App\Http\Validators\Validator
     * Валидация запроса
     *
     * @param Request $request
-    * @return MessageBag|array
+    * @return array|MessageBag
      */
-    public function validate(Request $request)
+    public function validate(Request $request): array|MessageBag
     {
         $validator = Validator::make($request->all(), [
             'email' => ['required', 'string', 'email', 'max:255'],

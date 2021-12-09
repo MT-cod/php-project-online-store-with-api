@@ -43,8 +43,8 @@ Route::prefix('goods')->group(function () {
 
 //Маршруты с авторизацией
 Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
-    Route::post('user', [AuthApiController::class, 'user']);
-    Route::post('logout', [AuthApiController::class, 'logout']);
+    Route::get('user', [AuthApiController::class, 'user']);
+    Route::get('logout', [AuthApiController::class, 'logout']);
 });
 
 Route::prefix('categories')->middleware('auth:sanctum')->group(function () {
