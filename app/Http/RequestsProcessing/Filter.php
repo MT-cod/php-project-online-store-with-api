@@ -19,6 +19,7 @@ trait Filter
                 'email' => fn($val, $data) => $data->where('email', 'like', '%' . $val . '%'),
                 'phone' => fn($val, $data) => $data->where('phone', 'like', '%' . $val . '%'),
                 'address' => fn($val, $data) => $data->where('address', 'like', '%' . $val . '%'),
+                'value' => fn($val, $data) => $data->where('value', 'like', '%' . $val . '%'),
                 'completed' => fn($val, $data) => $data->where('completed', $val),
                 'price' => fn($val, $data) => $data->where('price', $val),
                 'level' => fn($val, $data) => $data->where('level', $val),

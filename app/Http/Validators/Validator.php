@@ -21,8 +21,9 @@ abstract class Validator
      */
     public function errors(): array|MessageBag
     {
-        return $this->validate($this->request);
+        $validated = $this->validate($this->request);
+        return ($validated->fails()) ? $validated->errors() : [];
     }
 
-    abstract public function validate(Request $request): array|MessageBag;
+    abstract public function validate(Request $request): \Illuminate\Contracts\Validation\Validator;
 }

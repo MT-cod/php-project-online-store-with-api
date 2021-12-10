@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ApiAdditionalCharsController;
 use App\Http\Controllers\Api\AuthApiController;
 use App\Http\Controllers\Api\BasketsApiController;
 use App\Http\Controllers\Api\CategoriesApiController;
@@ -39,6 +40,18 @@ Route::prefix('goods')->group(function () {
     Route::get('slug/{slug}', [GoodsApiController::class, 'slug']);
     Route::get('{id}', [GoodsApiController::class, 'show']);
 });
+
+Route::resource(
+    'additionalChars',
+    ApiAdditionalCharsController::class,
+    ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+//Route::prefix('additionalChars')->group(function () {
+    /*Route::get('/', [ApiAdditionalCharsController::class, 'index']);
+    Route::get('{id}', [ApiAdditionalCharsController::class, 'show']);
+    Route::post('/', [ApiAdditionalCharsController::class, 'store']);
+    Route::patch('{id}', [ApiAdditionalCharsController::class, 'update']);
+    Route::delete('{id}', [ApiAdditionalCharsController::class, 'destroy']);*/
+//});
 
 
 //Маршруты с авторизацией
