@@ -5,7 +5,6 @@ namespace App\Http\Validators;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 
 class ApiCategoriesUpdateValidator extends \App\Http\Validators\Validator
 {
@@ -13,11 +12,11 @@ class ApiCategoriesUpdateValidator extends \App\Http\Validators\Validator
      * Валидация запроса
      *
      * @param Request $request
-     * @return array|MessageBag
+     * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validate(Request $request): array|MessageBag
+    public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
-        $validator = Validator::make($request->all(), [
+        return Validator::make($request->all(), [
             'name' => [
                 function ($attribute, $value, $fail) use ($request): void {
                     $cat = Category::whereId($request->id)->first();
@@ -70,6 +69,5 @@ class ApiCategoriesUpdateValidator extends \App\Http\Validators\Validator
                     }
                 }]
         ]);
-        return ($validator->fails()) ? $validator->errors() : [];
     }
 }

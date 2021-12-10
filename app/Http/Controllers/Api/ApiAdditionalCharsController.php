@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\RequestsProcessing\ApiReqAdditionalCharsProcessing;
 use App\Http\RequestsProcessing\ApiResponses;
+use App\Http\Validators\ApiAdditionalCharsStoreValidator;
 use Illuminate\Http\JsonResponse;
 
 class ApiAdditionalCharsController extends Controller
@@ -31,10 +32,10 @@ class ApiAdditionalCharsController extends Controller
     /**
      * Создание категории.
      *
-     * @param ApiCategoriesStoreValidator $request
+     * @param ApiAdditionalCharsStoreValidator $request
      * @return JsonResponse
      */
-    public function store(ApiCategoriesStoreValidator $request): JsonResponse
+    public function store(ApiAdditionalCharsStoreValidator $request): JsonResponse
     {
         return ($this->sendErrRespOnInvalidValidate($request))
             ?? $this->sendResultRespAfterProcessing($this->reqProcessingForStore());

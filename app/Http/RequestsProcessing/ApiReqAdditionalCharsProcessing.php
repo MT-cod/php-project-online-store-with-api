@@ -44,11 +44,11 @@ trait ApiReqAdditionalCharsProcessing
      */
     public function reqProcessingForShow(int $id): array
     {
-        $cat = Category::whereId($id)->first();
-        if ($cat) {
-            return ['success' => 'Категория успешно получена.', 'data' => $cat, 'status' => 200];
+        $char = AdditionalChar::whereId($id)->first();
+        if ($char) {
+            return ['success' => 'Доп характеристика успешно получена.', 'data' => $char, 'status' => 200];
         }
-        return ['errors' => "Не удалось найти категорию с id:$id", 'status' => 400];
+        return ['errors' => "Не удалось найти доп характеристику с id:$id.", 'status' => 400];
     }
 
     /**
@@ -59,18 +59,12 @@ trait ApiReqAdditionalCharsProcessing
     public function reqProcessingForStore(): array
     {
         $req = request();
-        $cat = new Category();
+        $char = new AdditionalChar();
         $data['name'] = $req->input('name');
-        $data['description'] = $req->input('description', '');
-        $data['parent_id'] = $req->input('parent_id', 0);
-        $data['category_id'] = $req->input('category_id');
-        $data['level'] = ($req->input('parent_id'))
-            ? Category::whereId($req->input('parent_id'))->first()->level + 1
-            : 1;
-        $cat->fill($data);
-        if ($cat->save()) {
-            $result = Category::whereId($cat->id)->first();
-            return ['success' => "Категория $cat->name успешно создана.", 'data' => $result, 'status' => 200];
+        $data['value'] = $req->input('value', '');
+        $char->fill($data);
+        if ($char->save()) {
+            return ['success' => "Доп характеристика успешно создана.", 'data' => $char, 'status' => 200];
         }
         return ['errors' => 'Не удалось создать категорию.', 'status' => 400];
     }

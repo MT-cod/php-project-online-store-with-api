@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Goods;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 
 class ApiGoodsUpdateValidator extends \App\Http\Validators\Validator
 {
@@ -15,11 +14,11 @@ class ApiGoodsUpdateValidator extends \App\Http\Validators\Validator
     * Валидация запроса
     *
     * @param Request $request
-    * @return MessageBag|array
+    * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validate(Request $request): array|MessageBag
+    public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
-        $validator = Validator::make($request->all(), [
+        return Validator::make($request->all(), [
             'name' => [
                 function ($attribute, $value, $fail): void {
                     if (Goods::where($attribute, $value)->first()) {
@@ -51,6 +50,5 @@ class ApiGoodsUpdateValidator extends \App\Http\Validators\Validator
                 }
             }]
         ]);
-        return ($validator->fails()) ? $validator->errors() : [];
     }
 }

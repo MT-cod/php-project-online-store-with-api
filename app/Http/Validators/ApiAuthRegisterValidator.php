@@ -4,7 +4,6 @@ namespace App\Http\Validators;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 
 class ApiAuthRegisterValidator extends \App\Http\Validators\Validator
 {

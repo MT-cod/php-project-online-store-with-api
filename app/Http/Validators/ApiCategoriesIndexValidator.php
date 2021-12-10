@@ -4,7 +4,6 @@ namespace App\Http\Validators;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 use Illuminate\Validation\Rule;
 
 class ApiCategoriesIndexValidator extends \App\Http\Validators\Validator
@@ -13,11 +12,11 @@ class ApiCategoriesIndexValidator extends \App\Http\Validators\Validator
     * Валидация запроса
     *
     * @param Request $request
-    * @return MessageBag|array
+    * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validate(Request $request): array|MessageBag
+    public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
-        $validator = Validator::make($request->all(), [
+        return Validator::make($request->all(), [
             'filter.create_min' => ['nullable', 'date'],
             'filter.create_max' => ['nullable', 'date'],
             'filter.update_min' => ['nullable', 'date'],
@@ -42,6 +41,5 @@ class ApiCategoriesIndexValidator extends \App\Http\Validators\Validator
                 }
             }
         ]);
-        return ($validator->fails()) ? $validator->errors() : [];
     }
 }

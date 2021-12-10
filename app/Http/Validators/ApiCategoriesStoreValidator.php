@@ -5,7 +5,6 @@ namespace App\Http\Validators;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\MessageBag;
 
 class ApiCategoriesStoreValidator extends \App\Http\Validators\Validator
 {
@@ -13,18 +12,12 @@ class ApiCategoriesStoreValidator extends \App\Http\Validators\Validator
     * Валидация запроса
     *
     * @param Request $request
-    * @return MessageBag|array
+    * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validate(Request $request): array|MessageBag
+    public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
-        $validator = Validator::make($request->all(), [
-            'name' => [
-                'required',
-                function ($attribute, $value, $fail): void {
-                    if (Category::where($attribute, $value)->first()) {
-                        $fail("Категория с именем $value уже существует.");
-                    }
-                }],
+        return Validator::make($request->all(), [
+            'name' => ['required', 'unique:categories'],
             'parent_id' => [
                 'nullable',
                 'integer',
@@ -36,6 +29,5 @@ class ApiCategoriesStoreValidator extends \App\Http\Validators\Validator
                     }
                 }]
         ]);
-        return ($validator->fails()) ? $validator->errors() : [];
     }
 }

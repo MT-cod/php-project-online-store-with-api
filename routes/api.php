@@ -44,14 +44,8 @@ Route::prefix('goods')->group(function () {
 Route::resource(
     'additionalChars',
     ApiAdditionalCharsController::class,
-    ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
-//Route::prefix('additionalChars')->group(function () {
-    /*Route::get('/', [ApiAdditionalCharsController::class, 'index']);
-    Route::get('{id}', [ApiAdditionalCharsController::class, 'show']);
-    Route::post('/', [ApiAdditionalCharsController::class, 'store']);
-    Route::patch('{id}', [ApiAdditionalCharsController::class, 'update']);
-    Route::delete('{id}', [ApiAdditionalCharsController::class, 'destroy']);*/
-//});
+    ['only' => ['index', 'show', 'store', 'update', 'destroy']]
+);
 
 
 //Маршруты с авторизацией

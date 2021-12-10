@@ -61,7 +61,7 @@ trait ApiReqCategoriesProcessing
         if ($cat) {
             return ['success' => 'Категория успешно получена.', 'data' => $cat, 'status' => 200];
         }
-        return ['errors' => "Не удалось найти категорию с id:$id", 'status' => 400];
+        return ['errors' => "Не удалось найти категорию с id:$id.", 'status' => 400];
     }
 
     /**
