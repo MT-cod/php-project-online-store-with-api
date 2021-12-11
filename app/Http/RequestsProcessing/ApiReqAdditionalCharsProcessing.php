@@ -66,7 +66,7 @@ trait ApiReqAdditionalCharsProcessing
         if ($char->save()) {
             return ['success' => "Доп характеристика успешно создана.", 'data' => $char, 'status' => 200];
         }
-        return ['errors' => 'Не удалось создать категорию.', 'status' => 400];
+        return ['errors' => 'Не удалось создать доп характеристику.', 'status' => 400];
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\RequestsProcessing\ApiReqAdditionalCharsProcessing;
 use App\Http\RequestsProcessing\ApiResponses;
 use App\Http\Validators\ApiAdditionalCharsStoreValidator;
+use App\Http\Validators\ApiAdditionalCharsUpdateValidator;
 use Illuminate\Http\JsonResponse;
 
 class ApiAdditionalCharsController extends Controller
@@ -44,11 +45,11 @@ class ApiAdditionalCharsController extends Controller
     /**
      * Изменение категории.
      *
-     * @param ApiCategoriesUpdateValidator $request
+     * @param ApiAdditionalCharsUpdateValidator $request
      * @param int $id
      * @return JsonResponse
      */
-    public function update(ApiCategoriesUpdateValidator $request, int $id): JsonResponse
+    public function update(ApiAdditionalCharsUpdateValidator $request, int $id): JsonResponse
     {
         return ($this->sendErrRespOnInvalidValidate($request))
             ?? $this->sendResultRespAfterProcessing($this->reqProcessingForUpdate($id));

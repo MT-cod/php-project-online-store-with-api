@@ -16,7 +16,7 @@ class CreateAdditionalCharsTable extends Migration
         Schema::create('additional_chars', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('name', 100);
+            $table->string('name', 100)->unique();
             $table->string('value', 200)->nullable();
         });
     }

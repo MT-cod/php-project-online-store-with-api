@@ -17,7 +17,7 @@ class ApiCategoriesStoreValidator extends \App\Http\Validators\Validator
     public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
         return Validator::make($request->all(), [
-            'name' => ['required', 'unique:categories'],
+            'name' => ['required', 'unique:categories', 'max:100'],
             'parent_id' => [
                 'nullable',
                 'integer',

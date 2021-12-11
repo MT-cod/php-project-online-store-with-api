@@ -21,7 +21,8 @@ class ApiAdditionalCharsIndexValidator extends \App\Http\Validators\Validator
             'filter.create_max' => ['nullable', 'date'],
             'filter.update_min' => ['nullable', 'date'],
             'filter.update_max' => ['nullable', 'date'],
-            'filter.name' => ['nullable', 'string', 'max:255'],
+            'filter.name' => ['nullable', 'string', 'max:100'],
+            'filter.value' => ['nullable', 'max:200'],
             'sort.*' => ['nullable', Rule::in(['asc', 'desc'])],
             'perpage' => ['nullable', 'integer'],
             'filter.*' => function ($attr, $val, $fail): void {

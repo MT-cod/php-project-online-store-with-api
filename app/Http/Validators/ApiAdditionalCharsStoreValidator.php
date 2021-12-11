@@ -15,6 +15,9 @@ class ApiAdditionalCharsStoreValidator extends \App\Http\Validators\Validator
      */
     public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
-        return Validator::make($request->all(), ['name' => ['required', 'unique:additional_chars']]);
+        return Validator::make($request->all(), [
+            'name' => ['required', 'unique:additional_chars', 'max:100'],
+            'value' => ['nullable', 'max:200']
+            ]);
     }
 }
