@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
