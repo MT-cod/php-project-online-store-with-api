@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Validators;
+namespace App\Http\Validators\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

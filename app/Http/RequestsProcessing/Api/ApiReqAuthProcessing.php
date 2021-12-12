@@ -1,22 +1,12 @@
 <?php
 
-namespace App\Http\RequestsProcessing;
+namespace App\Http\RequestsProcessing\Api;
 
-use App\Http\Validators\ApiAuthRegisterValidator;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 trait ApiReqAuthProcessing
 {
-    /*public function reqProcessingForTree(): array
-    {
-        $data = Category::categoriesTree();
-        if ($data) {
-            return ['success' => 'Дерево категорий успешно получено.', 'data' => $data, 'status' => 200];
-        }
-        return ['errors' => 'Не удалось получить дерево категорий', 'status' => 400];
-    }*/
-
     /**
      * Обработка запроса на регистрацию пользователя через api
      *

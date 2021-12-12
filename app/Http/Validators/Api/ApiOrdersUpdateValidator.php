@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Validators;
+namespace App\Http\Validators\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ApiAdditionalCharsStoreValidator extends \App\Http\Validators\Validator
+class ApiOrdersUpdateValidator extends \App\Http\Validators\Validator
 {
     /**
     * Валидация запроса
@@ -15,9 +15,6 @@ class ApiAdditionalCharsStoreValidator extends \App\Http\Validators\Validator
      */
     public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
-        return Validator::make($request->all(), [
-            'name' => ['required', 'unique:additional_chars', 'max:100'],
-            'value' => ['nullable', 'max:200']
-            ]);
+        return Validator::make($request->all(), ['completed' => ['nullable', 'boolean']]);
     }
 }

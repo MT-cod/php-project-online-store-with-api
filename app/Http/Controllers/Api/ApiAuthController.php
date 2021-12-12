@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\RequestsProcessing\ApiReqAuthProcessing;
-use App\Http\RequestsProcessing\ApiResponses;
-use App\Http\Validators\ApiAuthLoginValidator;
-use App\Http\Validators\ApiAuthRegisterValidator;
+use App\Http\RequestsProcessing\Api\ApiReqAuthProcessing;
+use App\Http\RequestsProcessing\Api\ApiResponses;
+use App\Http\Validators\Api\ApiAuthLoginValidator;
+use App\Http\Validators\Api\ApiAuthRegisterValidator;
 use Illuminate\Http\JsonResponse;
 
-class AuthApiController extends Controller
+class ApiAuthController extends Controller
 {
     use ApiReqAuthProcessing;
     use ApiResponses;
@@ -29,7 +29,7 @@ class AuthApiController extends Controller
     /**
      * Вход в систему, получение токена пользователя
      *
-     * @param ApiAuthLoginValidator $request
+     * @param \App\Http\Validators\Api\ApiAuthLoginValidator $request
      * @return JsonResponse
      */
     public function login(ApiAuthLoginValidator $request): JsonResponse

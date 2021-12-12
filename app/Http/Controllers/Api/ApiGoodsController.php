@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\RequestsProcessing\ApiReqGoodsProcessing;
-use App\Http\RequestsProcessing\ApiResponses;
-use App\Http\Validators\ApiGoodsStoreValidator;
-use App\Http\Validators\ApiGoodsUpdateValidator;
+use App\Http\RequestsProcessing\Api\ApiReqGoodsProcessing;
+use App\Http\RequestsProcessing\Api\ApiResponses;
+use App\Http\Validators\Api\ApiGoodsStoreValidator;
+use App\Http\Validators\Api\ApiGoodsUpdateValidator;
 use Illuminate\Http\JsonResponse;
 
-class GoodsApiController extends Controller
+class ApiGoodsController extends Controller
 {
     use ApiReqGoodsProcessing;
     use ApiResponses;
@@ -44,7 +44,7 @@ class GoodsApiController extends Controller
     /**
      * Создание товара.
      *
-     * @param ApiGoodsStoreValidator $request
+     * @param \App\Http\Validators\Api\ApiGoodsStoreValidator $request
      * @return JsonResponse
      */
     public function store(ApiGoodsStoreValidator $request): JsonResponse
@@ -56,7 +56,7 @@ class GoodsApiController extends Controller
     /**
      * Изменение товара.
      *
-     * @param ApiGoodsUpdateValidator $request
+     * @param \App\Http\Validators\Api\ApiGoodsUpdateValidator $request
      * @param int $id
      * @return JsonResponse
      */

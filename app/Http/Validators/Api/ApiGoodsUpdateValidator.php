@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Validators;
+namespace App\Http\Validators\Api;
 
 use App\Models\AdditionalChar;
 use App\Models\Category;

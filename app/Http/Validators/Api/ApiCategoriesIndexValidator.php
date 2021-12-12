@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Validators;
+namespace App\Http\Validators\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class ApiGoodsIndexValidator extends \App\Http\Validators\Validator
+class ApiCategoriesIndexValidator extends \App\Http\Validators\Validator
 {
     /**
     * Валидация запроса
@@ -22,9 +22,8 @@ class ApiGoodsIndexValidator extends \App\Http\Validators\Validator
             'filter.update_min' => ['nullable', 'date'],
             'filter.update_max' => ['nullable', 'date'],
             'filter.name' => ['nullable', 'string', 'max:255'],
-            'filter.price' => ['nullable', 'max:20'],
-            'filter.category_ids' => ['nullable', 'regex:/^(?:\d\,?)+\d?$/'],
-            'filter.additChar_ids' => ['nullable', 'regex:/^(?:\d\,?)+\d?$/'],
+            'filter.level' => ['nullable', 'integer'],
+            'filter.parent_id' => ['nullable', 'integer'],
             'sort.*' => ['nullable', Rule::in(['asc', 'desc'])],
             'perpage' => ['nullable', 'integer'],
             'filter.*' => function ($attr, $val, $fail): void {
@@ -34,9 +33,8 @@ class ApiGoodsIndexValidator extends \App\Http\Validators\Validator
                     'update_min',
                     'update_max',
                     'name',
-                    'price',
-                    'category_ids',
-                    'additChar_ids'
+                    'level',
+                    'parent_id'
                 ];
                 if (!in_array(explode('.', $attr)[1], $permitAttrs)) {
                     $fail("Фильтрация данных по полю $attr некорректна");

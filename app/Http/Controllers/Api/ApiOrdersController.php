@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\RequestsProcessing\ApiReqOrdersProcessing;
-use App\Http\RequestsProcessing\ApiResponses;
-use App\Http\Validators\ApiOrdersStoreValidator;
-use App\Http\Validators\ApiOrdersUpdateValidator;
+use App\Http\RequestsProcessing\Api\ApiReqOrdersProcessing;
+use App\Http\RequestsProcessing\Api\ApiResponses;
+use App\Http\Validators\Api\ApiOrdersStoreValidator;
+use App\Http\Validators\Api\ApiOrdersUpdateValidator;
 use Illuminate\Http\JsonResponse;
 
-class OrdersApiController extends Controller
+class ApiOrdersController extends Controller
 {
     use ApiReqOrdersProcessing;
     use ApiResponses;
@@ -43,7 +43,7 @@ class OrdersApiController extends Controller
     /**
      * Создаём новый заказ пользователя.
      *
-     * @param ApiOrdersStoreValidator $request
+     * @param \App\Http\Validators\Api\ApiOrdersStoreValidator $request
      * @return JsonResponse
      */
     public function store(ApiOrdersStoreValidator $request): JsonResponse

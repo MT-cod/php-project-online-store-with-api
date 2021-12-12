@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\RequestsProcessing\ApiResponses;
-use App\Http\Validators\ApiBasketsStoreValidator;
+use App\Http\RequestsProcessing\Api\ApiReqBasketsProcessing;
+use App\Http\RequestsProcessing\Api\ApiResponses;
+use App\Http\Validators\Api\ApiBasketsStoreValidator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Response;
-use App\Http\RequestsProcessing\ApiReqBasketsProcessing;
 
-class BasketsApiController extends Controller
+class ApiBasketsController extends Controller
 {
     use ApiReqBasketsProcessing;
     use ApiResponses;
@@ -22,7 +21,7 @@ class BasketsApiController extends Controller
     /**
      * Создание(обновление данных) корзины пользователя.
      *
-     * @param ApiBasketsStoreValidator $request
+     * @param \App\Http\Validators\Api\ApiBasketsStoreValidator $request
      * @return JsonResponse
      */
     public function store(ApiBasketsStoreValidator $request): JsonResponse

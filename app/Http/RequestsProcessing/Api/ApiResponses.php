@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\RequestsProcessing;
+namespace App\Http\RequestsProcessing\Api;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Response;

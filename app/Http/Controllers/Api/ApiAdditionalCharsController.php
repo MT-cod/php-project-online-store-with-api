@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\RequestsProcessing\ApiReqAdditionalCharsProcessing;
-use App\Http\RequestsProcessing\ApiResponses;
-use App\Http\Validators\ApiAdditionalCharsStoreValidator;
-use App\Http\Validators\ApiAdditionalCharsUpdateValidator;
+use App\Http\RequestsProcessing\Api\ApiReqAdditionalCharsProcessing;
+use App\Http\RequestsProcessing\Api\ApiResponses;
+use App\Http\Validators\Api\ApiAdditionalCharsStoreValidator;
+use App\Http\Validators\Api\ApiAdditionalCharsUpdateValidator;
 use Illuminate\Http\JsonResponse;
 
 class ApiAdditionalCharsController extends Controller
@@ -45,7 +45,7 @@ class ApiAdditionalCharsController extends Controller
     /**
      * Изменение категории.
      *
-     * @param ApiAdditionalCharsUpdateValidator $request
+     * @param \App\Http\Validators\Api\ApiAdditionalCharsUpdateValidator $request
      * @param int $id
      * @return JsonResponse
      */

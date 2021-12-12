@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\RequestsProcessing\ApiReqCategoriesProcessing;
-use App\Http\RequestsProcessing\ApiResponses;
-use App\Http\Validators\ApiCategoriesStoreValidator;
-use App\Http\Validators\ApiCategoriesUpdateValidator;
+use App\Http\RequestsProcessing\Api\ApiReqCategoriesProcessing;
+use App\Http\RequestsProcessing\Api\ApiResponses;
+use App\Http\Validators\Api\ApiCategoriesStoreValidator;
+use App\Http\Validators\Api\ApiCategoriesUpdateValidator;
 use Illuminate\Http\JsonResponse;
 
-class CategoriesApiController extends Controller
+class ApiCategoriesController extends Controller
 {
     use ApiReqCategoriesProcessing;
     use ApiResponses;
@@ -43,7 +43,7 @@ class CategoriesApiController extends Controller
     /**
      * Создание категории.
      *
-     * @param ApiCategoriesStoreValidator $request
+     * @param \App\Http\Validators\Api\ApiCategoriesStoreValidator $request
      * @return JsonResponse
      */
     public function store(ApiCategoriesStoreValidator $request): JsonResponse

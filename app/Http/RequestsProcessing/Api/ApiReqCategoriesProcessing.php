@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\RequestsProcessing;
+namespace App\Http\RequestsProcessing\Api;
 
-use App\Http\Validators\ApiCategoriesIndexValidator;
+use App\Http\RequestsProcessing\Filter;
+use App\Http\RequestsProcessing\Sorter;
+use App\Http\Validators\Api\ApiCategoriesIndexValidator;
 use App\Models\Category;
 
 trait ApiReqCategoriesProcessing

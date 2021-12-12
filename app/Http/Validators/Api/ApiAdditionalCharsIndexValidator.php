@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Validators;
+namespace App\Http\Validators\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class ApiCategoriesIndexValidator extends \App\Http\Validators\Validator
+class ApiAdditionalCharsIndexValidator extends \App\Http\Validators\Validator
 {
     /**
     * Валидация запроса
@@ -21,9 +21,8 @@ class ApiCategoriesIndexValidator extends \App\Http\Validators\Validator
             'filter.create_max' => ['nullable', 'date'],
             'filter.update_min' => ['nullable', 'date'],
             'filter.update_max' => ['nullable', 'date'],
-            'filter.name' => ['nullable', 'string', 'max:255'],
-            'filter.level' => ['nullable', 'integer'],
-            'filter.parent_id' => ['nullable', 'integer'],
+            'filter.name' => ['nullable', 'string', 'max:100'],
+            'filter.value' => ['nullable', 'max:200'],
             'sort.*' => ['nullable', Rule::in(['asc', 'desc'])],
             'perpage' => ['nullable', 'integer'],
             'filter.*' => function ($attr, $val, $fail): void {
@@ -33,8 +32,7 @@ class ApiCategoriesIndexValidator extends \App\Http\Validators\Validator
                     'update_min',
                     'update_max',
                     'name',
-                    'level',
-                    'parent_id'
+                    'value'
                 ];
                 if (!in_array(explode('.', $attr)[1], $permitAttrs)) {
                     $fail("Фильтрация данных по полю $attr некорректна");

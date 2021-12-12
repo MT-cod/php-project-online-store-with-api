@@ -1,11 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\ApiAdditionalCharsController;
-use App\Http\Controllers\Api\AuthApiController;
-use App\Http\Controllers\Api\BasketsApiController;
-use App\Http\Controllers\Api\CategoriesApiController;
-use App\Http\Controllers\Api\GoodsApiController;
-use App\Http\Controllers\Api\OrdersApiController;
+use App\Http\Controllers\Api\ApiAuthController;
+use App\Http\Controllers\Api\ApiBasketsController;
+use App\Http\Controllers\Api\ApiCategoriesController;
+use App\Http\Controllers\Api\ApiGoodsController;
+use App\Http\Controllers\Api\ApiOrdersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,20 +25,20 @@ use Illuminate\Support\Facades\Route;
 
 //Гостевые маршруты
 Route::prefix('auth')->group(function () {
-    Route::post('register', [AuthApiController::class, 'register']);
-    Route::post('login', [AuthApiController::class, 'login']);
+    Route::post('register', [ApiAuthController::class, 'register']);
+    Route::post('login', [ApiAuthController::class, 'login']);
 });
 
 Route::prefix('categories')->group(function () {
-    Route::get('tree', [CategoriesApiController::class, 'tree']);
-    Route::get('/', [CategoriesApiController::class, 'index']);
-    Route::get('{id}', [CategoriesApiController::class, 'show']);
+    Route::get('tree', [ApiCategoriesController::class, 'tree']);
+    Route::get('/', [ApiCategoriesController::class, 'index']);
+    Route::get('{id}', [ApiCategoriesController::class, 'show']);
 });
 
 Route::prefix('goods')->group(function () {
-    Route::get('/', [GoodsApiController::class, 'index']);
-    Route::get('slug/{slug}', [GoodsApiController::class, 'slug']);
-    Route::get('{id}', [GoodsApiController::class, 'show']);
+    Route::get('/', [ApiGoodsController::class, 'index']);
+    Route::get('slug/{slug}', [ApiGoodsController::class, 'slug']);
+    Route::get('{id}', [ApiGoodsController::class, 'show']);
 });
 
 Route::resource(
@@ -50,33 +50,33 @@ Route::resource(
 
 //Маршруты с авторизацией
 Route::prefix('auth')->middleware('auth:sanctum')->group(function () {
-    Route::get('user', [AuthApiController::class, 'user']);
-    Route::get('logout', [AuthApiController::class, 'logout']);
+    Route::get('user', [ApiAuthController::class, 'user']);
+    Route::get('logout', [ApiAuthController::class, 'logout']);
 });
 
 Route::prefix('categories')->middleware('auth:sanctum')->group(function () {
-    Route::post('/', [CategoriesApiController::class, 'store']);
-    Route::patch('{id}', [CategoriesApiController::class, 'update']);
-    Route::delete('{id}', [CategoriesApiController::class, 'destroy']);
+    Route::post('/', [ApiCategoriesController::class, 'store']);
+    Route::patch('{id}', [ApiCategoriesController::class, 'update']);
+    Route::delete('{id}', [ApiCategoriesController::class, 'destroy']);
 });
 
 Route::prefix('goods')->middleware('auth:sanctum')->group(function () {
-    Route::post('/', [GoodsApiController::class, 'store']);
-    Route::patch('{id}', [GoodsApiController::class, 'update']);
-    Route::delete('{id}', [GoodsApiController::class, 'destroy']);
+    Route::post('/', [ApiGoodsController::class, 'store']);
+    Route::patch('{id}', [ApiGoodsController::class, 'update']);
+    Route::delete('{id}', [ApiGoodsController::class, 'destroy']);
 });
 
 Route::prefix('baskets')->middleware('auth:sanctum')->group(function () {
-    Route::get('own_basket', [BasketsApiController::class, 'ownBasket']);
-    Route::post('/', [BasketsApiController::class, 'store']);
-    Route::delete('purge', [BasketsApiController::class, 'purge']);
-    Route::delete('{id}', [BasketsApiController::class, 'destroy']);
+    Route::get('own_basket', [ApiBasketsController::class, 'ownBasket']);
+    Route::post('/', [ApiBasketsController::class, 'store']);
+    Route::delete('purge', [ApiBasketsController::class, 'purge']);
+    Route::delete('{id}', [ApiBasketsController::class, 'destroy']);
 });
 
 Route::prefix('orders')->middleware('auth:sanctum')->group(function () {
-    Route::get('/', [OrdersApiController::class, 'index']);
-    Route::get('own_orders', [OrdersApiController::class, 'ownOrders']);
-    Route::get('{id}', [OrdersApiController::class, 'show']);
-    Route::post('/', [OrdersApiController::class, 'store']);
-    Route::patch('{id}', [OrdersApiController::class, 'update']);
+    Route::get('/', [ApiOrdersController::class, 'index']);
+    Route::get('own_orders', [ApiOrdersController::class, 'ownOrders']);
+    Route::get('{id}', [ApiOrdersController::class, 'show']);
+    Route::post('/', [ApiOrdersController::class, 'store']);
+    Route::patch('{id}', [ApiOrdersController::class, 'update']);
 });

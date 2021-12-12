@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\RequestsProcessing;
+namespace App\Http\RequestsProcessing\Api;
 
 trait ApiReqBasketsProcessing
 {

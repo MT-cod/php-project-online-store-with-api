@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\RequestsProcessing;
+namespace App\Http\RequestsProcessing\Api;
 
-use App\Http\Validators\ApiAdditionalCharsIndexValidator;
+use App\Http\RequestsProcessing\Filter;
+use App\Http\RequestsProcessing\Sorter;
+use App\Http\Validators\Api\ApiAdditionalCharsIndexValidator;
 use App\Models\AdditionalChar;
 
 trait ApiReqAdditionalCharsProcessing
