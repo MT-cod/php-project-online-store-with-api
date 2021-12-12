@@ -4,7 +4,6 @@ namespace App\Http\RequestsProcessing;
 
 use App\Http\Validators\ApiAdditionalCharsIndexValidator;
 use App\Models\AdditionalChar;
-use App\Models\Category;
 
 trait ApiReqAdditionalCharsProcessing
 {
@@ -44,7 +43,7 @@ trait ApiReqAdditionalCharsProcessing
      */
     public function reqProcessingForShow(int $id): array
     {
-        $char = AdditionalChar::whereId($id)->first();
+        $char = AdditionalChar::find($id);
         if ($char) {
             return ['success' => 'Доп характеристика успешно получена.', 'data' => $char, 'status' => 200];
         }
@@ -78,28 +77,21 @@ trait ApiReqAdditionalCharsProcessing
     public function reqProcessingForUpdate(int $id): array
     {
         $req = request();
-        $cat = Category::whereId($id)->first();
+        $char = AdditionalChar::find($id);
         $data = [];
         foreach ($req->input() as $row => $val) {
             switch ($row) {
                 case 'name':
                     $data['name'] = $val;
                     break;
-                case 'description':
-                    $data['description'] = $val;
-                    break;
-                case 'parent_id':
-                    $data['parent_id'] = $val;
-                    $data['level'] = ($val)
-                    ? Category::whereId($val)->first()->level + 1
-                    : 1;
+                case 'value':
+                    $data['value'] = $val;
                     break;
             }
         }
-        $cat->fill($data);
-        if ($cat->save()) {
-            $result = Category::whereId($id)->first();
-            return ['success' => "Параметры категории успешно изменены.", 'data' => $result, 'status' => 200];
+        $char->fill($data);
+        if ($char->save()) {
+            return ['success' => "Параметры доп характеристики успешно изменены.", 'data' => $char, 'status' => 200];
         }
         return ['errors' => 'Ошибка изменения данных.', 'status' => 400];
     }
@@ -112,27 +104,16 @@ trait ApiReqAdditionalCharsProcessing
      */
     public function reqProcessingForDestroy(int $id): array
     {
-        $cat = Category::whereId($id)->first();
-        if ($cat) {
-            if ($cat->childrens()->count()) {
-                return [
-                    'errors' => "Не удалось удалить категорию $cat->name! У категории имеется подкатегория!",
-                    'status' => 400
-                ];
-            }
-            if ($cat->goods()->count()) {
-                return [
-                    'errors' => "Не удалось удалить категорию $cat->name! У категории есть товары!",
-                    'status' => 400
-                ];
-            }
+        $char = AdditionalChar::find($id);
+        if ($char) {
             try {
-                $cat->delete();
-                return ['errors' => "Категория $cat->name успешно удалена", 'status' => 400];
-            } catch (\Exception $e) {
-                return ['errors' => 'Не удалось удалить категорию', 'status' => 400];
+                $char->goods()->detach();
+                $char->delete();
+            } catch (\Throwable $e) {
+                return ['errors' => 'Не удалось удалить характеристику.', 'status' => 400];
             }
+            return ['success' => "Характеристика $char->name успешно удалена.", 'status' => 200];
         }
-        return ['errors' => "Не удалось найти категорию с id:$id", 'status' => 400];
+        return ['errors' => "Не удалось найти доп характеристику с id:$id", 'status' => 400];
     }
 }

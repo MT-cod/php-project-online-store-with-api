@@ -18,7 +18,10 @@ trait ApiResponses
     private function sendResultRespAfterProcessing(array $result): JsonResponse
     {
         if (isset($result['errors'])) {
-            return Response::json(['error' => $result['errors']], $result['status']);
+            $responseBody = (isset($result['data']))
+                ? ['error' => $result['errors'], 'data' => $result['data']]
+                : ['error' => $result['errors']];
+            return Response::json($responseBody, $result['status']);
         }
         $responseBody = (isset($result['data']))
             ? ['success' => $result['success'], 'data' => $result['data']]
