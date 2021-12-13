@@ -47,7 +47,11 @@ trait ApiReqAuthProcessing
      */
     public function reqProcessingForUser(): array
     {
-        $data = request()->user()->toArray();
+        try {
+            $data = request()->user()->toArray();
+        } catch (\Throwable $e) {
+            return ['errors' => 'Не удалось получить данные пользователя.', 'status' => 400];
+        }
         return [
             'success' => 'Данные пользователя ' . $data['name'] . ' успешно получены.',
             'data' => $data,
@@ -62,7 +66,11 @@ trait ApiReqAuthProcessing
      */
     public function reqProcessingForLogout(): array
     {
-        request()->user()->tokens()->delete();
+        try {
+            request()->user()->tokens()->delete();
+        } catch (\Throwable $e) {
+            return ['errors' => 'Не удалось удалить токены пользователя.', 'status' => 400];
+        }
         return ['success' => 'Успешный выход из системы.', 'status' => 200];
     }
 }

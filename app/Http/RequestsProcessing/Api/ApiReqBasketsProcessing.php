@@ -11,7 +11,11 @@ trait ApiReqBasketsProcessing
      */
     public function reqProcessingForOwnBasket(): array
     {
-        $data = request()->user()->basketForApi();
+        try {
+            $data = request()->user()->basketForApi();
+        } catch (\Throwable $e) {
+            return ['errors' => 'Не удалось получить корзину пользователя.', 'status' => 400];
+        }
         if ($data) {
             return [
                 'success' => 'Корзина пользователя успешно получена.',
@@ -47,12 +51,16 @@ trait ApiReqBasketsProcessing
     public function reqProcessingForDestroy(int $id): array
     {
         $req = request();
-        $basket = $req->user()->goodsInBasket();
-        if ($basket->where('baskets.goods_id', $id)->first()) {
+        try {
+            $basket = $req->user()->goodsInBasket();
+            if (!$basket->where('baskets.goods_id', $id)->first()) {
+                return ['errors' => "Не удалось найти позицию с id:$id в корзине пользователя.", 'status' => 400];
+            }
             $basket->detach($id);
-            return ['success' => 'Позиция успешно удалена.', 'data' => $req->user()->basketForApi(), 'status' => 200];
+        } catch (\Throwable $e) {
+            return ['errors' => "Не удалось удалить позицию с id:$id.", 'status' => 400];
         }
-        return ['errors' => "Не удалось удалить позицию с id:$id.", 'status' => 400];
+        return ['success' => 'Позиция успешно удалена.', 'data' => $req->user()->basketForApi(), 'status' => 200];
     }
 
     /**
@@ -64,12 +72,12 @@ trait ApiReqBasketsProcessing
     {
         try {
             $result = request()->user()->goodsInBasket()->detach();
-            if ($result) {
-                return ['success' => 'Корзина полностью очищена.', 'status' => 200];
-            }
-            return ['errors' => 'Не удалось очистить корзину.', 'status' => 500];
-        } catch (\Exception $e) {
-            return ['errors' => 'Не удалось очистить корзину.', 'status' => 500];
+        } catch (\Throwable $e) {
+            return ['errors' => 'Не удалось очистить корзину пользователя.', 'status' => 500];
         }
+        if ($result) {
+            return ['success' => 'Корзина пользователя полностью очищена.', 'status' => 200];
+        }
+        return ['errors' => 'Не удалось очистить корзину пользователя.', 'status' => 500];
     }
 }

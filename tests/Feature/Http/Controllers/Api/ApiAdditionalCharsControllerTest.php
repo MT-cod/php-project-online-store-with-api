@@ -10,26 +10,21 @@ class ApiAdditionalCharsControllerTest extends TestCase
 
     public function testStore()
     {
-
     }
 
     public function testUpdate()
     {
-
     }
 
     public function testIndex()
     {
-
     }
 
     public function testDestroy()
     {
-
     }
 
     public function testShow()
     {
-
     }
 }

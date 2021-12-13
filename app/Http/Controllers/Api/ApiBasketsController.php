@@ -21,7 +21,7 @@ class ApiBasketsController extends Controller
     /**
      * Создание(обновление данных) корзины пользователя.
      *
-     * @param \App\Http\Validators\Api\ApiBasketsStoreValidator $request
+     * @param ApiBasketsStoreValidator $request
      * @return JsonResponse
      */
     public function store(ApiBasketsStoreValidator $request): JsonResponse

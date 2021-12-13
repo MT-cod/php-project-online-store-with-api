@@ -18,7 +18,7 @@ class ApiAuthRegisterValidator extends \App\Http\Validators\Validator
         return Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'phone' => ['max:255'],
+            'phone' => 'max:255',
             'password' => ['required', 'string', 'min:8']
         ]);
     }
