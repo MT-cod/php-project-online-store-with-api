@@ -21,9 +21,9 @@ trait ApiReqGoodsProcessing
     {
         $req = request();
 
-        $validated = new ApiGoodsIndexValidator($req);
-        if ($validated->errors()) {
-            return ['errors' => $validated->errors(), 'status' => 400];
+        $validationErrors = (new ApiGoodsIndexValidator($req))->errors();
+        if ($validationErrors) {
+            return ['errors' => $validationErrors, 'status' => 400];
         }
 
         $filteredData = $this->filtering($req->input('filter'), Goods::select());
@@ -104,10 +104,7 @@ trait ApiReqGoodsProcessing
     public function reqProcessingForUpdate(int $id): array
     {
         $req = request();
-        $item = Goods::whereId($id)->first();
-        if (!$item) {
-            return ['errors' => "Не удалось найти товар с id:$id", 'status' => 400];
-        }
+        $item = Goods::find($id);
         $data = [];
         foreach ($req->input() as $row => $val) {
             switch ($row) {
@@ -147,13 +144,13 @@ trait ApiReqGoodsProcessing
      */
     public function reqProcessingForDestroy(int $id): array
     {
-        $item = Goods::whereId($id)->first();
+        $item = Goods::find($id);
         if ($item) {
             try {
                 $item->additionalChars()->detach();
                 $item->delete();
                 return ['success' => 'Товар успешно удален.', 'status' => 200];
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 return [
                     'errors' => "Не удалось удалить товар с id:$id. Товар может участвовать в транзакциях.",
                     'status' => 400

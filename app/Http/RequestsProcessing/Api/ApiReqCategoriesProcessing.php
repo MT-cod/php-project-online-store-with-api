@@ -35,9 +35,9 @@ trait ApiReqCategoriesProcessing
     {
         $req = request();
 
-        $validated = new ApiCategoriesIndexValidator($req);
-        if ($validated->errors()) {
-            return ['errors' => $validated->errors(), 'status' => 400];
+        $validationErrors = (new ApiCategoriesIndexValidator($req))->errors();
+        if ($validationErrors) {
+            return ['errors' => $validationErrors, 'status' => 400];
         }
 
         $filteredData = $this->filtering($req->input('filter'), Category::select());
@@ -59,7 +59,7 @@ trait ApiReqCategoriesProcessing
      */
     public function reqProcessingForShow(int $id): array
     {
-        $cat = Category::whereId($id)->first();
+        $cat = Category::find($id);
         if ($cat) {
             return ['success' => 'Категория успешно получена.', 'data' => $cat, 'status' => 200];
         }
@@ -80,12 +80,11 @@ trait ApiReqCategoriesProcessing
         $data['parent_id'] = $req->input('parent_id', 0);
         $data['category_id'] = $req->input('category_id');
         $data['level'] = ($req->input('parent_id'))
-            ? Category::whereId($req->input('parent_id'))->first()->level + 1
+            ? Category::find($req->input('parent_id'))->level + 1
             : 1;
         $cat->fill($data);
         if ($cat->save()) {
-            $result = Category::whereId($cat->id)->first();
-            return ['success' => "Категория $cat->name успешно создана.", 'data' => $result, 'status' => 200];
+            return ['success' => "Категория $cat->name успешно создана.", 'data' => $cat, 'status' => 200];
         }
         return ['errors' => 'Не удалось создать категорию.', 'status' => 400];
     }
@@ -112,15 +111,14 @@ trait ApiReqCategoriesProcessing
                 case 'parent_id':
                     $data['parent_id'] = $val;
                     $data['level'] = ($val)
-                    ? Category::whereId($val)->first()->level + 1
+                    ? Category::find($val)->level + 1
                     : 1;
                     break;
             }
         }
         $cat->fill($data);
         if ($cat->save()) {
-            $result = Category::whereId($id)->first();
-            return ['success' => "Параметры категории успешно изменены.", 'data' => $result, 'status' => 200];
+            return ['success' => "Параметры категории успешно изменены.", 'data' => $cat, 'status' => 200];
         }
         return ['errors' => 'Ошибка изменения данных.', 'status' => 400];
     }
@@ -133,7 +131,7 @@ trait ApiReqCategoriesProcessing
      */
     public function reqProcessingForDestroy(int $id): array
     {
-        $cat = Category::whereId($id)->first();
+        $cat = Category::find($id);
         if ($cat) {
             if ($cat->childrens()->count()) {
                 return [
@@ -150,7 +148,7 @@ trait ApiReqCategoriesProcessing
             try {
                 $cat->delete();
                 return ['errors' => "Категория $cat->name успешно удалена", 'status' => 400];
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 return ['errors' => 'Не удалось удалить категорию', 'status' => 400];
             }
         }

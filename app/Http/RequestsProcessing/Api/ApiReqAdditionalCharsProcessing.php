@@ -21,9 +21,9 @@ trait ApiReqAdditionalCharsProcessing
     {
         $req = request();
 
-        $validated = new ApiAdditionalCharsIndexValidator($req);
-        if ($validated->errors()) {
-            return ['errors' => $validated->errors(), 'status' => 400];
+        $validationErrors = (new ApiAdditionalCharsIndexValidator($req))->errors();
+        if ($validationErrors) {
+            return ['errors' => $validationErrors, 'status' => 400];
         }
 
         $filteredData = $this->filtering($req->input('filter'), AdditionalChar::select());

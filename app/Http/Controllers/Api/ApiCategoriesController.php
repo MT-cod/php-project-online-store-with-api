@@ -43,7 +43,7 @@ class ApiCategoriesController extends Controller
     /**
      * Создание категории.
      *
-     * @param \App\Http\Validators\Api\ApiCategoriesStoreValidator $request
+     * @param ApiCategoriesStoreValidator $request
      * @return JsonResponse
      */
     public function store(ApiCategoriesStoreValidator $request): JsonResponse

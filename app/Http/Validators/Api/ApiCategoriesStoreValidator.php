@@ -19,13 +19,13 @@ class ApiCategoriesStoreValidator extends \App\Http\Validators\Validator
         return Validator::make($request->all(), [
             'name' => ['required', 'unique:categories', 'max:100'],
             'parent_id' => [
+                'bail',
                 'nullable',
                 'integer',
+                'exists:categories,id',
                 function ($attribute, $value, $fail): void {
-                    if ($value > 0) {
-                        if (Category::where('id', $value)->first()->level == 3) {
-                            $fail('Категория не может быть подкатегорией категории 3-го уровня!');
-                        }
+                    if ($value > 0  && Category::find($value)->level === 3) {
+                        $fail('Категория не может быть подкатегорией категории 3-го уровня!');
                     }
                 }]
         ]);

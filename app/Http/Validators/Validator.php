@@ -22,7 +22,7 @@ abstract class Validator
     public function errors(): array|MessageBag
     {
         $validated = $this->validate($this->request);
-        return ($validated->fails()) ? $validated->errors() : [];
+        return ($validated->stopOnFirstFailure()->fails()) ? $validated->errors() : [];
     }
 
     abstract public function validate(Request $request): \Illuminate\Contracts\Validation\Validator;
