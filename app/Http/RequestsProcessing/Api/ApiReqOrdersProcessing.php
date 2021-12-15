@@ -21,9 +21,9 @@ trait ApiReqOrdersProcessing
     {
         $req = request();
 
-        $validated = new ApiOrdersIndexValidator($req);
-        if ($validated->errors()) {
-            return ['errors' => $validated->errors(), 'status' => 400];
+        $validationErrors = (new ApiOrdersIndexValidator($req))->errors();
+        if ($validationErrors) {
+            return ['errors' => $validationErrors, 'status' => 400];
         }
 
         $filteredData = $this->filtering($req->input('filter'), Order::select());
@@ -42,9 +42,9 @@ trait ApiReqOrdersProcessing
     {
         $req = request();
 
-        $validated = new ApiOrdersIndexValidator($req);
-        if ($validated->errors()) {
-            return ['errors' => $validated->errors(), 'status' => 400];
+        $validationErrors = (new ApiOrdersIndexValidator($req))->errors();
+        if ($validationErrors) {
+            return ['errors' => $validationErrors, 'status' => 400];
         }
 
         $filteredData = $this->filtering($req->input('filter'), Order::where('user_id', $req->user()->id));
@@ -116,13 +116,10 @@ trait ApiReqOrdersProcessing
     {
         $req = request();
         $order = Order::find($id);
-        if ($order) {
-            $order->completed = $req->input('completed');
-            if ($order->save()) {
-                return ['success' => 'Заказ успешно обновлен.', 'data' => $order->toArray(), 'status' => 200];
-            }
-            return ['errors' => "Не удалось обновить заказ id:$id.", 'status' => 500];
+        $order->completed = $req->input('completed');
+        if ($order->save()) {
+            return ['success' => 'Заказ успешно обновлен.', 'data' => $order->toArray(), 'status' => 200];
         }
-        return ['errors' => "Не удалось обновить заказ id:$id.", 'status' => 400];
+        return ['errors' => "Не удалось обновить заказ id:$id.", 'status' => 500];
     }
 }

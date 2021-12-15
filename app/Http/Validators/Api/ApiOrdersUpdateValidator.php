@@ -15,6 +15,9 @@ class ApiOrdersUpdateValidator extends \App\Http\Validators\Validator
      */
     public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
-        return Validator::make($request->all(), ['completed' => ['nullable', 'boolean']]);
+        return Validator::make($request->all() + ['id' => $request->id], [
+            'id' => 'exists:orders',
+            'completed' => ['nullable', 'boolean']
+        ]);
     }
 }

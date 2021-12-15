@@ -43,7 +43,7 @@ class ApiOrdersController extends Controller
     /**
      * Создаём новый заказ пользователя.
      *
-     * @param \App\Http\Validators\Api\ApiOrdersStoreValidator $request
+     * @param ApiOrdersStoreValidator $request
      * @return JsonResponse
      */
     public function store(ApiOrdersStoreValidator $request): JsonResponse
