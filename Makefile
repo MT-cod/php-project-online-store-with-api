@@ -11,6 +11,9 @@ setup:
 test:
 	php artisan test --coverage-clover clover.xml --verbose
 
+test-html:
+	vendor/bin/phpunit --coverage-html tests/coverage
+
 test-coverage:
 	composer exec --verbose phpunit tests -- --coverage-clover clover.xml --verbose
 
