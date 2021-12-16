@@ -54,8 +54,7 @@ class AdditionalCharsTest extends TestCase
     {
         $this->post(route('additionalChars.update', 1), [
             '_method' => 'PATCH',
-            'name' => 'Тестовая характеристика Upd',
-            'parent_id' => 0
+            'name' => 'Тестовая характеристика Upd'
         ]);
         $this->assertDatabaseHas('additional_chars', ['name' => 'Тестовая характеристика Upd']);
         $response = $this->get('/additionalChars');

@@ -12,7 +12,7 @@ test:
 	php artisan test --coverage-clover clover.xml --verbose
 
 test-html:
-	vendor/bin/phpunit --coverage-html tests/coverage
+	vendor/bin/phpunit --coverage-html tests/coverage --verbose
 
 test-coverage:
 	composer exec --verbose phpunit tests -- --coverage-clover clover.xml --verbose
