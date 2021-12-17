@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class ShopAndBasketTest extends TestCase
@@ -25,12 +24,11 @@ class ShopAndBasketTest extends TestCase
         $this->testUser = User::factory()->create();
     }
 
-    /*public function testShopIndex(): void
+    public function testShopIndex(): void
     {
-        $this->storeTestBasket();
         $response = $this->get('/');
-        $response->assertSeeTextInOrder(['Test item', 333], true);
-    }*/
+        $response->assertSee('Test item');
+    }
 
     public function testBasketIndex(): void
     {
@@ -86,7 +84,7 @@ class ShopAndBasketTest extends TestCase
         $this->assertDatabaseMissing('baskets', ["goods_id" => "1", "user_id" => "1", "quantity" => "333"]);
     }
 
-    private function storeTestBasket(): TestResponse
+    private function storeTestBasket()
     {
         return $this->post(route('basket.store'), [
             'id' => 1,
