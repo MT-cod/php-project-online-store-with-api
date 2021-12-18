@@ -80,7 +80,6 @@ class ApiBasketsControllerTest extends TestCase
 
     public function testDestroy(): void
     {
-
         $this->storeTestBasket();
         $response = $this->json(
             'post',
@@ -93,7 +92,12 @@ class ApiBasketsControllerTest extends TestCase
             ->assertJsonFragment(['success' => "Позиция успешно удалена."]);
         $this->assertDatabaseMissing('baskets', ['goods_id' => 1, 'user_id' => 1]);
 
-        $errorResp = $this->json('post', '/api/baskets/1', ['_method' => 'DELETE']);
+        $errorResp = $this->json(
+            'post',
+            '/api/baskets/1',
+            ['_method' => 'DELETE'],
+            ['Authorization' => 'Bearer ' . $this->testUserToken]
+        );
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(['error' => 'Не удалось найти позицию с id:1 в корзине пользователя.']);

@@ -147,11 +147,11 @@ trait ApiReqCategoriesProcessing
             }
             try {
                 $cat->delete();
-                return ['errors' => "Категория $cat->name успешно удалена", 'status' => 400];
+                return ['success' => "Категория $cat->name успешно удалена.", 'status' => 200];
             } catch (\Throwable $e) {
-                return ['errors' => 'Не удалось удалить категорию', 'status' => 400];
+                return ['errors' => 'Не удалось удалить категорию.', 'status' => 400];
             }
         }
-        return ['errors' => "Не удалось найти категорию с id:$id", 'status' => 400];
+        return ['errors' => "Не удалось найти категорию с id:$id.", 'status' => 400];
     }
 }

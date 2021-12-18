@@ -25,6 +25,7 @@ class ApiAdditionalCharsControllerTest extends TestCase
             ->assertSuccessful()
             ->assertJsonFragment(['success' => 'Список доп характеристик успешно получен.'])
             ->assertJsonFragment(['name' => 'Тестовая характеристика']);
+
         $errorResp = $this->get('/api/additionalChars?sort[value]=bla');
         $errorResp
             ->assertStatus(400)
@@ -38,6 +39,7 @@ class ApiAdditionalCharsControllerTest extends TestCase
             ->assertSuccessful()
             ->assertJsonFragment(['success' => 'Доп характеристика успешно получена.'])
             ->assertJsonFragment(['name' => 'Тестовая характеристика']);
+
         $errorResp = $this->get('/api/additionalChars/0');
         $errorResp
             ->assertStatus(400)
