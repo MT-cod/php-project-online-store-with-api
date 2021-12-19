@@ -51,9 +51,9 @@ trait ApiReqGoodsProcessing
     {
         $item = Goods::where('slug', $slug)->with('additionalChars:id,name,value')->first();
         if ($item) {
-            return ['success' => 'Товар успешно получен.', 'data' => $item, 'status' => 200];
+            return ['success' => 'Данные о товаре успешно получены.', 'data' => $item, 'status' => 200];
         }
-        return ['errors' => 'Не удалось получить товар по запрошенному slug', 'status' => 400];
+        return ['errors' => 'Не удалось получить данные о товаре по запрошенному slug.', 'status' => 400];
     }
 
     /**
@@ -66,9 +66,9 @@ trait ApiReqGoodsProcessing
     {
         $item = Goods::whereId($id)->with('additionalChars:id,name,value')->first();
         if ($item) {
-            return ['success' => 'Товар успешно получен.', 'data' => $item, 'status' => 200];
+            return ['success' => 'Данные о товаре успешно получены.', 'data' => $item, 'status' => 200];
         }
-        return ['errors' => "Не удалось получить товар с id:$id", 'status' => 400];
+        return ['errors' => "Не удалось получить данные о товаре с id:$id.", 'status' => 400];
     }
 
     /**
