@@ -13,8 +13,6 @@ jobs:
           php-version: '8.1'
           ini-values: xdebug.mode=coverage
       - uses: actions/checkout@v1
-      - name: PHP Security Checker
-        uses: StephaneBour/actions-php-security-checker@1.2
 
       - name: Setup project
         run: make setup
