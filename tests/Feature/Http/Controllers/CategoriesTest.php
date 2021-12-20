@@ -43,13 +43,34 @@ class CategoriesTest extends TestCase
 
     public function testStore(): void
     {
-        $response = $this->storeTestCategories();
-        $response->assertStatus(403);
+        $errorResp = $this->json(
+            'post',
+            '/categories',
+            ['name' => 'testCat', 'parent_id' => 2, 'description' => 'testDesc']
+        );
+        $errorResp->assertStatus(403);
+
         Auth::loginUsingId(1);
-        $this->storeTestCategories();
-        $this->assertDatabaseHas('categories', ['name' => 'Тестовая категория']);
-        $response = $this->get('/categories');
-        $response->assertSeeTextInOrder(['Тестовая категория'], true);
+        $response = $this->json(
+            'post',
+            '/categories',
+            ['name' => 'testCat', 'parent_id' => 2, 'description' => 'testDesc']
+        );
+        $response
+            ->assertSuccessful()
+            ->assertJsonFragment(['success' => 'Категория testCat успешно создана.']);
+        $this->assertDatabaseHas('categories', ['name' => 'testCat']);
+
+        $errorResp = $this->json(
+            'post',
+            '/categories',
+            ['name' => 'testCat2', 'parent_id' => 3, 'description' => 'testDesc2']
+        );
+        $errorResp
+            ->assertStatus(400)
+            ->assertJsonFragment(
+                ['error' => ['parent_id' => ['Категория не может быть подкатегорией категории 3-го уровня!']]]
+            );
     }
 
     public function testEdit(): void
@@ -95,7 +116,7 @@ class CategoriesTest extends TestCase
     private function storeTestCategories(): TestResponse
     {
         return $this->post(route('categories.store'), [
-            'name' => 'Тестовая категория',
+            'name' => 'testName',
             'description' => 'Тестовое описание',
             'parent_id' => 0
         ]);

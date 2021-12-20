@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\RequestsProcessing\ReqCategoriesProcessing;
+use App\Http\Validators\CategoriesStoreValidator;
 use App\Models\Category;
-use App\Models\Goods;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -16,68 +18,33 @@ use Illuminate\Validation\ValidationException;
 
 class CategoriesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Application|Factory|View
-     */
-    public function index()
+    use ReqCategoriesProcessing;
+
+    public function index(): View|Factory|Application
     {
-        $categTree = Category::categoriesTree();
-        $categories = Category::categoriesList();
-        return view('category.index', compact('categTree', 'categories'));
+        return view('category.index', $this->reqProcessingForIndex());
     }
 
-    /**
-     * Show the form for creating the specified resource.
-     *
-     * @return array
-     */
-    public function create()
+    public function create(): array
     {
-        $categories = $this->categsForModals();
-        return compact('categories');
+        return $this->reqProcessingForCreate();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws AuthorizationException
-     * @throws ValidationException
-     */
-    public function store(Request $request)
+    public function store(CategoriesStoreValidator $req): JsonResponse
     {
-        $cat = new Category();
-        $this->authorize('store', $cat);
-        $data = $this->validateCategoryParams($request, $cat);
-        $data['description'] = $request->input('description', '');
-        $data['level'] = ($data['parent_id'] == 0) ? 1 : Category::findOrFail($data['parent_id'])->level + 1;
-        $cat->fill($data);
-        if ($cat->save()) {
-            return Response::json(['success' => "Категория $cat->name успешно создана"], 200);
+        $validationErrors = $req->errors();
+        if ($validationErrors) {
+            return Response::json(['error' => $validationErrors], 400);
         }
-        return Response::json(['error' => 'Ошибка данных'], 422);
+
+        [$result, $status] = $this->reqProcessingForStore();
+
+        return Response::json($result, $status);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return array
-     * @throws AuthorizationException
-     */
-    public function edit($id)
+    public function edit(int $id): array
     {
-        $prepare_categ = Category::findOrFail($id);
-        $this->authorize('edit', $prepare_categ);
-        $cat = $prepare_categ->toArray();
-        $cat['created_at'] = $prepare_categ->created_at->format('d.m.Y H:i:s');
-        $cat['updated_at'] = $prepare_categ->updated_at->format('d.m.Y H:i:s');
-        $categories = $this->categsForModals();
-
-        return compact('cat', 'categories');
+        return $this->reqProcessingForEdit($id);
     }
 
     /**
@@ -85,7 +52,7 @@ class CategoriesController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      * @throws AuthorizationException
      */
     public function update(Request $request, $id)
@@ -149,34 +116,6 @@ class CategoriesController extends Controller
      * @return array
      * @throws ValidationException
      */
-    private function validateCategoryParams(Request $request, Category $cat)
-    {
-        return $this->validate($request, [
-            'name' => [
-                'required',
-                function ($attribute, $value, $fail) use ($cat): void {
-                    if ((Category::where($attribute, $value)->first() !== null) && ($value !== $cat->name)) {
-                        $fail('Категория с таким именем уже существует!');
-                    }
-                }],
-            'parent_id' => [
-                'required',
-                function ($attribute, $value, $fail) use ($cat): void {
-                    if ($value != 0) {
-                        if (Category::where('id', $value)->first()->level == 3) {
-                            $fail('Категория не может быть подкатегорией категории 3-го уровня!');
-                        }
-                    }
-                }]
-        ]);
-    }
-
-    /**
-     * @param Request $request
-     * @param Category $cat
-     * @return array
-     * @throws ValidationException
-     */
     private function validateCategoryParamsForUpdate(Request $request, Category $cat)
     {
         return $this->validate($request, [
@@ -225,7 +164,7 @@ class CategoriesController extends Controller
     /**
      * @return array
      */
-    private function categsForModals()
+    /*private function categsForModals()
     {
         $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
             $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
@@ -237,5 +176,5 @@ class CategoriesController extends Controller
             return $res;
         }, []);
         return $categories;
-    }
+    }*/
 }
