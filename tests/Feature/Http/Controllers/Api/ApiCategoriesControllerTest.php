@@ -42,7 +42,7 @@ class ApiCategoriesControllerTest extends TestCase
         $errorResp = $this->get('/api/categories?filter[level]=bla');
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => ['filter.level' => ['Поле filter.level должно быть целым числом.']]]);
+            ->assertJsonFragment(['errors' => ['filter.level' => ['Поле filter.level должно быть целым числом.']]]);
     }
 
     public function testShow(): void
@@ -56,7 +56,7 @@ class ApiCategoriesControllerTest extends TestCase
         $errorResp = $this->get('/api/categories/0');
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => 'Не удалось найти категорию с id:0.']);
+            ->assertJsonFragment(['errors' => 'Не удалось найти категорию с id:0.']);
     }
 
     public function testStore(): void
@@ -81,7 +81,7 @@ class ApiCategoriesControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => ['parent_id' => ['Категория не может быть подкатегорией категории 3-го уровня!']]]
+                ['errors' => ['parent_id' => ['Категория не может быть подкатегорией категории 3-го уровня!']]]
             );
     }
 
@@ -107,7 +107,7 @@ class ApiCategoriesControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => ['parent_id' => [
+                ['errors' => ['parent_id' => [
                     'Категория не может стать категорией 3-го уровня, т.к. имеет дочернюю категорию!'
                 ]]]
             );
@@ -136,7 +136,7 @@ class ApiCategoriesControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => 'Не удалось удалить категорию Тестовая категория! У категории имеется подкатегория!']
+                ['errors' => 'Не удалось удалить категорию Тестовая категория! У категории имеется подкатегория!']
             );
         $errorResp = $this->json(
             'post',
@@ -147,7 +147,7 @@ class ApiCategoriesControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => 'Не удалось удалить категорию Тестовая категория 2! У категории есть товары!']
+                ['errors' => 'Не удалось удалить категорию Тестовая категория 2! У категории есть товары!']
             );
         $errorResp = $this->json(
             'post',
@@ -158,7 +158,7 @@ class ApiCategoriesControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => 'Не удалось найти категорию с id:222.']
+                ['errors' => 'Не удалось найти категорию с id:222.']
             );
     }
 }

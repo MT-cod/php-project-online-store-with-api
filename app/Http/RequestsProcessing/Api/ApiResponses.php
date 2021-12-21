@@ -10,7 +10,7 @@ trait ApiResponses
     private function sendErrRespOnInvalidValidate(mixed $request): JsonResponse|null
     {
         if ($request->errors()) {
-            return Response::json(['error' => $request->errors()], 400);
+            return Response::json(['errors' => $request->errors()], 400);
         }
         return null;
     }
@@ -19,8 +19,8 @@ trait ApiResponses
     {
         if (isset($result['errors'])) {
             $responseBody = (isset($result['data']))
-                ? ['error' => $result['errors'], 'data' => $result['data']]
-                : ['error' => $result['errors']];
+                ? ['errors' => $result['errors'], 'data' => $result['data']]
+                : ['errors' => $result['errors']];
             return Response::json($responseBody, $result['status']);
         }
         $responseBody = (isset($result['data']))

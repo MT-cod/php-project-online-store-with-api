@@ -57,7 +57,7 @@ class ApiBasketsControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => ['basket' => ['Передана некорректная структура данных.']]]);
+            ->assertJsonFragment(['errors' => ['basket' => ['Передана некорректная структура данных.']]]);
         $errorResp = $this->json(
             'post',
             '/api/baskets',
@@ -66,7 +66,7 @@ class ApiBasketsControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => ['basket' => ['Указан некорректный идентификатор товара.']]]);
+            ->assertJsonFragment(['errors' => ['basket' => ['Указан некорректный идентификатор товара.']]]);
         $errorResp = $this->json(
             'post',
             '/api/baskets',
@@ -75,7 +75,7 @@ class ApiBasketsControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => ['basket' => ['Указано некорректное количество товара.']]]);
+            ->assertJsonFragment(['errors' => ['basket' => ['Указано некорректное количество товара.']]]);
     }
 
     public function testDestroy(): void
@@ -100,7 +100,7 @@ class ApiBasketsControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => 'Не удалось найти позицию с id:1 в корзине пользователя.']);
+            ->assertJsonFragment(['errors' => 'Не удалось найти позицию с id:1 в корзине пользователя.']);
     }
 
     public function testPurge(): void

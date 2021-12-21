@@ -56,7 +56,7 @@ class ApiAuthControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(401)
-            ->assertJsonFragment(['error' => 'Не удалось авторизовать пользователя.']);
+            ->assertJsonFragment(['errors' => 'Не удалось авторизовать пользователя.']);
     }
 
     public function testUser(): void

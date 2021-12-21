@@ -3,6 +3,7 @@
 namespace App\Http\RequestsProcessing;
 
 use App\Models\Category;
+use Illuminate\Auth\Access\AuthorizationException;
 
 trait ReqCategoriesProcessing
 {
@@ -38,7 +39,7 @@ trait ReqCategoriesProcessing
      * Обработка запроса на создание категории.
      *
      * @return array
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function reqProcessingForStore(): array
     {
@@ -64,7 +65,7 @@ trait ReqCategoriesProcessing
      *
      * @param int $id
      * @return array
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function reqProcessingForEdit(int $id): array
     {
@@ -82,11 +83,13 @@ trait ReqCategoriesProcessing
      *
      * @param int $id
      * @return array
+     * @throws AuthorizationException
      */
     public function reqProcessingForUpdate(int $id): array
     {
         $req = request();
         $cat = Category::whereId($id)->first();
+        $this->authorize('update', $cat);
         $data = [];
         foreach ($req->input() as $row => $val) {
             switch ($row) {
@@ -101,14 +104,19 @@ trait ReqCategoriesProcessing
                     $data['level'] = ($val)
                     ? Category::find($val)->level + 1
                     : 1;
+                    if ($cat->childrens()->count()) {
+                        foreach ($cat->childrens()->get() as $child) {
+                            $child->level = $data['level'] + 1;
+                        }
+                    }
                     break;
             }
         }
         $cat->fill($data);
         if ($cat->save()) {
-            return ['success' => "Параметры категории успешно изменены.", 'data' => $cat, 'status' => 200];
+            return [['success' => "Параметры категории успешно изменены."], 200];
         }
-        return ['errors' => 'Ошибка изменения данных.', 'status' => 400];
+        return [['errors' => 'Ошибка изменения данных.'], 400];
     }
 
     /**
@@ -120,31 +128,32 @@ trait ReqCategoriesProcessing
     public function reqProcessingForDestroy(int $id): array
     {
         $cat = Category::find($id);
+        $this->authorize('delete', $cat);
         if ($cat) {
             if ($cat->childrens()->count()) {
                 return [
-                    'errors' => "Не удалось удалить категорию $cat->name! У категории имеется подкатегория!",
-                    'status' => 400
+                    ['errors' => "Не удалось удалить категорию $cat->name! У категории имеется подкатегория!"],
+                    400
                 ];
             }
             if ($cat->goods()->count()) {
                 return [
-                    'errors' => "Не удалось удалить категорию $cat->name! У категории есть товары!",
-                    'status' => 400
+                    ['errors' => "Не удалось удалить категорию $cat->name! У категории есть товары!"],
+                    400
                 ];
             }
             try {
                 $cat->delete();
-                return ['success' => "Категория $cat->name успешно удалена.", 'status' => 200];
+                return [['success' => "Категория $cat->name успешно удалена."], 200];
             } catch (\Throwable $e) {
-                return ['errors' => 'Не удалось удалить категорию.', 'status' => 400];
+                return [['errors' => 'Не удалось удалить категорию.'], 400];
             }
         }
-        return ['errors' => "Не удалось найти категорию с id:$id.", 'status' => 400];
+        return [['errors' => "Не удалось найти категорию с id:$id."], 400];
     }
 
     /**
-     * Список категорий для селектов в модалках по управлению категориями
+     * Список категорий для селектов выбора категории в модалках
      *
      * @return array
      */

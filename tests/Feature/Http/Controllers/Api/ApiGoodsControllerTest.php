@@ -37,7 +37,7 @@ class ApiGoodsControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => ['filter.category_ids' => ['Поле filter.category_ids имеет ошибочный формат.']]]
+                ['errors' => ['filter.category_ids' => ['Поле filter.category_ids имеет ошибочный формат.']]]
             );
     }
 
@@ -52,7 +52,7 @@ class ApiGoodsControllerTest extends TestCase
         $errorResp = $this->get('/api/goods/slug/bla');
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => 'Не удалось получить данные о товаре по запрошенному slug.']);
+            ->assertJsonFragment(['errors' => 'Не удалось получить данные о товаре по запрошенному slug.']);
     }
 
     public function testShow()
@@ -66,7 +66,7 @@ class ApiGoodsControllerTest extends TestCase
         $errorResp = $this->get('/api/goods/0');
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => 'Не удалось получить данные о товаре с id:0.']);
+            ->assertJsonFragment(['errors' => 'Не удалось получить данные о товаре с id:0.']);
     }
 
     public function testStore()
@@ -91,7 +91,7 @@ class ApiGoodsControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => ['category_id' => ['Категории 1-го уровня не могут принадлежать товары.']]]
+                ['errors' => ['category_id' => ['Категории 1-го уровня не могут принадлежать товары.']]]
             );
         $errorResp = $this->json(
             'post',
@@ -102,7 +102,7 @@ class ApiGoodsControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => ['additChars' => ['Указана несуществующая доп. характеристика с id:7 для нового товара.']]]
+                ['errors' => ['additChars' => ['Указана несуществующая доп. характеристика с id:7 для нового товара.']]]
             );
     }
 
@@ -136,7 +136,7 @@ class ApiGoodsControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => ['category_id' => ['Категории 1-го уровня не могут принадлежать товары.']]]
+                ['errors' => ['category_id' => ['Категории 1-го уровня не могут принадлежать товары.']]]
             );
         $errorResp = $this->json(
             'post',
@@ -147,7 +147,7 @@ class ApiGoodsControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => ['additChars' => ['Указана несуществующая доп. характеристика с id:7 для нового товара.']]]
+                ['errors' => ['additChars' => ['Указана несуществующая доп. характеристика с id:7 для нового товара.']]]
             );
     }
 
@@ -180,7 +180,7 @@ class ApiGoodsControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => 'Не удалось удалить товар с id:2. Товар может участвовать в транзакциях.']
+                ['errors' => 'Не удалось удалить товар с id:2. Товар может участвовать в транзакциях.']
             );
     }
 }

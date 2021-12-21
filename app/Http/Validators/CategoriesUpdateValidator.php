@@ -17,14 +17,14 @@ class CategoriesUpdateValidator extends \App\Http\Validators\Validator
      */
     public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
-        return Validator::make($request->all() + ['id' => $request->id], [
+        return Validator::make($request->all() + ['id' => $request->category], [
             'id' => ['bail', 'exists:categories'],
-            'name' => ['max:100', Rule::unique('categories')->ignore($request->id)],
+            'name' => ['max:100', Rule::unique('categories')->ignore($request->category)],
             'parent_id' => [
                 'nullable',
                 'integer',
                 function ($attribute, $value, $fail) use ($request): void {
-                    $cat = Category::find($request->id);
+                    $cat = Category::find($request->category);
                     if (!$value) {
                         if ($cat->goods()->count()) {
                             $fail('У категории 1-го уровня не может быть товаров!');
@@ -52,7 +52,7 @@ class CategoriesUpdateValidator extends \App\Http\Validators\Validator
                                 }
                             }
                         } else {
-                            $fail("Не удалось найти категорию-родителя с id:$request->id");
+                            $fail("Не удалось найти категорию-родителя с id:$request->category");
                         }
                     }
                 }]

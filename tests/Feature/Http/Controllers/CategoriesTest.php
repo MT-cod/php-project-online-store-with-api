@@ -2,6 +2,7 @@
 
 namespace Http\Controllers;
 
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -69,7 +70,7 @@ class CategoriesTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => ['parent_id' => ['Категория не может быть подкатегорией категории 3-го уровня!']]]
+                ['errors' => ['parent_id' => ['Категория не может быть подкатегорией категории 3-го уровня!']]]
             );
     }
 
@@ -84,46 +85,56 @@ class CategoriesTest extends TestCase
 
     public function testUpdate(): void
     {
-        $response = $this->post(route('categories.update', 1), ['_method' => 'PATCH', null]);
-        $response->assertStatus(403);
+        $errorResp = $this->json(
+            'post',
+            '/categories/1',
+            ['_method' => 'PATCH', 'name' => 'testCatUpd', 'parent_id' => 0, 'description' => 'testDescUpd']
+        );
+        $errorResp->assertStatus(403);
+
         Auth::loginUsingId(1);
-        $this->post(route('categories.update', 1), [
-            '_method' => 'PATCH',
-            'name' => 'Тестовая категория Upd',
-            'parent_id' => 0
-        ]);
-        $this->assertDatabaseHas('categories', ['name' => 'Тестовая категория Upd']);
-        $response = $this->get('/categories');
-        $response->assertSeeTextInOrder(['Тестовая категория Upd'], true);
+        $response = $this->json(
+            'post',
+            '/categories/1',
+            ['_method' => 'PATCH', 'name' => 'testCatUpd', 'parent_id' => 0, 'description' => 'testDescUpd']
+        );
+        $response
+            ->assertSuccessful()
+            ->assertJsonFragment(['success' => 'Параметры категории успешно изменены.']);
+        $this->assertDatabaseHas('categories', ['name' => 'testCatUpd']);
+
+        $errorResp = $this->json(
+            'post',
+            '/categories/1',
+            ['_method' => 'PATCH', 'parent_id' => 2]
+        );
+        $errorResp
+            ->assertStatus(400)
+            ->assertJsonFragment(
+                ['errors' => ['parent_id' => [
+                    'Категория не может стать категорией 3-го уровня, т.к. имеет дочернюю категорию!'
+                ]]]
+            );
     }
 
     public function testDestroy(): void
     {
-        $response = $this->post(route('categories.destroy', 1), ['_method' => 'DELETE']);
-        $response->assertStatus(403);
+        $errorResp = $this->post(route('categories.destroy', 1), ['_method' => 'DELETE']);
+        $errorResp->assertStatus(403);
+
         Auth::loginUsingId(1);
-        $response = $this->post(route('categories.destroy', 1), ['_method' => 'DELETE']);
-        $response->assertStatus(500);
-        $response = $this->post(route('categories.destroy', 2), ['_method' => 'DELETE']);
-        $response->assertStatus(500);
-        $this->post(route('goods.destroy', 1), ['_method' => 'DELETE']);
-        $this->post(route('categories.destroy', 2), ['_method' => 'DELETE']);
-        $this->assertDatabaseMissing('categories', ['name' => 'Тестовая категория 2']);
+        $this->post(route('categories.destroy', 1), ['_method' => 'DELETE']);
         $response = $this->get('/categories');
-        $response->assertSeeTextInOrder(['Категория "Тестовая категория 2" успешно удалена'], true);
-    }
+        $response->assertSeeTextInOrder(['Не удалось удалить категорию Тестовая категория! У категории имеется подкатегория!'], true);
 
-    private function storeTestCategories(): TestResponse
-    {
-        return $this->post(route('categories.store'), [
-            'name' => 'testName',
-            'description' => 'Тестовое описание',
-            'parent_id' => 0
-        ]);
-    }
+        $this->post(route('categories.destroy', 2), ['_method' => 'DELETE']);
+        $response = $this->get('/categories');
+        $response->assertSeeTextInOrder(['Не удалось удалить категорию Тестовая категория 2! У категории есть товары!'], true);
 
-    protected function tearDown(): void
-    {
-        parent::tearDown();
+        Category::create(['name' => 'testCat', 'description' => 'testDesc']);
+        $this->post(route('categories.destroy', 3), ['_method' => 'DELETE']);
+        $this->assertDatabaseMissing('categories', ['id' => 3]);
+        $response = $this->get('/categories');
+        $response->assertSeeTextInOrder(['Категория testCat успешно удалена.'], true);
     }
 }

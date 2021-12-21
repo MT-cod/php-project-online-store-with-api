@@ -29,7 +29,7 @@ class ApiAdditionalCharsControllerTest extends TestCase
         $errorResp = $this->get('/api/additionalChars?sort[value]=bla');
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => ['sort.value' => ['Выбранное значение для sort.value ошибочно.']]]);
+            ->assertJsonFragment(['errors' => ['sort.value' => ['Выбранное значение для sort.value ошибочно.']]]);
     }
 
     public function testShow(): void
@@ -43,7 +43,7 @@ class ApiAdditionalCharsControllerTest extends TestCase
         $errorResp = $this->get('/api/additionalChars/0');
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => 'Не удалось найти доп характеристику с id:0.']);
+            ->assertJsonFragment(['errors' => 'Не удалось найти доп характеристику с id:0.']);
     }
 
     public function testStore(): void
@@ -65,7 +65,7 @@ class ApiAdditionalCharsControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => ['name' => ['Поле Имя обязательно для заполнения.']]]);
+            ->assertJsonFragment(['errors' => ['name' => ['Поле Имя обязательно для заполнения.']]]);
     }
 
     public function testUpdate(): void
@@ -87,7 +87,7 @@ class ApiAdditionalCharsControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => ['id' => ['Выбранное значение для id некорректно.']]]);
+            ->assertJsonFragment(['errors' => ['id' => ['Выбранное значение для id некорректно.']]]);
     }
 
     public function testDestroy(): void
@@ -102,6 +102,6 @@ class ApiAdditionalCharsControllerTest extends TestCase
         $errorResp = $this->json('post', '/api/additionalChars/0', ['_method' => 'DELETE']);
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => 'Не удалось найти доп характеристику с id:0']);
+            ->assertJsonFragment(['errors' => 'Не удалось найти доп характеристику с id:0']);
     }
 }

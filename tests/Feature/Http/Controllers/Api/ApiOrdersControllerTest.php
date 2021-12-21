@@ -46,7 +46,7 @@ class ApiOrdersControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => ['filter.level' => ['Фильтрация данных по полю filter.level некорректна.']]]);
+            ->assertJsonFragment(['errors' => ['filter.level' => ['Фильтрация данных по полю filter.level некорректна.']]]);
     }
 
     public function testOwnOrders()
@@ -63,7 +63,7 @@ class ApiOrdersControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => ['filter.level' => ['Фильтрация данных по полю filter.level некорректна.']]]);
+            ->assertJsonFragment(['errors' => ['filter.level' => ['Фильтрация данных по полю filter.level некорректна.']]]);
     }
 
     public function testShow()
@@ -80,7 +80,7 @@ class ApiOrdersControllerTest extends TestCase
         );
         $errorResp
             ->assertStatus(400)
-            ->assertJsonFragment(['error' => 'Не удалось найти заказ id:111.']);
+            ->assertJsonFragment(['errors' => 'Не удалось найти заказ id:111.']);
     }
 
     public function testStore()
@@ -106,7 +106,7 @@ class ApiOrdersControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => 'Ошибка создания заказа. Корзина пользователя пуста.']
+                ['errors' => 'Ошибка создания заказа. Корзина пользователя пуста.']
             );
     }
 
@@ -132,7 +132,7 @@ class ApiOrdersControllerTest extends TestCase
         $errorResp
             ->assertStatus(400)
             ->assertJsonFragment(
-                ['error' => ['id' => ['Выбранное значение для id некорректно.']]]
+                ['errors' => ['id' => ['Выбранное значение для id некорректно.']]]
             );
     }
 }

@@ -113,6 +113,11 @@ trait ApiReqCategoriesProcessing
                     $data['level'] = ($val)
                     ? Category::find($val)->level + 1
                     : 1;
+                    if ($cat->childrens()->count()) {
+                        foreach ($cat->childrens()->get() as $child) {
+                            $child->level = $data['level'] + 1;
+                        }
+                    }
                     break;
             }
         }
