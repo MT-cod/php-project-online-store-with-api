@@ -18,7 +18,7 @@ trait ReqCategoriesProcessing
     public function reqProcessingForIndex(): array
     {
         $categTree = Category::categoriesTree();
-        $categories = Category::categoriesList();
+        $categories = Category::categoriesListWithReadableDates();
 
         return compact('categTree', 'categories');
     }
@@ -30,7 +30,7 @@ trait ReqCategoriesProcessing
      */
     public function reqProcessingForCreate(): array
     {
-        $categories = $this->categsForModals();
+        $categories = Category::categsForSelectsWithMarkers(2);
 
         return compact('categories');
     }
@@ -74,7 +74,7 @@ trait ReqCategoriesProcessing
         $cat = $prepare_categ->toArray();
         $cat['created_at'] = $prepare_categ->created_at->format('d.m.Y H:i:s');
         $cat['updated_at'] = $prepare_categ->updated_at->format('d.m.Y H:i:s');
-        $categories = $this->categsForModals();
+        $categories = Category::categsForSelectsWithMarkers(2);
         return compact('cat', 'categories');
     }
 
@@ -150,24 +150,5 @@ trait ReqCategoriesProcessing
             }
         }
         return [['errors' => "Не удалось найти категорию с id:$id."], 400];
-    }
-
-    /**
-     * Список категорий для селектов выбора категории в модалках
-     *
-     * @return array
-     */
-    private function categsForModals(): array
-    {
-        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
-            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
-            if (isset($cat['childrens'])) {
-                foreach ($cat['childrens'] as $cat2lvl) {
-                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
-                }
-            }
-            return $res;
-        }, []);
-        return $categories;
     }
 }

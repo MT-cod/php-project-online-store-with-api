@@ -24,6 +24,28 @@ trait Filter
                 'price' => fn($val, $data) => $data->where('price', $val),
                 'level' => fn($val, $data) => $data->where('level', $val),
                 'parent_id' => fn($val, $data) => $data->where('parent_id', $val),
+                'category_id' => function ($val, $data): void {
+                    $catsWithChildsList = [];
+                    function catChildsToList($category, $catsWithChildsList): array
+                    {
+                        $catsWithChildsList[] = $category->id;
+                        $catChilds = $category->childrens()->get();
+                        if (count($catChilds)) {
+                            foreach ($catChilds as $cat) {
+                                $catsWithChildsList = catChildsToList($cat, $catsWithChildsList);
+                            }
+                        }
+                        return $catsWithChildsList;
+                    }
+
+                    $category = Category::whereId($val)->first();
+                    if ($category) {
+                        $catsWithChildsList = catChildsToList($category, $catsWithChildsList);
+                    }
+                    if ($catsWithChildsList) {
+                        $data->whereIn('category_id', $catsWithChildsList);
+                    }
+                },
                 'category_ids' => function ($val, $data): void {
                     $catsWithChildsList = [];
                     function catChildsToList($category, $catsWithChildsList): array
@@ -43,11 +65,20 @@ trait Filter
                             $catsWithChildsList = catChildsToList($category, $catsWithChildsList);
                         }
                     }
-                    $data->whereIn('category_id', $catsWithChildsList);
+                    if ($catsWithChildsList) {
+                        $data->whereIn('category_id', $catsWithChildsList);
+                    }
                 },
                 'additChar_ids' => function ($val, $data): void {
                     $chars = explode(',', $val);
                     foreach ($chars as $char) {
+                        $data->whereHas('additionalChars', function (Builder $query) use ($char) {
+                            $query->where('additional_char_id', $char);
+                        });
+                    }
+                },
+                'additChars' => function ($val, $data): void {
+                    foreach ($val as $char) {
                         $data->whereHas('additionalChars', function (Builder $query) use ($char) {
                             $query->where('additional_char_id', $char);
                         });

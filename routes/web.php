@@ -27,7 +27,7 @@ Route::get('goods/regenerateDb', [GoodsController::class, 'regenerateDb'])->name
 Route::resource('categories', CategoriesController::class);
 Route::resource('goods', GoodsController::class);
 Route::resource('additionalChars', AdditionalCharsController::class);
-Route::resource('basket', BasketsController::class);
+Route::resource('basket', BasketsController::class, ['only' => ['index', 'store', 'update', 'destroy']]);
 Route::resource('orders', OrdersController::class);
 
 Auth::routes();

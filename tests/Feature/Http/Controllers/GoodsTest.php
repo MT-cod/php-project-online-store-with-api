@@ -107,9 +107,4 @@ class GoodsTest extends TestCase
             'category_id' => 1
         ]);
     }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
 }

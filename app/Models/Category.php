@@ -47,7 +47,7 @@ class Category extends Model
         return $res;
     }
 
-    public static function categTreeWithGoods($categs = []): array
+    /*public static function categTreeWithGoods($categs = []): array
     {
         $res = [];
         if (empty($categs)) {
@@ -68,9 +68,9 @@ class Category extends Model
             $res[$cat->id]['updated_at'] = $cat->updated_at->format('d.m.Y');
         }
         return $res;
-    }
+    }*/
 
-    public static function categoriesList(): array
+    public static function categoriesListWithReadableDates(): array
     {
         $res = [];
         foreach (self::all() as $val) {
@@ -80,5 +80,29 @@ class Category extends Model
             $res[$val->id]['updated_at'] = $val->updated_at->format('d.m.Y');
         }
         return $res;
+    }
+
+    /**
+     * Список категорий для селектов c пометками уровня
+     *
+     * @param int $maxLvlForMark
+     * @return array
+     */
+    public static function categsForSelectsWithMarkers(int $maxLvlForMark = 0): array
+    {
+        return  array_reduce(Category::categoriesTree(), function ($res, $cat) use ($maxLvlForMark) {
+            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
+            if (isset($cat['childrens']) && $maxLvlForMark !== 1) {
+                foreach ($cat['childrens'] as $cat2lvl) {
+                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
+                    if (isset($cat2lvl['childrens']) && $maxLvlForMark !== 2) {
+                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
+                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
+                        }
+                    }
+                }
+            }
+            return $res;
+        }, []);
     }
 }

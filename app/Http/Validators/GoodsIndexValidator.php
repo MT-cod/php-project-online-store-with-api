@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Validators\Api;
+namespace App\Http\Validators;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
-class ApiGoodsIndexValidator extends \App\Http\Validators\Validator
+class GoodsIndexValidator extends \App\Http\Validators\Validator
 {
     /**
     * Валидация запроса
@@ -22,9 +22,9 @@ class ApiGoodsIndexValidator extends \App\Http\Validators\Validator
             'filter.update_min' => ['nullable', 'date'],
             'filter.update_max' => ['nullable', 'date'],
             'filter.name' => ['nullable', 'string', 'max:255'],
-            'filter.price' => ['nullable', 'regex:/^\d*\.?\d{0,2}$/'],
-            'filter.category_ids' => ['nullable', 'regex:/^(?:\d\,?)+\d?$/'],
-            'filter.additChar_ids' => ['nullable', 'regex:/^(?:\d\,?)+\d?$/'],
+            'filter.price' => ['regex:/^\d*\.?\d{0,2}$/'],
+            'filter.category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'filter.additChars' => ['nullable', 'array', 'exists:additional_chars,id'],
             'sort.*' => ['nullable', Rule::in(['asc', 'desc'])],
             'perpage' => ['nullable', 'integer'],
             'filter.*' => function ($attr, $val, $fail): void {
@@ -35,8 +35,8 @@ class ApiGoodsIndexValidator extends \App\Http\Validators\Validator
                     'update_max',
                     'name',
                     'price',
-                    'category_ids',
-                    'additChar_ids'
+                    'category_id',
+                    'additChars'
                 ];
                 if (!in_array(explode('.', $attr)[1], $permitAttrs)) {
                     $fail("Фильтрация данных по полю $attr некорректна");
