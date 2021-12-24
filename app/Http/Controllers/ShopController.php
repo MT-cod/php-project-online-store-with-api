@@ -23,11 +23,11 @@ class ShopController extends Controller
     {
         $result = $this->reqProcessingForShopIndex();
 
-        if (isset($result['errors'])) {
+        if ($result['errors']) {
             flash($result['errors'])->error();
-            return Redirect::to('/');
+            //return Redirect::to($_SERVER['HTTP_REFERER']);
         }
-
+        //flash($result['errors'])->error();
         return view('index', $result);
     }
 

@@ -36,11 +36,11 @@
         </div>
         <div class="col-8 text-center btn-sm pl-5 pr-5 pt-0">
             @include('flash::message')
-            @if ($errors->any())
+            {{--@if ($errors->any())
                 @foreach ($errors->all() as $error)
                     <div class="alert alert-danger">{{ $error }}</div>
                 @endforeach
-            @endif
+            @endif--}}
         </div>
         <div class="col-2 pr-3 pt-1 text-right">
             <button class="btn btn-secondary btn-block btn-modal_basket_show btn-sm" data-toggle="tooltip" data-placement="bottom" title="Показать корзину товаров">
@@ -59,7 +59,7 @@
                 <input type="hidden" name="filter_expand" value="1">
                 <div class="form-group border m-md-2 p-md-2 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <label for="category"><b>по категории</b></label>
-                    <select class="form-control @error('filter.category_id') is-invalid @enderror" name="filter[category_id]" id="category" style="background-color: rgba(255,255,255,0.3);">
+                    <select class="form-control" name="filter[category_id]" id="category" style="background-color: rgba(255,255,255,0.3);">
                         <option selected="selected" value="">-</option>
                         @foreach ($categories as $cat)
                             @if (
@@ -73,27 +73,21 @@
                             @endif
                         @endforeach
                     </select>
-                    @error('filter.category_id')
-                    <span class="invalid-feedback" role="alert"><strong>{{$message}}</strong></span>
-                    @enderror
                 </div>
                 <div class="form-group border m-md-2 p-md-2 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <label for="name"><b>по имени</b></label>
                     @if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== ''))
-                        <input type="text" class="form-control @error('filter.name') is-invalid @enderror" id="name" name="filter[name]" value="{{$_REQUEST['filter']['name']}}" style="background-color: rgba(255,255,255,0.3);">
+                        <input type="text" class="form-control" id="name" name="filter[name]" value="{{$_REQUEST['filter']['name']}}" style="background-color: rgba(255,255,255,0.3);">
                     @else
-                        <input type="text" class="form-control @error('filter.name') is-invalid @enderror" id="name" name="filter[name]" style="background-color: rgba(255,255,255,0.3);">
+                        <input type="text" class="form-control" id="name" name="filter[name]" style="background-color: rgba(255,255,255,0.3);">
                     @endif
-                    @error('filter.name')
-                    <span class="invalid-feedback" role="alert"><strong>{{$message}}</strong></span>
-                    @enderror
                 </div>
 
                 <div class="form-group shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <div class="col-sm" style="max-height: 60vh !important; overflow-y: auto;">
                         <label for="additChars"><b>товар имеет характеристики</b></label>
                         @foreach($additCharacteristics as $char)
-                            <div class="form-control p-0 m-0 @error('filter.additChars') is-invalid @enderror" style="background-color: rgba(255,255,255,0);">
+                            <div class="form-control p-0 m-0" style="background-color: rgba(255,255,255,0);">
                                 <div class="form-check p-0 m-0" style="background-color: rgba(255,255,255,0.1);">
                                     <label class="col-11 pl-0 ml-0 form-check-label text-left text-break"
                                            style="font-size: .7rem;"
@@ -113,9 +107,6 @@
                                         <input class="col-1 align-content-end form-check-input pl-0" type="checkbox" name="filter[additChars][]" value="{{$char['id']}}" id="additChars">
                                     @endif
                                 </div>
-                                @error('filter.additChars')
-                                <span class="invalid-feedback" role="alert"><strong>{{$message}}</strong></span>
-                                @enderror
                             </div>
                         @endforeach
                     </div>

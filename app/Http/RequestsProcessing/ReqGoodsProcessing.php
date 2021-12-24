@@ -21,7 +21,7 @@ trait ReqGoodsProcessing
 
         $validationErrors = (new GoodsIndexValidator($req))->errors();
         if ($validationErrors) {
-            return ['errors' => $validationErrors];
+            return [[], $validationErrors->first()];
         }
 
         $filteredData = $this->filtering($req->input('filter'), Goods::select());
@@ -30,7 +30,9 @@ trait ReqGoodsProcessing
         //добавим доп характеристики товаров в результат
         $sortedData->with('additionalChars:id,name,value');
 
-        return $sortedData->get()->toArray();//->paginate($req->input('perpage') ?? 1000);
+        $result = $sortedData->get()->toArray();//->paginate($req->input('perpage') ?? 1000);
+
+        return [$result, []];
     }
 
     /**

@@ -19,13 +19,9 @@ trait ReqShopProcessing
     public function reqProcessingForShopIndex(): array
     {
         $req = request();
-
-        $goods = (isset($req['filter']) || isset($req['sort']) || isset($req['perpage']))
+        [$goods, $errors] = (isset($req['filter']) || isset($req['sort']) || isset($req['perpage']))
             ? $this->reqProcessingForGoodsIndex()
-            : [];
-        if (isset($goods['errors'])) {
-            return $goods;
-        }
+            : [[], []];
 
         $categories = Category::categsForSelectsWithMarkers();
         $additCharacteristics = AdditionalChar::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
@@ -55,6 +51,13 @@ trait ReqShopProcessing
             $baskCount = (session()->has('basket')) ? count(session('basket')) : 0;
         }
 
-        return compact('goods', 'categories', 'additCharacteristics', 'carouselData', 'baskCount');
+        return compact(
+            'goods',
+            'categories',
+            'additCharacteristics',
+            'carouselData',
+            'baskCount',
+            'errors'
+        );
     }
 }
