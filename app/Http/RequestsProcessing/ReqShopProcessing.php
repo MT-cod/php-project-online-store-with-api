@@ -19,7 +19,7 @@ trait ReqShopProcessing
     public function reqProcessingForShopIndex(): array
     {
         $req = request();
-        [$goods, $errors] = (isset($req['filter']) || isset($req['sort']) || isset($req['perpage']))
+        [$goods, $errors] = (isset($req['filter']) || isset($req['sort']) || isset($req['perpage']) || isset($req['page']))
             ? $this->reqProcessingForGoodsIndex()
             : [[], []];
 

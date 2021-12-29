@@ -15,6 +15,38 @@
     .carousel-indicators {
         filter: invert(100%);
     }
+
+    .pagination > li{
+        color: black;
+        background-color: #dadada;
+        border: 1px solid black;
+    }
+    .pagination > li > a:hover,
+    .pagination > li > span:hover
+    {
+        color: black;
+        background-color: #bdbdbd;
+    }
+    .page-item.active .page-link {
+        z-index: 3;
+        color: white;
+        background-color: #414141;
+        border-color: #1c1c1c;
+    }
+    .page-link {
+        color: black;
+        background-color: #dadada;
+    }
+
+    .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+        background-color: #414141 !important;
+    }
+    .custom-checkbox .custom-control-input:checked:focus ~ .custom-control-label::before {
+        box-shadow: 0 0 0 1px #fff, 0 0 0 0.1rem rgba(37, 37, 37, 0.25)
+    }
+    .custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
+        box-shadow: 0 0 0 1px #fff, 0 0 0 0.1rem rgba(0, 0, 0, 0.25)
+    }
 </style>
 
 <div class="container-fluid" style="background: url(/back_gray.jpg) repeat">
@@ -36,11 +68,6 @@
         </div>
         <div class="col-8 text-center btn-sm pl-5 pr-5 pt-0">
             @include('flash::message')
-            {{--@if ($errors->any())
-                @foreach ($errors->all() as $error)
-                    <div class="alert alert-danger">{{ $error }}</div>
-                @endforeach
-            @endif--}}
         </div>
         <div class="col-2 pr-3 pt-1 text-right">
             <button class="btn btn-secondary btn-block btn-modal_basket_show btn-sm" data-toggle="tooltip" data-placement="bottom" title="Показать корзину товаров">
@@ -55,8 +82,10 @@
         @else
             <div class="col-2 collapse filt" id="filter" style="height: 91vh !important; overflow-y: auto;">
         @endif
-            <form class="text-center" method="GET" action="/" accept-charset="UTF-8">
+            <form class="text-center" id="fsp" method="GET" action="/" accept-charset="UTF-8">
                 <input type="hidden" name="filter_expand" value="1">
+                <input id="perpage" type="hidden" name="perpage" value="{{ $_REQUEST['perpage'] ?? 15}}">
+
                 <div class="form-group border m-md-2 p-md-2 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <label for="category"><b>по категории</b></label>
                     <select class="form-control" name="filter[category_id]" id="category" style="background-color: rgba(255,255,255,0.3);">
@@ -85,35 +114,33 @@
 
                 <div class="form-group shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <div class="col-sm" style="max-height: 60vh !important; overflow-y: auto;">
-                        <label for="additChars"><b>товар имеет характеристики</b></label>
+                        <label><b>товар имеет характеристики</b></label>
                         @foreach($additCharacteristics as $char)
-                            <div class="form-control p-0 m-0" style="background-color: rgba(255,255,255,0);">
-                                <div class="form-check p-0 m-0" style="background-color: rgba(255,255,255,0.1);">
-                                    <label class="col-11 pl-0 ml-0 form-check-label text-left text-break"
-                                           style="font-size: .7rem;"
-                                           for="additChars"
-                                           data-toggle="tooltip"
-                                           data-placement="bottom"
-                                           title="Значение характеристики {{$char['name']}}:&#13; {{$char['value']}}">
-                                        <strong>{{$char['name']}}</strong>
-                                    </label>
-                                    @if (
-                                        isset($_REQUEST['filter']['additChars']) &&
-                                        ($_REQUEST['filter']['additChars'] !== '') &&
-                                        in_array($char['id'], $_REQUEST['filter']['additChars'])
-                                        )
-                                        <input class="col-1 align-content-end form-check-input pl-0" type="checkbox" name="filter[additChars][]" value="{{$char['id']}}" id="additChars" checked>
-                                    @else
-                                        <input class="col-1 align-content-end form-check-input pl-0" type="checkbox" name="filter[additChars][]" value="{{$char['id']}}" id="additChars">
-                                    @endif
-                                </div>
+                            <div class="custom-control custom-checkbox" style="border: 1px groove white; background-color: rgba(255,255,255,0.1);">
+                                @if (
+                                    isset($_REQUEST['filter']['additChars']) &&
+                                    ($_REQUEST['filter']['additChars'] !== '') &&
+                                    in_array($char['id'], $_REQUEST['filter']['additChars'])
+                                    )
+                                    <input type="checkbox" class="col-1 custom-control-input" name="filter[additChars][]" id="additChars-{{$char['id']}}" value="{{$char['id']}}" checked>
+                                @else
+                                    <input type="checkbox" class="col-1 custom-control-input" name="filter[additChars][]" id="additChars-{{$char['id']}}" value="{{$char['id']}}">
+                                @endif
+                                <label class="col-11 custom-control-label p-1 m-1 text-left text-break"
+                                       for="additChars-{{$char['id']}}"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom"
+                                       title="Значение характеристики {{$char['name']}}:&#13; {{$char['value']}}"
+                                       style="font-size: .7rem;">
+                                    <strong>{{$char['name']}}</strong>
+                                </label>
                             </div>
                         @endforeach
                     </div>
                 </div>
 
                 <div class="btn-block m-md-2 p-md-2 shadow-lg">
-                    <a href="/" style="text-decoration: none">
+                    <a href="/?filter_expand=1" style="text-decoration: none">
                         <button class="btn btn-secondary collapse multi_filt show" type="button" id="submit_filt1" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
                             Сброс фильтра
                         </button>
@@ -133,6 +160,19 @@
         {{--Товары--}}
         @if ($goods)
             <div class="col text-left" style="height: 91vh !important; overflow-y: auto;">
+                <div class="row p-0 m-0">
+                    <div class="col-10 d-flex justify-content-center pagination pagination-sm">
+                        {{ $goods->links('pagination::bootstrap-4') }}
+                    </div>
+                    <div class="col-2 p-sm-1 m-0 d-flex justify-content-center">
+                        <b>
+                            Показать
+                            <input href="#" onclick="$('#perpage').val(15)" type="submit" form="fsp" value="15">
+                            <input href="#" onclick="$('#perpage').val(50)" type="submit" form="fsp" value="50">
+                            <input href="#" onclick="$('#perpage').val(500)" type="submit" form="fsp" value="500">
+                        </b>
+                    </div>
+                </div>
                 <table class="table table-bordered table-hover table-sm mx-auto">
                     <thead style="background-color: rgba(0,0,0,0.1);">
                         <tr>

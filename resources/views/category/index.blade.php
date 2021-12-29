@@ -5,6 +5,14 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/modals.js"></script>
 
+<style>
+    .badge-hover:hover {
+        box-shadow: 0 0 5px rgba(0,0,0,0.3);
+        background: linear-gradient(to bottom, #acfff4, #e9e9ce);
+        color: #a00;
+    }
+</style>
+
 <div class="container-fluid" style="height: 95vh !important; background: url(/back_sunny.jpg) repeat">
     <div class="row text-center shadow-lg">
         <div class="col-3"><h2><b>Категории</b></h2></div>

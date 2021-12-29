@@ -25,9 +25,8 @@ class ShopController extends Controller
 
         if ($result['errors']) {
             flash($result['errors'])->error();
-            //return Redirect::to($_SERVER['HTTP_REFERER']);
+            $_REQUEST = ['filter_expand' => "1"];
         }
-        //flash($result['errors'])->error();
         return view('index', $result);
     }
 
