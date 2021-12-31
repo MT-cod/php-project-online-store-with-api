@@ -51,6 +51,10 @@
     th.clickableRow {
         cursor: pointer;
     }
+
+    th.AddSortSimbol:hover::after {
+        content: '⬍';
+    }
 </style>
 
 <div class="container-fluid" style="background: url(/back_gray.jpg) repeat">
@@ -201,7 +205,7 @@
                                 </th>
                             @else
                                 <th scope="col"
-                                    class="text-center clickableRow sortingGoodsTable"
+                                    class="text-center clickableRow sortingGoodsTable AddSortSimbol"
                                     data-sort_col_name="name"
                                     data-toggle="tooltip"
                                     data-placement="bottom"
@@ -231,7 +235,7 @@
                                 </th>
                             @else
                                 <th scope="col"
-                                    class="clickableRow sortingGoodsTable"
+                                    class="clickableRow sortingGoodsTable AddSortSimbol"
                                     data-sort_col_name="price"
                                     data-toggle="tooltip"
                                     data-placement="bottom"
