@@ -47,6 +47,10 @@
     .custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
         box-shadow: 0 0 0 1px #fff, 0 0 0 0.1rem rgba(0, 0, 0, 0.25)
     }
+
+    th.clickableRow {
+        cursor: pointer;
+    }
 </style>
 
 <div class="container-fluid" style="background: url(/back_gray.jpg) repeat">
@@ -85,6 +89,8 @@
             <form class="text-center" id="fsp" method="GET" action="/" accept-charset="UTF-8">
                 <input type="hidden" name="filter_expand" value="1">
                 <input id="perpage" type="hidden" name="perpage" value="{{ $_REQUEST['perpage'] ?? 15}}">
+                <input id="sortByName" type="hidden" name="sort[name]" value="{{ $_REQUEST['sort']['name'] ?? ''}}">
+                <input id="sortByPrice" type="hidden" name="sort[price]" value="{{ $_REQUEST['sort']['price'] ?? ''}}">
 
                 <div class="form-group border m-md-2 p-md-2 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <label for="category"><b>по категории</b></label>
@@ -165,20 +171,74 @@
                         {{ $goods->links('pagination::bootstrap-4') }}
                     </div>
                     <div class="col-2 p-sm-1 m-0 d-flex justify-content-center">
-                        <b>
-                            Показать
-                            <input href="#" onclick="$('#perpage').val(15)" type="submit" form="fsp" value="15">
-                            <input href="#" onclick="$('#perpage').val(50)" type="submit" form="fsp" value="50">
-                            <input href="#" onclick="$('#perpage').val(500)" type="submit" form="fsp" value="500">
-                        </b>
+                        <b>Показать</b>
+                        <input href="#" onclick="$('#perpage').val(15)" type="submit" form="fsp" value="15">
+                        <input href="#" onclick="$('#perpage').val(50)" type="submit" form="fsp" value="50">
+                        <input href="#" onclick="$('#perpage').val(500)" type="submit" form="fsp" value="500">
                     </div>
                 </div>
                 <table class="table table-bordered table-hover table-sm mx-auto">
                     <thead style="background-color: rgba(0,0,0,0.1);">
                         <tr>
-                            <th scope="col" class="text-center">Наименование товара</th>
+                            @if (isset($_REQUEST['sort']['name']) && ($_REQUEST['sort']['name'] === 'asc'))
+                                <th
+                                    scope="col"
+                                    class="text-center clickableRow sortingGoodsTable"
+                                    data-sort_col_name="name"
+                                    data-toggle="tooltip"
+                                    data-placement="bottom"
+                                    title="Нажать для сортировки">
+                                    Наименование товара ▲
+                                </th>
+                            @elseif (isset($_REQUEST['sort']['name']) && ($_REQUEST['sort']['name'] === 'desc'))
+                                <th scope="col"
+                                    class="text-center clickableRow sortingGoodsTable"
+                                    data-sort_col_name="name"
+                                    data-toggle="tooltip"
+                                    data-placement="bottom"
+                                    title="Нажать для сортировки">
+                                    Наименование товара ▼
+                                </th>
+                            @else
+                                <th scope="col"
+                                    class="text-center clickableRow sortingGoodsTable"
+                                    data-sort_col_name="name"
+                                    data-toggle="tooltip"
+                                    data-placement="bottom"
+                                    title="Нажать для сортировки">
+                                    Наименование товара
+                                </th>
+                            @endif
                             <th scope="col" class="text-center">Описание товара</th>
-                            <th scope="col">Цена</th>
+                            @if (isset($_REQUEST['sort']['price']) && ($_REQUEST['sort']['price'] === 'asc'))
+                                <th
+                                    scope="col"
+                                    class="clickableRow sortingGoodsTable"
+                                    data-sort_col_name="price"
+                                    data-toggle="tooltip"
+                                    data-placement="bottom"
+                                    title="Нажать для сортировки">
+                                    Цена ▲
+                                </th>
+                            @elseif (isset($_REQUEST['sort']['price']) && ($_REQUEST['sort']['price'] === 'desc'))
+                                <th scope="col"
+                                    class="clickableRow sortingGoodsTable"
+                                    data-sort_col_name="price"
+                                    data-toggle="tooltip"
+                                    data-placement="bottom"
+                                    title="Нажать для сортировки">
+                                    Цена ▼
+                                </th>
+                            @else
+                                <th scope="col"
+                                    class="clickableRow sortingGoodsTable"
+                                    data-sort_col_name="price"
+                                    data-toggle="tooltip"
+                                    data-placement="bottom"
+                                    title="Нажать для сортировки">
+                                    Цена
+                                </th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody style="background-color: rgba(0,0,0,0.05);">

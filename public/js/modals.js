@@ -203,6 +203,43 @@ $(document).on("click", ".btn-modal_order_edit", function() {
 });
 //Окно заказа - end
 
+//Сортировка в таблице товаров и переключение стрелки направления
+$(document).on("click", ".sortingGoodsTable", function() {
+    let sortColName = $(this).data('sort_col_name');
+    if (sortColName === 'name') {
+        let currSortByName = $('#sortByName').val();
+        if (currSortByName === '') {
+            $('#sortByName').val('asc');
+            $(this).text("Наименование товара ▲");
+        }
+        if (currSortByName === 'asc') {
+            $('#sortByName').val('desc');
+            $(this).text("Наименование товара ▼");
+        }
+        if (currSortByName === 'desc') {
+            $('#sortByName').val('');
+            $(this).text("Наименование товара");
+        }
+    }
+    if (sortColName === 'price') {
+        let currSortByPrice = $('#sortByPrice').val();
+        if (currSortByPrice === '') {
+            $('#sortByPrice').val('asc');
+            $(this).text("Цена ▲");
+        }
+        if (currSortByPrice === 'asc') {
+            $('#sortByPrice').val('desc');
+            $(this).text("Цена ▼");
+        }
+        if (currSortByPrice === 'desc') {
+            $('#sortByPrice').val('');
+            $(this).text("Цена");
+        }
+    }
+    $('#fsp').submit();
+});
+//Сортировка в таблице товаров и переключение стрелки направления - end
+
 //Доп функции
 function showItemsOfBasket(data) {
     let basketLen = Object.keys(data.basket).length;
