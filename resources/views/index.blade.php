@@ -61,16 +61,16 @@
 
     <div class="row justify-content-center" style="height: 4vh !important">
         @if (isset($_REQUEST['filter_expand']))
-            <div class="col-2 pl-3 pt-1 text-left collapse filt">
+            <div class="col-2 gy-3 text-left collapse filt">
         @else
-            <div class="col-2 pl-3 pt-1 text-left collapse filt show">
+            <div class="col-2 gy-3 text-left collapse filt show">
         @endif
             <button type="button" class="btn btn-secondary btn-block btn-sm" id="filt_btn_expand" data-toggle="collapse" data-target=".filt" aria-controls="filter filt_btn_expand filt_btn_collapse"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Фильтр >></b></button>
         </div>
         @if (isset($_REQUEST['filter_expand']))
-            <div class="col-2 pl-3 pt-1 text-left collapse filt show">
+            <div class="col-2 gy-3 text-left collapse filt show">
         @else
-            <div class="col-2 pl-3 pt-1 text-left collapse filt">
+            <div class="col-2 gy-3 text-left collapse filt">
         @endif
             <button type="button" class="btn btn-secondary btn-block btn-sm" id="filt_btn_collapse" data-toggle="collapse" data-target=".filt" aria-controls="filter filt_btn_expand filt_btn_collapse"><b><< Фильтр&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></button>
         </div>
@@ -92,11 +92,16 @@
         @endif
             <form class="text-center" id="fsp" method="GET" action="/" accept-charset="UTF-8">
                 <input type="hidden" name="filter_expand" value="1">
+                @if (isset($_REQUEST['chars_expand']))
+                    <input type="hidden" name="chars_expand" value="{{ $_REQUEST['chars_expand'] }}">
+                @else
+                    <input type="hidden" name="chars_expand" value="0">
+                @endif
                 <input id="perpage" type="hidden" name="perpage" value="{{ $_REQUEST['perpage'] ?? 15}}">
                 <input id="sortByName" type="hidden" name="sort[name]" value="{{ $_REQUEST['sort']['name'] ?? ''}}">
                 <input id="sortByPrice" type="hidden" name="sort[price]" value="{{ $_REQUEST['sort']['price'] ?? ''}}">
 
-                <div class="form-group border m-md-2 p-md-2 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
+                <div class="form-group border g-0 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <label for="category"><b>по категории</b></label>
                     <select class="form-control" name="filter[category_id]" id="category" style="background-color: rgba(255,255,255,0.3);">
                         <option selected="selected" value="">-</option>
@@ -113,7 +118,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group border m-md-2 p-md-2 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
+                <div class="form-group border g-0 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
                     <label for="name"><b>по имени</b></label>
                     @if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== ''))
                         <input type="text" class="form-control" id="name" name="filter[name]" value="{{$_REQUEST['filter']['name']}}" style="background-color: rgba(255,255,255,0.3);">
@@ -122,34 +127,98 @@
                     @endif
                 </div>
 
-                <div class="form-group shadow-lg" style="background-color: rgba(0,0,0,0.15);">
-                    <div class="col-sm" style="max-height: 60vh !important; overflow-y: auto;">
-                        <label><b>товар имеет характеристики</b></label>
-                        @foreach($additCharacteristics as $char)
-                            <div class="custom-control custom-checkbox" style="border: 1px groove white; background-color: rgba(255,255,255,0.1);">
-                                @if (
-                                    isset($_REQUEST['filter']['additChars']) &&
-                                    ($_REQUEST['filter']['additChars'] !== '') &&
-                                    in_array($char['id'], $_REQUEST['filter']['additChars'])
-                                    )
-                                    <input type="checkbox" class="col-1 custom-control-input" name="filter[additChars][]" id="additChars-{{$char['id']}}" value="{{$char['id']}}" checked>
-                                @else
-                                    <input type="checkbox" class="col-1 custom-control-input" name="filter[additChars][]" id="additChars-{{$char['id']}}" value="{{$char['id']}}">
-                                @endif
-                                <label class="col-11 custom-control-label p-1 m-1 text-left text-break"
-                                       for="additChars-{{$char['id']}}"
-                                       data-toggle="tooltip"
-                                       data-placement="bottom"
-                                       title="Значение характеристики {{$char['name']}}:&#13; {{$char['value']}}"
-                                       style="font-size: .7rem;">
-                                    <strong>{{$char['name']}}</strong>
-                                </label>
-                            </div>
-                        @endforeach
+                <div class="form-group border g-0 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
+                    <label><b>по цене</b></label>
+                    <div class="input-group" style="background-color: rgba(0,0,0,0.15);">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" style="background-color: rgba(255,255,255,0.1);">min</span>
+                        </div>
+                        @if (isset($_REQUEST['filter']['price_min']) && ($_REQUEST['filter']['price_min'] !== ''))
+                            <input type="text" class="form-control" name="filter[price_min]" value="{{$_REQUEST['filter']['price_min']}}" style="background-color: rgba(255,255,255,0.4);">
+                        @else
+                            <input type="text" class="form-control" name="filter[price_min]" style="background-color: rgba(255,255,255,0.4);">
+                        @endif
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" style="background-color: rgba(255,255,255,0.1);">max</span>
+                        </div>
+                        @if (isset($_REQUEST['filter']['price_max']) && ($_REQUEST['filter']['price_max'] !== ''))
+                            <input type="text" class="form-control" name="filter[price_max]" value="{{$_REQUEST['filter']['price_max']}}" style="background-color: rgba(255,255,255,0.4);">
+                        @else
+                            <input type="text" class="form-control" name="filter[price_max]" style="background-color: rgba(255,255,255,0.4);">
+                        @endif
                     </div>
                 </div>
 
-                <div class="btn-block m-md-2 p-md-2 shadow-lg">
+                <div class="form-group border g-0 shadow-lg" style="background-color: rgba(0,0,0,0.15);">
+                    <label><b>по времени занесения в базу</b></label>
+                    <div class="input-group" style="background-color: rgba(0,0,0,0.15);">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" style="background-color: rgba(255,255,255,0.1);">с</span>
+                        </div>
+                        @if (isset($_REQUEST['filter']['create_min']) && ($_REQUEST['filter']['create_min'] !== ''))
+                            <input type="date" class="form-control text-center" name="filter[create_min]" value="{{$_REQUEST['filter']['create_min']}}" style="background-color: rgba(255,255,255,0.4);">
+                        @else
+                            <input type="date" class="form-control text-center" name="filter[create_min]" style="background-color: rgba(255,255,255,0.4);">
+                        @endif
+                    </div>
+                    <div class="input-group" style="background-color: rgba(0,0,0,0.15);">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" style="background-color: rgba(255,255,255,0.1);">по</span>
+                        </div>
+                        @if (isset($_REQUEST['filter']['create_max']) && ($_REQUEST['filter']['create_max'] !== ''))
+                            <input type="date" class="form-control text-center" name="filter[create_max]" value="{{$_REQUEST['filter']['create_max']}}" style="background-color: rgba(255,255,255,0.4);">
+                        @else
+                            <input type="date" class="form-control text-center" name="filter[create_max]" style="background-color: rgba(255,255,255,0.4);">
+                        @endif
+                    </div>
+                </div>
+
+                @if (isset($_REQUEST['chars_expand']) && ($_REQUEST['chars_expand'] == 1))
+                    <div class="p-sm-1 collapse chars">
+                @else
+                    <div class="p-sm-1 collapse chars show">
+                @endif
+                        <button type="button" class="btn btn-light btn-block btn-sm" id="chars_btn_expand" data-toggle="collapse" data-target=".chars" onclick="$('input[name=chars_expand]').val(1)"><b>Дополнительные характеристики ▼</b></button>
+                    </div>
+                @if (isset($_REQUEST['chars_expand']) && ($_REQUEST['chars_expand'] == 1))
+                    <div class="p-sm-1 collapse chars show">
+                @else
+                    <div class="p-sm-1 collapse chars">
+                @endif
+                        <button type="button" class="btn btn-light btn-block btn-sm" id="chars_btn_collapse" data-toggle="collapse" data-target=".chars" onclick="$('input[name=chars_expand]').val(0)"><b>Дополнительные характеристики ▲</b></button>
+                    </div>
+
+                @if (isset($_REQUEST['chars_expand']) && ($_REQUEST['chars_expand'] == 1))
+                    <div class="form-group shadow-lg collapse chars show" style="background-color: rgba(0,0,0,0.15);">
+                @else
+                    <div class="form-group shadow-lg collapse chars" style="background-color: rgba(0,0,0,0.15);">
+                @endif
+                        <div class="col-sm p-sm-1" style="max-height: 60vh !important; overflow-y: auto;">
+                            @foreach($additCharacteristics as $char)
+                                <div class="custom-control custom-checkbox" style="border: 1px groove white; background-color: rgba(255,255,255,0.1);">
+                                    @if (
+                                        isset($_REQUEST['filter']['additChars']) &&
+                                        ($_REQUEST['filter']['additChars'] !== '') &&
+                                        in_array($char['id'], $_REQUEST['filter']['additChars'])
+                                        )
+                                        <input type="checkbox" class="col-1 custom-control-input" name="filter[additChars][]" id="additChars-{{$char['id']}}" value="{{$char['id']}}" checked>
+                                    @else
+                                        <input type="checkbox" class="col-1 custom-control-input" name="filter[additChars][]" id="additChars-{{$char['id']}}" value="{{$char['id']}}">
+                                    @endif
+                                    <label class="col-11 custom-control-label p-1 m-1 text-left text-break"
+                                           for="additChars-{{$char['id']}}"
+                                           data-toggle="tooltip"
+                                           data-placement="bottom"
+                                           title="Значение характеристики {{$char['name']}}:&#13; {{$char['value']}}"
+                                           style="font-size: .7rem;">
+                                        <strong>{{$char['name']}}</strong>
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                <div class="btn-block g-0">
                     <a href="/?filter_expand=1" style="text-decoration: none">
                         <button class="btn btn-secondary collapse multi_filt show" type="button" id="submit_filt1" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
                             Сброс фильтра
