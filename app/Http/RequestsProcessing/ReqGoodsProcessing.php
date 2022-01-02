@@ -30,7 +30,7 @@ trait ReqGoodsProcessing
         //добавим доп характеристики товаров в результат
         $sortedData->with('additionalChars:id,name,value');
 
-        $result = $sortedData->paginate($req->input('perpage') ?? null)->withQueryString();
+        $result = $sortedData->paginate($req->input('perpage') ?? 20)->withQueryString();
 
         return [$result, []];
     }

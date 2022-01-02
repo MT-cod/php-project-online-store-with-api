@@ -55,22 +55,26 @@
     th.AddSortSimbol:hover::after {
         content: '⬍';
     }
+
+    tr.clickableRow {
+        cursor: pointer;
+    }
 </style>
 
 <div class="container-fluid" style="background: url(/back_gray.jpg) repeat">
 
     <div class="row justify-content-center" style="height: 4vh !important">
         @if (isset($_REQUEST['filter_expand']))
-            <div class="col-2 gy-3 text-left collapse filt">
+            <div class="col-2 gy-3 pt-1 text-left collapse filt">
         @else
-            <div class="col-2 gy-3 text-left collapse filt show">
+            <div class="col-2 gy-3 pt-1 text-left collapse filt show">
         @endif
             <button type="button" class="btn btn-secondary btn-block btn-sm" id="filt_btn_expand" data-toggle="collapse" data-target=".filt" aria-controls="filter filt_btn_expand filt_btn_collapse"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Фильтр >></b></button>
         </div>
         @if (isset($_REQUEST['filter_expand']))
-            <div class="col-2 gy-3 text-left collapse filt show">
+            <div class="col-2 gy-3 pt-1 text-left collapse filt show">
         @else
-            <div class="col-2 gy-3 text-left collapse filt">
+            <div class="col-2 gy-3 pt-1 text-left collapse filt">
         @endif
             <button type="button" class="btn btn-secondary btn-block btn-sm" id="filt_btn_collapse" data-toggle="collapse" data-target=".filt" aria-controls="filter filt_btn_expand filt_btn_collapse"><b><< Фильтр&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></button>
         </div>
@@ -97,7 +101,7 @@
                 @else
                     <input type="hidden" name="chars_expand" value="0">
                 @endif
-                <input id="perpage" type="hidden" name="perpage" value="{{ $_REQUEST['perpage'] ?? 15}}">
+                <input id="perpage" type="hidden" name="perpage" value="{{ $_REQUEST['perpage'] ?? 20}}">
                 <input id="sortByName" type="hidden" name="sort[name]" value="{{ $_REQUEST['sort']['name'] ?? ''}}">
                 <input id="sortByPrice" type="hidden" name="sort[price]" value="{{ $_REQUEST['sort']['price'] ?? ''}}">
 
@@ -244,15 +248,15 @@
                         {{ $goods->links('pagination::bootstrap-4') }}
                     </div>
                     <div class="col-2 p-sm-1 m-0 d-flex justify-content-center">
-                        <b>Показать</b>
-                        <input href="#" onclick="$('#perpage').val(15)" type="submit" form="fsp" value="15">
+                        <b>Показать&nbsp;</b>
+                        <input href="#" onclick="$('#perpage').val(20)" type="submit" form="fsp" value="20">
                         <input href="#" onclick="$('#perpage').val(50)" type="submit" form="fsp" value="50">
                         <input href="#" onclick="$('#perpage').val(500)" type="submit" form="fsp" value="500">
                     </div>
                 </div>
                 <table class="table table-bordered table-hover table-sm mx-auto">
                     <thead style="background-color: rgba(0,0,0,0.1);">
-                        <tr>
+                        <tr style="font-size: 1.2rem;">
                             @if (isset($_REQUEST['sort']['name']) && ($_REQUEST['sort']['name'] === 'asc'))
                                 <th
                                     scope="col"
@@ -316,19 +320,14 @@
                     </thead>
                     <tbody style="background-color: rgba(0,0,0,0.05);">
                         @foreach ($goods as $item)
-                            <tr>
-                                <td>
-                                    <button
-                                        type="button"
-                                        class="text-left btn btn-block btn-outline-secondary btn-sm btn-modal_shop_goods_show"
-                                        data-toggle="tooltip"
-                                        data-placement="bottom"
-                                        title="Нажать для подробностей/покупки"
-                                        data-id="{{$item['id']}}"
-                                        style="border: none">
-                                        <h6><b>{{Str::limit($item['name'], 40)}}</b></h6>
-                                    </button>
-                                </td>
+                            <tr
+                                class="text-left clickableRow btn-modal_shop_goods_show"
+                                data-id="{{$item['id']}}"
+                                data-toggle="tooltip"
+                                data-placement="bottom"
+                                title="Нажать для подробностей/покупки"
+                            >
+                                <td><h6><b>{{Str::limit($item['name'], 40)}}</b></h6></td>
                                 <td>{{Str::limit($item['description'], 120)}}</td>
                                 <td><b>{{$item['price']}}</b></td>
                             </tr>

@@ -23,6 +23,8 @@ class ApiGoodsIndexValidator extends \App\Http\Validators\Validator
             'filter.update_max' => ['nullable', 'date'],
             'filter.name' => ['nullable', 'string', 'max:255'],
             'filter.price' => ['nullable', 'regex:/^\d*\.?\d{0,2}$/'],
+            'filter.price_min' => ['nullable', 'regex:/^\d*\.?\d{0,2}$/'],
+            'filter.price_max' => ['nullable', 'regex:/^\d*\.?\d{0,2}$/'],
             'filter.category_ids' => ['nullable', 'regex:/^(?:\d\,?)+\d?$/'],
             'filter.additChar_ids' => ['nullable', 'regex:/^(?:\d\,?)+\d?$/'],
             'sort.*' => ['nullable', Rule::in(['asc', 'desc'])],
@@ -35,6 +37,8 @@ class ApiGoodsIndexValidator extends \App\Http\Validators\Validator
                     'update_max',
                     'name',
                     'price',
+                    'price_min',
+                    'price_max',
                     'category_ids',
                     'additChar_ids'
                 ];
