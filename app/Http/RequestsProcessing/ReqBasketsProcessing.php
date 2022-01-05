@@ -2,44 +2,30 @@
 
 namespace App\Http\RequestsProcessing;
 
+use App\Models\Basket;
+use Illuminate\Http\Request;
+
 trait ReqBasketsProcessing
 {
     /**
-     * Обработка запроса корзины пользователя.
+     * Обработка запроса на получение данных корзины.
      *
      * @return array
      */
-    public function reqProcessingForOwnBasket(): array
+    public function reqProcessingForIndex(): array
     {
-        try {
-            $data = request()->user()->basketForApi();
-        } catch (\Throwable $e) {
-            return ['errors' => 'Не удалось получить корзину пользователя.', 'status' => 400];
-        }
-        if ($data) {
-            return [
-                'success' => 'Корзина пользователя успешно получена.',
-                'data' => $data,
-                'status' => 200
-            ];
-        }
-        return ['success' => 'Корзина пользователя пуста.', 'data' => $data, 'status' => 200];
+        return ['basket' => Basket::getActualDataOfBasket()];
     }
 
     /**
-     * Обработка запроса на создание(обновление данных) корзины пользователя.
+     * Обработка запроса на добавление позиции в корзину.
      *
-     * @return array
+     * @param Request $req
+     * @return bool
      */
-    public function reqProcessingForStore(): array
+    public function reqProcessingForStoreNewPosition(Request $req): bool
     {
-        $req = request();
-        if ($req->input('basket')) {
-            $basket = array_map(static fn($qua) => ['quantity' => $qua], $req->input('basket'));
-            $req->user()->goodsInBasket()->sync($basket);
-        }
-        $result = $req->user()->basketForApi();
-        return ['success' => 'Корзина успешно сохранена.', 'data' => $result, 'status' => 200];
+        return Basket::addPositionToBasket($req['id'], $req['quantity']);
     }
 
     /**

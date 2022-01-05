@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Basket;
 use App\Models\Order;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -49,7 +50,7 @@ class OrdersController extends Controller
             $user_data['email'] = $user->email;
             $user_data['phone'] = $user->phone;
         }
-        $basket = BasketsController::getActualDataOfBasket();
+        $basket = Basket::getActualDataOfBasket();
         return compact('user_data', 'basket');
     }
 
@@ -70,7 +71,7 @@ class OrdersController extends Controller
         $order->fill($data);
 
         if ($order->save()) {
-            $basket = BasketsController::getActualDataOfBasket();
+            $basket = Basket::getActualDataOfBasket();
             array_walk($basket, fn($item) => $order->goods()
                 ->attach($item['id'], ['price' => $item['price'], 'quantity' => $item['quantity']]));
             //Заказ сделан, корзина больше не нужна - удаляем её

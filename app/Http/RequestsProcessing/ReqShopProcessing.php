@@ -6,7 +6,6 @@ use App\Models\AdditionalChar;
 use App\Models\Basket;
 use App\Models\Category;
 use App\Models\Goods;
-use Illuminate\Support\Facades\Auth;
 
 trait ReqShopProcessing
 {

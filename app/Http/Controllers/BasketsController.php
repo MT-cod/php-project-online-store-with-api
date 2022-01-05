@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Goods;
+use App\Http\RequestsProcessing\ReqBasketsProcessing;
+use App\Http\Validators\BasketsStoreValidator;
+use App\Models\Basket;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,37 +14,26 @@ use Illuminate\Support\Facades\Response;
 
 class BasketsController extends Controller
 {
-    /**
-     * Возврат корзины.
-     *
-     * @return array
-     */
+    use ReqBasketsProcessing;
+
     public function index()
     {
-        $basket = $this->getActualDataOfBasket();
-        return compact('basket');
+        return $this->reqProcessingForIndex();
     }
 
-    /**
-     * Добавление новой позиции товара с кол-вом в корзину.
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     */
-    public function store(Request $request)
+    public function store(BasketsStoreValidator $req): RedirectResponse
     {
-        $user = Auth::user();
-        if ($user) {
-            //Пользователь авторизован - работаем с табличными данными в БД
-            $user->goodsInBasket()->attach($request['id'], ['quantity' => $request['quantity']]);
+        $validationErrors = $req->errors();
+        if ($validationErrors) {
+            flash($validationErrors)->error();
         } else {
-            //Пользователь не авторизован - работаем с данными корзины в сессии
-            session([
-                'basket.' . $request['id'] . '.id' => $request['id'],
-                'basket.' . $request['id'] . '.quantity' => $request['quantity']
-            ]);
+            if ($this->reqProcessingForStoreNewPosition(request())) {
+                flash('Товар успешно добавлен в корзину')->success();
+            } else {
+                flash('Не удалось добавить товар в корзину')->error();
+            }
         }
-        flash('Товар добавлен в корзину')->success();
+
         return Redirect::to($_SERVER['HTTP_REFERER']);
     }
 
@@ -66,9 +57,9 @@ class BasketsController extends Controller
                 $basket = $request['basket'];
                 array_walk($basket, fn($qua, $id) => session(['basket.' . $id . '.quantity' => $qua]));
             }
-            $resultBasket = $this->getActualDataOfBasket();
+            $resultBasket = Basket::getActualDataOfBasket();
         } catch (\Exception $e) {
-            $resultBasket = $this->getActualDataOfBasket();
+            $resultBasket = Basket::getActualDataOfBasket();
             return Response::json(['error' => 'Ошибка изменения данных', 'basket' => $resultBasket], 422);
         }
         return Response::json(['success' => 'Корзина успешно обновлена', 'basket' => $resultBasket], 200);
@@ -102,38 +93,7 @@ class BasketsController extends Controller
             //Пользователь не авторизован - работаем с данными о корзине в сессии
             session()->forget('basket.' . $id);
         }
-        $basket = $this->getActualDataOfBasket();
+        $basket = Basket::getActualDataOfBasket();
         return Response::json(compact('basket'), 200);
-    }
-
-
-//Общие функции контроллера-----------------------------------------------------------------
-
-    public static function getActualDataOfBasket(): array
-    {
-        $basket = [];
-        $user = Auth::user();
-        if ($user) {
-            //Если пользователь авторизован - работаем с табличными данными в БД
-            if ($user->basket()) {
-                $basket = $user->basket();
-            }
-        } elseif (session()->has('basket')) {
-            //Если пользователь не авторизован и корзина в сессии присутствует - работаем с данными корзины в сессии
-            $smallBasket = session('basket');
-            $basket = array_reduce($smallBasket, function ($res, $val): array {
-                $item = Goods::find($val['id']);
-                if ($item) {
-                    $res[$val['id']] = [
-                        'id' => $val['id'],
-                        'name' => $item->name,
-                        'price' => $item->price,
-                        'quantity' => $val['quantity']
-                    ];
-                    return $res;
-                }
-            }, []);
-        }
-        return $basket;
     }
 }
