@@ -3,6 +3,7 @@
 namespace App\Http\RequestsProcessing;
 
 use App\Models\AdditionalChar;
+use App\Models\Basket;
 use App\Models\Category;
 use App\Models\Goods;
 use Illuminate\Support\Facades\Auth;
@@ -31,25 +32,7 @@ trait ReqShopProcessing
         $carouselData[] = Goods::where('id', Goods::min('id'))->get()->toArray()[0];
         $carouselData[] = Goods::where('id', Goods::max('id'))->get()->toArray()[0];
 
-        $user = Auth::user();
-        if ($user) {
-            //Если пользователь авторизован
-            $baskCount = 0;
-            if ($user->basket()) {
-                $baskCount = count($user->basket());
-            } elseif (session()->has('basket')) {
-                //Пользователь авторизовался после того, как добавил товары в корзину.
-                //Присваиваем неавторизованную корзину авторизованному пользователю
-                $sessBasket = session('basket');
-                $basketToDb = array_map(static fn($qua) => ['quantity' => $qua['quantity']], $sessBasket);
-                $user->goodsInBasket()->attach($basketToDb);
-                session()->forget('basket');
-                $baskCount = count($user->basket());
-            }
-        } else {
-            //Если пользователь не авторизован - работаем с данными корзины в сессии
-            $baskCount = (session()->has('basket')) ? count(session('basket')) : 0;
-        }
+        $baskCount = Basket::countOfPositionsInBasket();
 
         return compact(
             'goods',
