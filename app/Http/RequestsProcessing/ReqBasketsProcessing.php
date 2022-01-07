@@ -2,6 +2,7 @@
 
 namespace App\Http\RequestsProcessing;
 
+use App\Http\Validators\BasketsUpdateValidator;
 use App\Models\Basket;
 use Illuminate\Http\Request;
 
@@ -26,6 +27,33 @@ trait ReqBasketsProcessing
     public function reqProcessingForStoreNewPosition(Request $req): bool
     {
         return Basket::addPositionToBasket($req['id'], $req['quantity']);
+    }
+
+    /**
+     * Обработка запроса на обновление данных корзины.
+     *
+     * @param Request $req
+     * @return array
+     */
+    public function reqProcessingForUpdateBasket(Request $req): array
+    {
+        $validationErrors = (new BasketsUpdateValidator($req))->errors();
+        if ($validationErrors) {
+            return [
+                'result' =>  ['errors' => $validationErrors, 'basket' => Basket::getActualDataOfBasket()],
+                'status' => 400
+            ];
+        }
+
+        return (Basket::syncBasketData($req['basket']))
+            ? [
+                'result' => ['success' => ['Корзина успешно обновлена.'], 'basket' => Basket::getActualDataOfBasket()],
+                'status' => 400
+            ]
+            : [
+                'result' => ['errors' => ['Не удалось обновить корзину.'], 'basket' => Basket::getActualDataOfBasket()],
+                'status' => 200
+            ];
     }
 
     /**

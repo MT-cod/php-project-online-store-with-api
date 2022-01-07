@@ -16,22 +16,31 @@ class BasketsController extends Controller
 {
     use ReqBasketsProcessing;
 
-    public function index()
+    /**
+     * Получение данных корзины.
+     *
+     * @return array
+     */
+    public function index(): array
     {
         return $this->reqProcessingForIndex();
     }
 
+    /**
+     * Добавление позиции в корзину.
+     *
+     * @param BasketsStoreValidator $req
+     * @return RedirectResponse
+     */
     public function store(BasketsStoreValidator $req): RedirectResponse
     {
         $validationErrors = $req->errors();
         if ($validationErrors) {
             flash($validationErrors)->error();
+        } else if ($this->reqProcessingForStoreNewPosition(request())) {
+            flash('Товар успешно добавлен в корзину')->success();
         } else {
-            if ($this->reqProcessingForStoreNewPosition(request())) {
-                flash('Товар успешно добавлен в корзину')->success();
-            } else {
-                flash('Не удалось добавить товар в корзину')->error();
-            }
+            flash('Не удалось добавить товар в корзину')->error();
         }
 
         return Redirect::to($_SERVER['HTTP_REFERER']);
@@ -40,29 +49,13 @@ class BasketsController extends Controller
     /**
      * Обновление инфы по кол-ву позиций в корзине при корректировке пользователем.
      *
-     * @param Request $request
+     * @param Request $req
      * @return JsonResponse
      */
-    public function update(Request $request)
+    public function update(Request $req): JsonResponse
     {
-        try {
-            $user = Auth::user();
-            if ($user) {
-                //Пользователь авторизован - работаем с табличными данными в БД
-                $reqBasket = $request['basket'];
-                $basket = array_map(fn($qua) => ['quantity' => $qua], $reqBasket);
-                $user->goodsInBasket()->sync($basket);
-            } else {
-                //Пользователь не авторизован - работаем с данными корзины в сессии
-                $basket = $request['basket'];
-                array_walk($basket, fn($qua, $id) => session(['basket.' . $id . '.quantity' => $qua]));
-            }
-            $resultBasket = Basket::getActualDataOfBasket();
-        } catch (\Exception $e) {
-            $resultBasket = Basket::getActualDataOfBasket();
-            return Response::json(['error' => 'Ошибка изменения данных', 'basket' => $resultBasket], 422);
-        }
-        return Response::json(['success' => 'Корзина успешно обновлена', 'basket' => $resultBasket], 200);
+        [$result, $status] = $this->reqProcessingForUpdateBasket($req);
+        return Response::json($result, $status);
     }
 
     /**

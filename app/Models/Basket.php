@@ -6,11 +6,10 @@ use Illuminate\Support\Facades\Auth;
 
 class Basket
 {
-    /*public function __construct()
-    {}*/
-
     public static function addPositionToBasket(int $id, int $quantity): bool
     {
+        self::checkAndMoveSessBasketToUserBasket();
+
         $user = Auth::user();
         try {
             if ($user) {
@@ -19,6 +18,26 @@ class Basket
             } else {
                 //Пользователь не авторизован - работаем с данными корзины в сессии
                 session(['basket.' . $id . '.id' => $id, 'basket.' . $id . '.quantity' => $quantity]);
+            }
+        } catch (\Throwable $e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function syncBasketData(array $basket): bool
+    {
+        self::checkAndMoveSessBasketToUserBasket();
+
+        try {
+            $user = Auth::user();
+            if ($user) {
+                //Пользователь авторизован - работаем с табличными данными в БД
+                $newBasket = array_map(static fn($qua) => ['quantity' => $qua], $basket);
+                $user->goodsInBasket()->sync($newBasket);
+            } else {
+                //Пользователь не авторизован - работаем с данными корзины в сессии
+                array_walk($basket, static fn($qua, $id) => session(['basket.' . $id . '.quantity' => $qua]));
             }
         } catch (\Throwable $e) {
             return false;
@@ -69,7 +88,7 @@ class Basket
     }
 
     //Если пользователь авторизовался после того, как добавил товары в корзину,
-    //то присваиваем неавторизованную корзину авторизованному пользователю
+    //то перемещаем товары, с обновлением кол-ва при нахождении одинаковых, из неавторизованной корзины в авторизованную
     public static function checkAndMoveSessBasketToUserBasket(): void
     {
         $user = Auth::user();
