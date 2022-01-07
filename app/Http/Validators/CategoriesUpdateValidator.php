@@ -18,7 +18,7 @@ class CategoriesUpdateValidator extends \App\Http\Validators\Validator
     public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
         return Validator::make($request->all() + ['id' => $request->category], [
-            'id' => ['bail', 'exists:categories'],
+            'id' => 'exists:categories',
             'name' => ['max:100', Rule::unique('categories')->ignore($request->category)],
             'parent_id' => [
                 'nullable',

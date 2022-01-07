@@ -54,14 +54,20 @@ $(document).ready(function() {
             error: function(data) {
                 $('.modal_basket_edit_results').html('');
                 let errors = '';
-                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
-                    errors += errNote[1][0] + '<br>';
-                });
+                let respErrors = data.responseJSON.errors;
+                if (typeof respErrors == 'string') {
+                    errors = respErrors;
+                }
+                if (typeof respErrors == 'object') {
+                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
+                        errors += errNote[1][0] + '<br>';
+                    });
+                }
                 $('.modal_basket_edit_results').html(
                     '<div class="alert alert-danger text-center" role="alert">' +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                     '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
-                showItemsOfBasket(data);
+                showItemsOfBasket(data.responseJSON);
             }
         });
     })
@@ -79,7 +85,8 @@ $(document).on("click", ".btn-modal_basket_show", function() {
             showItemsOfBasket(data);
         },
         error: function (jqXHR, textStatus, errorThrown) {
-        }});
+        }
+    });
 });
 //Открытие корзины - end
 
@@ -378,9 +385,15 @@ $(document).ready(function() {
             },
             error: function(data) {
                 let errors = '';
-                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
-                    errors += errNote[1][0] + '<br>';
-                });
+                let respErrors = data.responseJSON.errors;
+                if (typeof respErrors == 'string') {
+                    errors = respErrors;
+                }
+                if (typeof respErrors == 'object') {
+                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
+                        errors += errNote[1][0] + '<br>';
+                    });
+                }
                 $('.modal_goods_edit_save_results').html(
                     '<div class="alert alert-danger text-center" role="alert">' +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -446,9 +459,15 @@ $(document).ready(function() {
             },
             error: function(data) {
                 let errors = '';
-                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
-                    errors += errNote[1][0] + '<br>';
-                });
+                let respErrors = data.responseJSON.errors;
+                if (typeof respErrors == 'string') {
+                    errors = respErrors;
+                }
+                if (typeof respErrors == 'object') {
+                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
+                        errors += errNote[1][0] + '<br>';
+                    });
+                }
                 $('.modal_goods_create_results').html(
                     '<div class="alert alert-danger text-center" role="alert">' +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -528,9 +547,15 @@ $(document).ready(function() {
             },
             error: function(data) {
                 let errors = '';
-                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
-                    errors += errNote[1][0] + '<br>';
-                });
+                let respErrors = data.responseJSON.errors;
+                if (typeof respErrors == 'string') {
+                    errors = respErrors;
+                }
+                if (typeof respErrors == 'object') {
+                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
+                        errors += errNote[1][0] + '<br>';
+                    });
+                }
                 $('.modal_categ_create_results').html(
                     '<div class="alert alert-danger text-center" role="alert">' +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -605,9 +630,15 @@ $(document).ready(function() {
             },
             error: function(data) {
                 let errors = '';
-                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
-                    errors += errNote[1][0] + '<br>';
-                });
+                let respErrors = data.responseJSON.errors;
+                if (typeof respErrors == 'string') {
+                    errors = respErrors;
+                }
+                if (typeof respErrors == 'object') {
+                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
+                        errors += errNote[1][0] + '<br>';
+                    });
+                }
                 $('.modal_categ_edit_save_results').html(
                     '<div class="alert alert-danger text-center" role="alert">' +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -643,9 +674,15 @@ $(document).ready(function() {
             },
             error: function(data) {
                 let errors = '';
-                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
-                    errors += errNote[1][0] + '<br>';
-                });
+                let respErrors = data.responseJSON.errors;
+                if (typeof respErrors == 'string') {
+                    errors = respErrors;
+                }
+                if (typeof respErrors == 'object') {
+                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
+                        errors += errNote[1][0] + '<br>';
+                    });
+                }
                 $('.modal_additChar_create_results').html(
                     '<div class="alert alert-danger text-center" role="alert">' +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -699,10 +736,15 @@ $(document).ready(function() {
             },
             error: function(data) {
                 let errors = '';
-                console.log(data);
-                Object.entries(data.responseJSON.errors).forEach(function(errNote) {
-                    errors += errNote[1][0] + '<br>';
-                });
+                let respErrors = data.responseJSON.errors;
+                if (typeof respErrors == 'string') {
+                    errors = respErrors;
+                }
+                if (typeof respErrors == 'object') {
+                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
+                        errors += errNote[1][0] + '<br>';
+                    });
+                }
                 $('.modal_additChar_edit_save_results').html(
                     '<div class="alert alert-danger text-center" role="alert">' +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +

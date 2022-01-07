@@ -39,21 +39,12 @@ trait ReqBasketsProcessing
     {
         $validationErrors = (new BasketsUpdateValidator($req))->errors();
         if ($validationErrors) {
-            return [
-                'result' =>  ['errors' => $validationErrors, 'basket' => Basket::getActualDataOfBasket()],
-                'status' => 400
-            ];
+            return [['errors' => $validationErrors, 'basket' => Basket::getActualDataOfBasket()], 400];
         }
 
         return (Basket::syncBasketData($req['basket']))
-            ? [
-                'result' => ['success' => ['Корзина успешно обновлена.'], 'basket' => Basket::getActualDataOfBasket()],
-                'status' => 400
-            ]
-            : [
-                'result' => ['errors' => ['Не удалось обновить корзину.'], 'basket' => Basket::getActualDataOfBasket()],
-                'status' => 200
-            ];
+            ? [['success' => 'Корзина успешно обновлена.', 'basket' => Basket::getActualDataOfBasket()], 200]
+            : [['errors' => 'Не удалось обновить корзину.', 'basket' => Basket::getActualDataOfBasket()], 400];
     }
 
     /**
