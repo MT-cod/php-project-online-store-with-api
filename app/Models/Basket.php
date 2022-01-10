@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Basket
 {
-    public static function addPositionToBasket(int $id, int $quantity): bool
+    public static function addItemToBasket(int $id, int $quantity): bool
     {
         self::checkAndMoveSessBasketToUserBasket();
 
@@ -38,6 +38,44 @@ class Basket
             } else {
                 //Пользователь не авторизован - работаем с данными корзины в сессии
                 array_walk($basket, static fn($qua, $id) => session(['basket.' . $id . '.quantity' => $qua]));
+            }
+        } catch (\Throwable $e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function delItemFromBasket(int $id): bool
+    {
+        self::checkAndMoveSessBasketToUserBasket();
+
+        $user = Auth::user();
+        try {
+            if ($user) {
+                //Пользователь авторизован - работаем с табличными данными
+                $user->goodsInBasket()->detach($id);
+            } else {
+                //Пользователь не авторизован - работаем с данными о корзине в сессии
+                session()->forget('basket.' . $id);
+            }
+        } catch (\Throwable $e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static function purgeBasket(): bool
+    {
+        self::checkAndMoveSessBasketToUserBasket();
+
+        $user = Auth::user();
+        try {
+            if ($user) {
+                //Пользователь авторизован - работаем с табличными данными в БД
+                $user->goodsInBasket()->detach();
+            } else {
+                //Пользователь не авторизован - работаем с данными о корзине в сессии
+                session()->forget('basket');
             }
         } catch (\Throwable $e) {
             return false;

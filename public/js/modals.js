@@ -106,6 +106,11 @@ $(document).on("click", ".btn-del-item", function() {
         contentType: false,
         success: function(data) {
             $('.modal_basket_edit_results').html('');
+            $('.modal_basket_edit_results').html(
+                '<div class="alert alert-success text-center p-0 m-0" role="alert">' + data.success +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '<span aria-hidden="true">&times;</span></button></div>');
+            showItemsOfBasket(data);
             showItemsOfBasket(data);
         },
         error: function(data) {

@@ -47,7 +47,7 @@ class BasketsController extends Controller
     }
 
     /**
-     * Обновление инфы по кол-ву позиций в корзине при корректировке пользователем.
+     * Обновление данных корзины.
      *
      * @param Request $req
      * @return JsonResponse
@@ -64,29 +64,18 @@ class BasketsController extends Controller
      * @param int $id
      * @return RedirectResponse|JsonResponse
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse|RedirectResponse
     {
-        $user = Auth::user();
-        //Если передано id=0, то очищаем корзину полностью
-        if ($id == 0) {
-            if ($user) {
-                //Пользователь авторизован - работаем с табличными данными в БД
-                $user->goodsInBasket()->detach();
-            } else {
-                //Пользователь не авторизован - работаем с данными о корзине в сессии
-                session()->forget('basket');
-            }
-            return Redirect::to($_SERVER['HTTP_REFERER']);
+        [$result, $status] = $this->reqProcessingForDestroy($id);
+
+        if ($id) {
+            return Response::json($result, $status);
         }
-        //id не равно 0, будем удалять позицию из корзины по id товара
-        if ($user) {
-            //Пользователь авторизован - работаем с табличными данными
-            $user->goodsInBasket()->detach($id);
+        if (array_key_exists('success', $result)) {
+            flash($result['success'])->success();
         } else {
-            //Пользователь не авторизован - работаем с данными о корзине в сессии
-            session()->forget('basket.' . $id);
+            flash($result['errors'])->error();
         }
-        $basket = Basket::getActualDataOfBasket();
-        return Response::json(compact('basket'), 200);
+        return Redirect::to($_SERVER['HTTP_REFERER']);
     }
 }

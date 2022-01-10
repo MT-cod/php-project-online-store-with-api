@@ -26,7 +26,7 @@ trait ReqBasketsProcessing
      */
     public function reqProcessingForStoreNewPosition(Request $req): bool
     {
-        return Basket::addPositionToBasket($req['id'], $req['quantity']);
+        return Basket::addItemToBasket($req['id'], $req['quantity']);
     }
 
     /**
@@ -55,16 +55,14 @@ trait ReqBasketsProcessing
      */
     public function reqProcessingForDestroy(int $id): array
     {
-        $req = request();
-        try {
-            $basket = $req->user()->goodsInBasket();
-            if (!$basket->where('baskets.goods_id', $id)->first()) {
-                return ['errors' => "Не удалось найти позицию с id:$id в корзине пользователя.", 'status' => 400];
-            }
-            $basket->detach($id);
-        } catch (\Throwable $e) {
-            return ['errors' => "Не удалось удалить позицию с id:$id.", 'status' => 400];
+        //Если передан id=0, то очищаем корзину полностью
+        if (!$id) {
+            return (Basket::purgeBasket())
+                ? [['success' => 'Корзина полностью очищена.'], 200]
+                : [['errors' => 'Не удалось очистить корзину.'], 500];
         }
-        return ['success' => 'Позиция успешно удалена.', 'data' => $req->user()->basketForApi(), 'status' => 200];
+        return (Basket::delItemFromBasket($id))
+            ? [['success' => 'Позиция успешно удалена.', 'basket' => Basket::getActualDataOfBasket()], 200]
+            : [['errors' => 'Не удалось удалить позицию с id:$id.', 'basket' => Basket::getActualDataOfBasket()], 500];
     }
 }
