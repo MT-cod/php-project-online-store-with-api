@@ -55,14 +55,15 @@ trait ReqBasketsProcessing
      */
     public function reqProcessingForDestroy(int $id): array
     {
-        //Если передан id=0, то очищаем корзину полностью
-        if (!$id) {
-            return (Basket::purgeBasket())
-                ? [['success' => 'Корзина полностью очищена.'], 200]
-                : [['errors' => 'Не удалось очистить корзину.'], 500];
+        if ($id) {
+            //id не нулевое, будем удалять позицию из корзины по id
+            return (Basket::delItemFromBasket($id))
+                ? [['success' => 'Позиция успешно удалена.', 'basket' => Basket::getActualDataOfBasket()], 200]
+                : [['errors' => 'Не удалось удалить позицию с id:$id.', 'basket' => Basket::getActualDataOfBasket()], 500];
         }
-        return (Basket::delItemFromBasket($id))
-            ? [['success' => 'Позиция успешно удалена.', 'basket' => Basket::getActualDataOfBasket()], 200]
-            : [['errors' => 'Не удалось удалить позицию с id:$id.', 'basket' => Basket::getActualDataOfBasket()], 500];
+        //Если передан нулевой id, то очищаем корзину полностью
+        return (Basket::purgeBasket())
+            ? [['success' => 'Корзина полностью очищена.'], 200]
+            : [['errors' => 'Не удалось очистить корзину.'], 500];
     }
 }

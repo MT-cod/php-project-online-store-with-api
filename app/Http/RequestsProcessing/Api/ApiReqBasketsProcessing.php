@@ -2,6 +2,8 @@
 
 namespace App\Http\RequestsProcessing\Api;
 
+use App\Models\Basket;
+
 trait ApiReqBasketsProcessing
 {
     /**
@@ -35,11 +37,14 @@ trait ApiReqBasketsProcessing
     {
         $req = request();
         if ($req->input('basket')) {
-            $basket = array_map(static fn($qua) => ['quantity' => $qua], $req->input('basket'));
-            $req->user()->goodsInBasket()->sync($basket);
+            $result = Basket::syncBasketData($req['basket']);
+            $data = $req->user()->basketForApi();
+            return ($result)
+                ? ['success' => 'Корзина успешно сохранена.', 'data' => $data, 'status' => 200]
+                : ['errors' => 'Не удалось сохранить корзину.', 'data' => $data, 'status' => 400];
         }
-        $result = $req->user()->basketForApi();
-        return ['success' => 'Корзина успешно сохранена.', 'data' => $result, 'status' => 200];
+        $data = $req->user()->basketForApi();
+        return ['errors' => 'Была передана пустая корзина.', 'data' => $data, 'status' => 200];
     }
 
     /**
@@ -70,14 +75,8 @@ trait ApiReqBasketsProcessing
      */
     public function reqProcessingForPurge(): array
     {
-        try {
-            $result = request()->user()->goodsInBasket()->detach();
-        } catch (\Throwable $e) {
-            return ['errors' => 'Не удалось очистить корзину пользователя.', 'status' => 500];
-        }
-        if ($result) {
-            return ['success' => 'Корзина пользователя полностью очищена.', 'status' => 200];
-        }
-        return ['errors' => 'Не удалось очистить корзину пользователя.', 'status' => 500];
+        return (Basket::purgeBasket())
+            ? ['success' => 'Корзина пользователя полностью очищена.', 'status' => 200]
+            : ['errors' => 'Не удалось очистить корзину пользователя.', 'status' => 500];
     }
 }
