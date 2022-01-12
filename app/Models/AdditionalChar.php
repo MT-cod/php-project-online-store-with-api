@@ -16,4 +16,9 @@ class AdditionalChar extends Model
     {
         return $this->belongsToMany(Goods::class, 'goods_additional_chars', 'additional_char_id', 'goods_id');
     }
+
+    public static function additCharsForFilters(): array
+    {
+        return self::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
+    }
 }

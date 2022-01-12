@@ -24,7 +24,7 @@ trait ReqShopProcessing
             : [[], []];
 
         $categories = Category::categsForSelectsWithMarkers();
-        $additCharacteristics = AdditionalChar::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
+        $additCharacteristics = AdditionalChar::additCharsForFilters();
 
         $carouselData = Goods::where('price', Goods::max('price'))->get()->toArray();
         $carouselData[] = Goods::where('price', Goods::min('price'))->get()->toArray()[0];

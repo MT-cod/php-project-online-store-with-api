@@ -100,11 +100,11 @@ class GoodsTest extends TestCase
     private function storeTestGoods(): TestResponse
     {
         return $this->post(route('goods.store'), [
-            'name' => 'Test item',
+            'name' => 'Test item 2',
             'description' => 'Тестовое описание',
-            'slug' => 'test',
+            'slug' => 'test2',
             'price' => 111.11,
-            'category_id' => 1
+            'category_id' => 2
         ]);
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\RequestsProcessing\ReqGoodsProcessing;
+use App\Http\Validators\GoodsStoreValidator;
 use App\Models\AdditionalChar;
 use App\Models\Category;
 use App\Models\Goods;
@@ -21,81 +23,53 @@ use Illuminate\Validation\ValidationException;
 
 class GoodsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Application|Factory|View
-     * @throws ValidationException
-     */
-    public function index()
+    use ReqGoodsProcessing;
+
+    public function index(): Factory|View|Application
     {
-        $goods = (isset($_REQUEST['filter']))
-            ? $this->filterValidDataForIndex($this->validateForIndex(request()))->get()->toArray()
-            : Goods::orderBy('name')->get()->toArray();
+        [$goods, $errors] = $this->reqProcessingForGoodsIndex();
 
-        [$categories, $additCharacteristics] = $this->categAndAdditCharsForModals();
-
-        return view('goods.filt_index', compact('goods', 'categories', 'additCharacteristics'));
-    }
-
-    /**
-     * Show the form for creating the specified resource.
-     *
-     * @return array
-     */
-    public function create()
-    {
-        [$categories, $additCharacteristics] = $this->categAndAdditCharsForModals();
-        return compact('categories', 'additCharacteristics');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return JsonResponse
-     * @throws AuthorizationException
-     * @throws ValidationException
-     */
-    public function store(Request $request)
-    {
-        $item = new Goods();
-        $this->authorize('store', $item);
-        $data = $this->validateCommonGoodsParams($request, $item);
-        $data['description'] = $request->input('description', '');
-        $data['price'] = $request->input('price') ?? 0;
-        $item->fill($data);
-        $additChars = $request->input('additChars', []);
-        if ($item->save()) {
-            $item->additionalChars()->attach($additChars);
-            return Response::json(['success' => "Товар $item->name успешно создан"], 200);
+        if ($errors) {
+            flash($errors)->error();
+            $_REQUEST = ['filter_expand' => "1"];
         }
-        return Response::json(['error' => 'Ошибка данных'], 422);
+
+        $categories = Category::categsForSelectsWithMarkers();
+
+        $additCharacteristics = AdditionalChar::additCharsForFilters();
+
+        return view('goods.index', compact('goods', 'categories', 'additCharacteristics'));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return array
-     */
-    public function show($id)
+    public function create(): array
     {
-        $item = Goods::findOrFail($id);
+        return $this->reqProcessingForGoodsCreate();
+    }
+
+    public function store(GoodsStoreValidator $req): JsonResponse
+    {
+        $validationErrors = $req->errors();
+        if ($validationErrors) {
+            return Response::json(['errors' => $validationErrors], 400);
+        }
+
+        [$result, $status] = $this->reqProcessingForGoodsStore();
+
+        return Response::json($result, $status);
+    }
+
+    public function show(int $id): array
+    {
+        return $this->reqProcessingForGoodsShow($id);
+        /*$item = Goods::findOrFail($id);
         $res = $item->toArray();
         $res['category'] = $item->category()->first()->name;
         $res['created_at'] = $item->created_at->format('d.m.Y H:i:s');
         $res['updated_at'] = $item->updated_at->format('d.m.Y H:i:s');
         $res['additional_chars'] = $item->additionalChars()->get()->toArray();
-        return $res;
+        return $res;*/
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return array
-     */
     public function edit($id)
     {
         $prepare_item = Goods::findOrFail($id);
@@ -110,19 +84,13 @@ class GoodsController extends Controller
             ->get()
             ->toArray();
 
-        [$categories, $additCharacteristics] = $this->categAndAdditCharsForModals();
+        $categories = Category::categsForSelectsWithMarkers();
+
+        $additCharacteristics = AdditionalChar::additCharsForFilters();
 
         return compact('item', 'categories', 'additCharacteristics');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param int $id
-     * @return JsonResponse
-     * @throws AuthorizationException|ValidationException
-     */
     public function update(Request $request, int $id)
     {
         $item = Goods::findOrFail($id);
@@ -139,13 +107,6 @@ class GoodsController extends Controller
         return Response::json(['error' => 'Ошибка изменения данных'], 422);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return RedirectResponse
-     * @throws AuthorizationException
-     */
     public function destroy(int $id)
     {
         $item = Goods::findOrFail($id);
@@ -162,69 +123,6 @@ class GoodsController extends Controller
     }
 
 //Общие функции контроллера-----------------------------------------------------------------
-
-    /**
-     * @param Request $request
-     * @return array
-     * @throws ValidationException
-     */
-    private function validateForIndex(Request $request)
-    {
-        return $this->validate($request, [
-            'filter.category_id' => [function ($attribute, $value, $fail): void {
-                if ($value != null && Category::whereId($value)->first() === null) {
-                    unset($_REQUEST['filter']['category_id']);
-                    $fail('Запрошена некорректная категория для фильтра.');
-                }
-            }],
-            'filter.name' => 'nullable|max:255',
-            'filter.additChars' => [function ($attribute, $value, $fail): void {
-                foreach ($value as $id) {
-                    if (!AdditionalChar::whereId($id)->first()) {
-                        unset($_REQUEST['filter']['additChars']);
-                        $fail('Запрошена некорректная доп. характеристика для фильтра.');
-                    }
-                }
-            }]
-        ]);
-    }
-
-    private function filterValidDataForIndex(array $validated)
-    {
-        return array_reduce($validated, function ($res, $filters) {
-            foreach ($filters as $fName => $fValue) {
-                //фильтр по категориям
-                if ($fName === 'category_id' && !is_null($fValue)) {
-                    $categories = [];
-                    $categories[] = $fValue;
-                    if (count(Category::whereId($fValue)->first()->childrens()->get()) > 0) {
-                        foreach (Category::whereId($fValue)->first()->childrens()->get() as $cat2) {
-                            $categories[] = $cat2['id'];
-                            if (count(Category::whereId($cat2['id'])->first()->childrens()->get()) > 0) {
-                                foreach (Category::whereId($cat2['id'])->first()->childrens()->get() as $cat3) {
-                                    $categories[] = $cat3['id'];
-                                }
-                            }
-                        }
-                    }
-                    $res = $res->whereIn('category_id', $categories);
-                }
-                //фильтр по строке в имени
-                if ($fName == 'name' && !is_null($fValue)) {
-                    $res = $res->where('name', 'like', '%' . $fValue . '%');
-                }
-                //фильтр по доп. характеристикам
-                if ($fName == 'additChars' && !is_null($fValue)) {
-                    foreach ($fValue as $char) {
-                        $res = $res->whereHas('additionalChars', function (Builder $query) use ($char) {
-                            $query->where('additional_char_id', $char);
-                        });
-                    }
-                }
-            }
-            return $res;
-        }, Goods::orderBy('name'));
-    }
 
     /**
      * @throws ValidationException
@@ -254,26 +152,6 @@ class GoodsController extends Controller
                     }
                 }]
         ]);
-    }
-
-    private function categAndAdditCharsForModals(): array
-    {
-        $categories = array_reduce(Category::categoriesTree(), function ($res, $cat) {
-            $res[] = ['id' => $cat['id'], 'name' => $cat['name']];
-            if (isset($cat['childrens'])) {
-                foreach ($cat['childrens'] as $cat2lvl) {
-                    $res[] = ['id' => $cat2lvl['id'], 'name' => '- ' . $cat2lvl['name']];
-                    if (isset($cat2lvl['childrens'])) {
-                        foreach ($cat2lvl['childrens'] as $cat3lvl) {
-                            $res[] = ['id' => $cat3lvl['id'], 'name' => '-- ' . $cat3lvl['name']];
-                        }
-                    }
-                }
-            }
-            return $res;
-        }, []);
-        $additCharacteristics = AdditionalChar::select('id', 'name', 'value')->orderBy('name')->get()->toArray();
-        return [$categories, $additCharacteristics];
     }
 
     public function regenerateDb(): RedirectResponse

@@ -3,7 +3,10 @@
 namespace App\Http\RequestsProcessing;
 
 use App\Http\Validators\GoodsIndexValidator;
+use App\Models\AdditionalChar;
+use App\Models\Category;
 use App\Models\Goods;
+use Illuminate\Auth\Access\AuthorizationException;
 
 trait ReqGoodsProcessing
 {
@@ -36,18 +39,42 @@ trait ReqGoodsProcessing
     }
 
     /**
-     * Обработка запроса на получение товара по запрошенному slug.
+     * Обработка запроса на получение необходимых данных для формы создания нового товара.
      *
-     * @param string $slug
      * @return array
      */
-    public function reqProcessingForGoodsSlug(string $slug): array
+    public function reqProcessingForGoodsCreate(): array
     {
-        $item = Goods::where('slug', $slug)->with('additionalChars:id,name,value')->first();
-        if ($item) {
-            return ['success' => 'Данные о товаре успешно получены.', 'data' => $item, 'status' => 200];
+        $categories = Category::categsForSelectsWithMarkers();
+
+        $additCharacteristics = AdditionalChar::additCharsForFilters();
+
+        return compact('categories', 'additCharacteristics');
+    }
+
+    /**
+     * Обработка запроса на создание товара.
+     *
+     * @return array
+     * @throws AuthorizationException
+     */
+    public function reqProcessingForGoodsStore(): array
+    {
+        $req = request();
+        $item = new Goods();
+        $this->authorize('store', $item);
+        $data['name'] = $req->name;
+        $data['slug'] = $req->slug;
+        $data['description'] = $req->input('description', '');
+        $data['price'] = $req->input('price', 0);
+        $data['category_id'] = $req->category_id;
+        $item->fill($data);
+        $additChars = $req->input('additChars', []);
+        if ($item->save()) {
+            $item->additionalChars()->attach($additChars);
+            return [['success' => "Товар $item->name успешно создан. Обновите список товаров."], 200];
         }
-        return ['errors' => 'Не удалось получить данные о товаре по запрошенному slug.', 'status' => 400];
+        return [['errors' => 'Не удалось создать товар.'], 400];
     }
 
     /**
@@ -58,35 +85,18 @@ trait ReqGoodsProcessing
      */
     public function reqProcessingForGoodsShow(int $id): array
     {
-        $item = Goods::whereId($id)->with('additionalChars:id,name,value')->first();
-        if ($item) {
-            return ['success' => 'Данные о товаре успешно получены.', 'data' => $item, 'status' => 200];
-        }
-        return ['errors' => "Не удалось получить данные о товаре с id:$id.", 'status' => 400];
-    }
-
-    /**
-     * Обработка запроса на создание товара.
-     *
-     * @return array
-     */
-    public function reqProcessingForGoodsStore(): array
-    {
-        $req = request();
-        $item = new Goods();
-        $data['name'] = $req->input('name');
-        $data['slug'] = $req->input('slug');
-        $data['description'] = $req->input('description', '');
-        $data['price'] = $req->input('price', 0);
-        $data['category_id'] = $req->input('category_id');
-        $item->fill($data);
-        $additChars = $req->input('additChars', []);
-        if ($item->save()) {
-            $item->additionalChars()->attach($additChars);
-            $result = Goods::whereId($item->id)->with('additionalChars:id,name,value')->first();
-            return ['success' => "Товар $item->name успешно создан.", 'data' => $result, 'status' => 200];
-        }
-        return ['errors' => 'Не удалось создать товар.', 'status' => 400];
+        $prepare_item = Goods::findOrFail($id);
+        $item = $prepare_item->toArray();
+        $item['category'] = $prepare_item->category()->first()->name;
+        $item['created_at'] = $prepare_item->created_at->format('d.m.Y H:i:s');
+        $item['updated_at'] = $prepare_item->updated_at->format('d.m.Y H:i:s');
+        $item['additional_chars'] = $prepare_item
+            ->additionalChars()
+            ->select('id', 'name', 'value')
+            ->orderBy('name')
+            ->get()
+            ->toArray();
+        return $item;
     }
 
     /**
