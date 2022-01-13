@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\GoodsController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\UtilsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ShopController::class, 'index']);
 
-Route::get('goods/regenerateDb', [GoodsController::class, 'regenerateDb'])->name('goods.regenerateDb');
+Route::get('utils/regenerateDb', [UtilsController::class, 'regenerateDb'])->name('utils.regenerateDb');
 
 Route::resource('categories', CategoriesController::class);
 Route::resource('goods', GoodsController::class);

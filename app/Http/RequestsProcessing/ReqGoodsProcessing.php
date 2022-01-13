@@ -100,15 +100,40 @@ trait ReqGoodsProcessing
     }
 
     /**
+     * Обработка запроса на получение необходимых данных для формы изменения товара.
+     *
+     * @param int $id
+     * @return array
+     * @throws AuthorizationException
+     */
+    public function reqProcessingForGoodsEdit(int $id): array
+    {
+        $prepare_item = Goods::findOrFail($id);
+        $this->authorize('edit', $prepare_item);
+        $item = $prepare_item->toArray();
+        $item['created_at'] = $prepare_item->created_at->format('d.m.Y H:i:s');
+        $item['updated_at'] = $prepare_item->updated_at->format('d.m.Y H:i:s');
+        $item['additional_chars'] = $prepare_item
+            ->additionalChars()
+            ->select('id', 'name', 'value')
+            ->orderBy('name')
+            ->get()
+            ->toArray();
+        return $item;
+    }
+
+    /**
      * Обработка запроса на изменение товара.
      *
      * @param int $id
      * @return array
+     * @throws AuthorizationException
      */
     public function reqProcessingForGoodsUpdate(int $id): array
     {
         $req = request();
         $item = Goods::find($id);
+        $this->authorize('update', $item);
         $data = [];
         foreach ($req->input() as $row => $val) {
             switch ($row) {
@@ -134,10 +159,9 @@ trait ReqGoodsProcessing
         }
         $item->fill($data);
         if ($item->save()) {
-            $result = Goods::whereId($id)->with('additionalChars:id,name,value')->first();
-            return ['success' => "Параметры товара успешно изменены.", 'data' => $result, 'status' => 200];
+            return [['success' => "Параметры товара успешно изменены."], 200];
         }
-        return ['errors' => 'Ошибка изменения данных.', 'status' => 400];
+        return [['errors' => 'Ошибка изменения данных.'], 400];
     }
 
     /**
@@ -149,18 +173,19 @@ trait ReqGoodsProcessing
     public function reqProcessingForGoodsDestroy(int $id): array
     {
         $item = Goods::find($id);
+        $this->authorize('delete', $item);
         if ($item) {
             try {
                 $item->additionalChars()->detach();
                 $item->delete();
-                return ['success' => 'Товар успешно удален.', 'status' => 200];
+                return [['success' => 'Товар успешно удален.'], 200];
             } catch (\Throwable $e) {
                 return [
-                    'errors' => "Не удалось удалить товар с id:$id. Товар может участвовать в транзакциях.",
-                    'status' => 400
+                    ['errors' => "Не удалось удалить товар. Товар может участвовать в транзакциях."],
+                    400
                 ];
             }
         }
-        return ['errors' => "Не удалось найти товар с id:$id.", 'status' => 400];
+        return [['errors' => "Не удалось найти товар, указанный для удаления."], 400];
     }
 }

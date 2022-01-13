@@ -90,11 +90,13 @@ class GoodsTest extends TestCase
 
     public function testDestroy(): void
     {
+        $response = $this->post(route('goods.destroy', 1), ['_method' => 'DELETE']);
+        $response->assertStatus(403);
         Auth::loginUsingId(1);
         $this->post(route('goods.destroy', 1), ['_method' => 'DELETE']);
         $this->assertDatabaseMissing('goods', ['name' => 'Тестовый товар']);
         $response = $this->get('/goods');
-        $response->assertSeeTextInOrder(["успешно удалён"], true);
+        $response->assertSeeTextInOrder(["Товар успешно удален."], true);
     }
 
     private function storeTestGoods(): TestResponse

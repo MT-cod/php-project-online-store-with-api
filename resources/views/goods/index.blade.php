@@ -207,7 +207,7 @@
                     @guest
                         <button type="button" class="btn btn-warning" onclick="return alert('Для изменения товара необходимо авторизоваться!')">Изменить</button>
                         <button type="button" class="btn btn-danger" onclick="return alert('Для удаления товара необходимо авторизоваться!')">Удалить</button>
-                        @else
+                    @else
                         <div class="modal_goods_edit_button"></div>
                         <form class="modal_goods_delete_form" action="/goods/" method="POST">
                             @csrf
