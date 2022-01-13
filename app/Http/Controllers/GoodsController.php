@@ -7,20 +7,13 @@ use App\Http\Validators\GoodsStoreValidator;
 use App\Http\Validators\GoodsUpdateValidator;
 use App\Models\AdditionalChar;
 use App\Models\Category;
-use App\Models\Goods;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class GoodsController extends Controller
 {
@@ -96,17 +89,5 @@ class GoodsController extends Controller
         }
 
         return Redirect::to($_SERVER['HTTP_REFERER']);
-
-        /*$item = Goods::findOrFail($id);
-        $this->authorize('delete', $item);
-        try {
-            $item->additionalChars()->detach();
-            $item->delete();
-            flash('Товар "' . $item->name . '" успешно удалён')->success();
-        } catch (\Exception $e) {
-            flash('Не удалось удалить товар')->error();
-        } finally {
-            return Redirect::to($_SERVER['HTTP_REFERER']);
-        }*/
     }
 }

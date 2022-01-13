@@ -64,7 +64,7 @@
                     <td class="form-row justify-content-fluid">
                         <button type="button" class="btn btn-outline-secondary btn-sm btn-modal_additChar_edit" data-id="{{$char['id']}}">Изменить</button>
                         @if (count($char['goods']))
-                            @php($goodsNames = join(array_map(fn($goodsName) => $goodsName['name'] . '\n', $char['goods'])))
+                            @php($goodsNames = implode(array_map(static fn ($goodsName) => $goodsName['name'] . '\n', $char['goods']->toArray())))
                             <form method="POST" action="{{route('additionalChars.destroy', $char['id'])}}">
                                 @csrf
                                 @method('DELETE')

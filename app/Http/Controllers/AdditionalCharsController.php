@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\RequestsProcessing\ReqAdditionalCharsProcessing;
 use App\Models\AdditionalChar;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -13,19 +14,25 @@ use Illuminate\Support\Facades\Response;
 
 class AdditionalCharsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Application|Factory|View
-     */
-    public function index()
+    use ReqAdditionalCharsProcessing;
+
+    public function index(): View|Factory|Application
     {
-        $additCharsSelect = AdditionalChar::select('id', 'name', 'value');
+        [$additChars, $errors] = $this->reqProcessingForIndex();
+
+        if ($errors) {
+            flash($errors)->error();
+            $_REQUEST = ['filter_expand' => "1"];
+        }
+
+        return view('additionalChar.index', compact('additChars'));
+
+        /*$additCharsSelect = AdditionalChar::select('id', 'name', 'value');
         if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== '')) {
             $additCharsSelect->where('name', 'like', '%' . $_REQUEST['filter']['name'] . '%');
         }
         $additChars = $additCharsSelect->with('goods:name')->orderBy('name')->get()->toArray();
-        return view('additionalChar.index', compact('additChars'));
+        return view('additionalChar.index', compact('additChars'));*/
     }
 
     /**
