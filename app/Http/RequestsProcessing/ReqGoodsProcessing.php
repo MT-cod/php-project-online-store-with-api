@@ -108,12 +108,12 @@ trait ReqGoodsProcessing
      */
     public function reqProcessingForGoodsEdit(int $id): array
     {
-        $prepare_item = Goods::findOrFail($id);
-        $this->authorize('edit', $prepare_item);
-        $item = $prepare_item->toArray();
-        $item['created_at'] = $prepare_item->created_at->format('d.m.Y H:i:s');
-        $item['updated_at'] = $prepare_item->updated_at->format('d.m.Y H:i:s');
-        $item['additional_chars'] = $prepare_item
+        $prepareItem = Goods::findOrFail($id);
+        $this->authorize('edit', $prepareItem);
+        $item = $prepareItem->toArray();
+        $item['created_at'] = $prepareItem->created_at->format('d.m.Y H:i:s');
+        $item['updated_at'] = $prepareItem->updated_at->format('d.m.Y H:i:s');
+        $item['additional_chars'] = $prepareItem
             ->additionalChars()
             ->select('id', 'name', 'value')
             ->orderBy('name')

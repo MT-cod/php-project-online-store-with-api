@@ -11,7 +11,7 @@ trait ReqAdditionalCharsProcessing
     use Sorter;
 
     /**
-     * Обработка запроса на список категорий с фильтрацией, сортировкой и разбитием на страницы.
+     * Обработка запроса на список доп характеристик с фильтрацией, сортировкой и разбитием на страницы.
      *
      * @return array
      */
@@ -32,22 +32,7 @@ trait ReqAdditionalCharsProcessing
     }
 
     /**
-     * Обработка запроса на получение категории по id.
-     *
-     * @param int $id
-     * @return array
-     */
-    public function reqProcessingForShow(int $id): array
-    {
-        $char = AdditionalChar::find($id);
-        if ($char) {
-            return ['success' => 'Доп характеристика успешно получена.', 'data' => $char, 'status' => 200];
-        }
-        return ['errors' => "Не удалось найти доп характеристику с id:$id.", 'status' => 400];
-    }
-
-    /**
-     * Обработка запроса на создание категории.
+     * Обработка запроса на создание доп характеристики.
      *
      * @return array
      */
@@ -55,17 +40,32 @@ trait ReqAdditionalCharsProcessing
     {
         $req = request();
         $char = new AdditionalChar();
-        $data['name'] = $req->input('name');
+        $data['name'] = $req->name;
         $data['value'] = $req->input('value', '');
         $char->fill($data);
         if ($char->save()) {
-            return ['success' => "Доп характеристика успешно создана.", 'data' => $char, 'status' => 200];
+            return [['success' => "Доп характеристика &quot;$char->name&quot; успешно создана. Обновите список."], 200];
         }
-        return ['errors' => 'Не удалось создать доп характеристику.', 'status' => 400];
+        return [['errors' => 'Не удалось создать доп характеристику.'], 400];
     }
 
     /**
-     * Обработка запроса на изменение категории.
+     * Обработка запроса на получение необходимых данных для формы изменения доп характеристики.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function reqProcessingForEdit(int $id): array
+    {
+        $prepareAdditChar = AdditionalChar::findOrFail($id);
+        $additChar = $prepareAdditChar->toArray();
+        $additChar['created_at'] = $prepareAdditChar->created_at->format('d.m.Y H:i:s');
+        $additChar['updated_at'] = $prepareAdditChar->updated_at->format('d.m.Y H:i:s');
+        return compact('additChar');
+    }
+
+    /**
+     * Обработка запроса на изменение доп характеристики.
      *
      * @param int $id
      * @return array
@@ -87,13 +87,13 @@ trait ReqAdditionalCharsProcessing
         }
         $char->fill($data);
         if ($char->save()) {
-            return ['success' => "Параметры доп характеристики успешно изменены.", 'data' => $char, 'status' => 200];
+            return [['success' => "Параметры доп характеристики успешно изменены."], 200];
         }
-        return ['errors' => 'Ошибка изменения данных.', 'status' => 400];
+        return [['errors' => 'Ошибка изменения данных.'], 400];
     }
 
     /**
-     * Обработка запроса на удаление категории.
+     * Обработка запроса на удаление доп характеристики.
      *
      * @param int $id
      * @return array
@@ -106,10 +106,10 @@ trait ReqAdditionalCharsProcessing
                 $char->goods()->detach();
                 $char->delete();
             } catch (\Throwable $e) {
-                return ['errors' => 'Не удалось удалить характеристику.', 'status' => 400];
+                return [['errors' => 'Не удалось удалить характеристику.'], 400];
             }
-            return ['success' => "Характеристика $char->name успешно удалена.", 'status' => 200];
+            return [['success' => "Характеристика успешно удалена."], 200];
         }
-        return ['errors' => "Не удалось найти доп характеристику с id:$id", 'status' => 400];
+        return [['errors' => "Не удалось найти указанную доп характеристику."], 400];
     }
 }

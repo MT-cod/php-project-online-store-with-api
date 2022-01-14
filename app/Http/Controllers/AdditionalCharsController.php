@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\RequestsProcessing\ReqAdditionalCharsProcessing;
+use App\Http\Validators\AdditionalCharsStoreValidator;
+use App\Http\Validators\AdditionalCharsUpdateValidator;
 use App\Models\AdditionalChar;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -26,77 +29,51 @@ class AdditionalCharsController extends Controller
         }
 
         return view('additionalChar.index', compact('additChars'));
+    }
 
-        /*$additCharsSelect = AdditionalChar::select('id', 'name', 'value');
-        if (isset($_REQUEST['filter']['name']) && ($_REQUEST['filter']['name'] !== '')) {
-            $additCharsSelect->where('name', 'like', '%' . $_REQUEST['filter']['name'] . '%');
+    public function store(AdditionalCharsStoreValidator $req): JsonResponse
+    {
+        $validationErrors = $req->errors();
+        if ($validationErrors) {
+            return Response::json(['errors' => $validationErrors], 400);
         }
-        $additChars = $additCharsSelect->with('goods:name')->orderBy('name')->get()->toArray();
-        return view('additionalChar.index', compact('additChars'));*/
+
+        [$result, $status] = $this->reqProcessingForStore();
+
+        return Response::json($result, $status);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function store(Request $request)
+    public function edit(int $id): array
     {
-        $additChar = new AdditionalChar();
-        $data = $this->validateName($request, $additChar);
-        $data['value'] = $request->input('value', '');
-        $additChar->fill($data);
-        if ($additChar->save()) {
-            return Response::json(['success' => "Характеристика &quot;$additChar->name&quot; успешно создана"], 200);
+        return $this->reqProcessingForEdit($id);
+    }
+
+    public function update(AdditionalCharsUpdateValidator $req, $id): JsonResponse
+    {
+        $validationErrors = $req->errors();
+        if ($validationErrors) {
+            return Response::json(['errors' => $validationErrors], 400);
         }
-        return Response::json(['error' => 'Ошибка данных'], 422);
+
+        [$result, $status] = $this->reqProcessingForUpdate($id);
+
+        return Response::json($result, $status);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return array
-     */
-    public function edit($id)
+    public function destroy(int $id): RedirectResponse
     {
-        $prepare_additChar = AdditionalChar::findOrFail($id);
-        $additChar = $prepare_additChar->toArray();
-        $additChar['created_at'] = $prepare_additChar->created_at->format('d.m.Y H:i:s');
-        $additChar['updated_at'] = $prepare_additChar->updated_at->format('d.m.Y H:i:s');
-        return compact('additChar');
-    }
+        [$result, $status] = $this->reqProcessingForDestroy($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(Request $request, $id)
-    {
-        $additChar = AdditionalChar::findOrFail($id);
-        $data = $this->validateName($request, $additChar);
-        $data['value'] = $request->input('value', '');
-        $additChar->fill($data);
-        if ($additChar->save()) {
-            return Response::json(['success' => 'Параметры характеристики успешно изменены'], 200);
+        if (isset($result['errors'])) {
+            flash($result['errors'])->error();
         }
-        return Response::json(['error' => 'Ошибка изменения данных'], 422);
-    }
+        if (isset($result['success'])) {
+            flash($result['success'])->success();
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return RedirectResponse
-     */
-    public function destroy(int $id)
-    {
-        $additChar = AdditionalChar::findOrFail($id);
+        return Redirect::to($_SERVER['HTTP_REFERER']);
+
+        /*$additChar = AdditionalChar::findOrFail($id);
         try {
             $additChar->goods()->detach();
             $additChar->delete();
@@ -105,21 +82,6 @@ class AdditionalCharsController extends Controller
             flash('Не удалось удалить характеристику')->error();
         } finally {
             return Redirect::to($_SERVER['HTTP_REFERER']);
-        }
-    }
-
-//Общие функции контроллера-----------------------------------------------------------------
-
-    private function validateName(Request $request, AdditionalChar $additChars): array
-    {
-        return $this->validate($request, [
-            'name' => [
-                'required',
-                function ($attribute, $value, $fail) use ($additChars): void {
-                    if ((AdditionalChar::where($attribute, $value)->first() !== null) && ($value !== $additChars->name)) {
-                        $fail('Доп характеристика с таким именем уже существует');
-                    }
-                }]
-        ]);
+        }*/
     }
 }

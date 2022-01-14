@@ -66,7 +66,7 @@ class AdditionalCharsTest extends TestCase
         $this->post(route('additionalChars.destroy', 1), ['_method' => 'DELETE']);
         $this->assertDatabaseMissing('additional_chars', ['name' => 'Тестовая характеристика']);
         $response = $this->get('/additionalChars');
-        $response->assertSeeTextInOrder(['Характеристика "Тестовая характеристика" успешно удалена'], true);
+        $response->assertSeeTextInOrder(['Характеристика успешно удалена.'], true);
     }
 
     protected function tearDown(): void

@@ -13,7 +13,7 @@ trait ApiReqAdditionalCharsProcessing
     use Sorter;
 
     /**
-     * Обработка запроса на список категорий с фильтрацией, сортировкой и разбитием на страницы.
+     * Обработка запроса на список доп характеристик с фильтрацией, сортировкой и разбитием на страницы.
      *
      * @return array
      */
@@ -38,7 +38,7 @@ trait ApiReqAdditionalCharsProcessing
     }
 
     /**
-     * Обработка запроса на получение категории по id.
+     * Обработка запроса на получение доп характеристики по id.
      *
      * @param int $id
      * @return array
@@ -53,7 +53,7 @@ trait ApiReqAdditionalCharsProcessing
     }
 
     /**
-     * Обработка запроса на создание категории.
+     * Обработка запроса на создание доп характеристики.
      *
      * @return array
      */
@@ -71,7 +71,7 @@ trait ApiReqAdditionalCharsProcessing
     }
 
     /**
-     * Обработка запроса на изменение категории.
+     * Обработка запроса на изменение доп характеристики.
      *
      * @param int $id
      * @return array
@@ -99,7 +99,7 @@ trait ApiReqAdditionalCharsProcessing
     }
 
     /**
-     * Обработка запроса на удаление категории.
+     * Обработка запроса на удаление доп характеристики.
      *
      * @param int $id
      * @return array
