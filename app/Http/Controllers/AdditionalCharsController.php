@@ -72,16 +72,5 @@ class AdditionalCharsController extends Controller
         }
 
         return Redirect::to($_SERVER['HTTP_REFERER']);
-
-        /*$additChar = AdditionalChar::findOrFail($id);
-        try {
-            $additChar->goods()->detach();
-            $additChar->delete();
-            flash("Характеристика &quot;$additChar->name&quot; успешно удалена")->success();
-        } catch (\Exception $e) {
-            flash('Не удалось удалить характеристику')->error();
-        } finally {
-            return Redirect::to($_SERVER['HTTP_REFERER']);
-        }*/
     }
 }
