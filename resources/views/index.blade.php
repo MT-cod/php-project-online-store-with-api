@@ -2,64 +2,12 @@
 
 @section('content')
 
+<!-- Scripts -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="/js/modals.js"></script>
 
-<style>
-    .carousel-control-prev-icon {
-        filter: invert(100%);
-    }
-    .carousel-control-next-icon {
-        filter: invert(100%);
-    }
-    .carousel-indicators {
-        filter: invert(100%);
-    }
-
-    .pagination > li{
-        color: black;
-        background-color: #dadada;
-        border: 1px solid black;
-    }
-    .pagination > li > a:hover,
-    .pagination > li > span:hover
-    {
-        color: black;
-        background-color: #bdbdbd;
-    }
-    .page-item.active .page-link {
-        z-index: 3;
-        color: white;
-        background-color: #414141;
-        border-color: #1c1c1c;
-    }
-    .page-link {
-        color: black;
-        background-color: #dadada;
-    }
-
-    .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
-        background-color: #414141 !important;
-    }
-    .custom-checkbox .custom-control-input:checked:focus ~ .custom-control-label::before {
-        box-shadow: 0 0 0 1px #fff, 0 0 0 0.1rem rgba(37, 37, 37, 0.25)
-    }
-    .custom-checkbox .custom-control-input:focus ~ .custom-control-label::before {
-        box-shadow: 0 0 0 1px #fff, 0 0 0 0.1rem rgba(0, 0, 0, 0.25)
-    }
-
-    th.clickableRow {
-        cursor: pointer;
-    }
-
-    th.AddSortSimbol:hover::after {
-        content: '⬍';
-    }
-
-    tr.clickableRow {
-        cursor: pointer;
-    }
-</style>
+<!-- Styles -->
+<link href="{{ asset('css/online_store_gray.css') }}" rel="stylesheet">
 
 <div class="container-fluid" style="background: url(/back_gray.jpg) repeat">
 

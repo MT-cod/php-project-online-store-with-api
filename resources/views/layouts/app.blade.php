@@ -20,6 +20,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/online_store_main.css') }}" rel="stylesheet">
 
 </head>
 <body>
@@ -35,17 +36,23 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('categories.index') }}">{{ __('Категории') }}</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuStore" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Склад
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuStore" style="background: url(/back_gray_min.jpg) repeat">
+                                <a class="dropdown-item" href="{{ route('goods.index') }}"><b>{{ __('Товары') }}</b></a>
+                                <a class="dropdown-item" href="{{ route('categories.index') }}"><b>{{ __('Категории') }}</b></a>
+                                <a class="dropdown-item" href="{{ route('additionalChars.index') }}"><b>{{ __('Дополнительные характеристики') }}</b></a>
+                            </div>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('goods.index') }}">{{ __('Товары') }}</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('additionalChars.index') }}">{{ __('Дополнительные характеристики') }}</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('orders.index') }}">{{ __('Заказы') }}</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuManagering" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Управление
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuManagering" style="background: url(/back_gray_min.jpg) repeat">
+                                <a class="dropdown-item" href="{{ route('orders.index') }}"><b>{{ __('Заказы') }}</b></a>
+                            </div>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link btn-outline-danger" href="{{ route('utils.regenerateDb') }}" onclick="return confirm('Вы действительно хотите это сделать?\nВсе текущие данные будут уничтожены и заполнены случайно сгенерированными данными.')">&#9851;Перегенерировать базу</a>
@@ -71,7 +78,7 @@
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }}
                                 </a>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <div class="dropdown-menu dropdown-menu-right" style="background: url(/back_gray_min.jpg) repeat" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                          document.getElementById('logout-form').submit();">

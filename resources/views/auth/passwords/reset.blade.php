@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card" style="background-color: #e8c574">
+            <div class="card" style="background: url(/back_gray_min.jpg) repeat">
                 <div class="card-header">{{ __('Сброс пароля') }}</div>
 
                 <div class="card-body">
@@ -51,7 +51,7 @@
 
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
+                                <button type="submit" class="btn btn-secondary">
                                     {{ __('Сброс пароля') }}
                                 </button>
                             </div>
