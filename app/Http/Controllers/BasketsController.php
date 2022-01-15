@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\RequestsProcessing\ReqBasketsProcessing;
 use App\Http\Validators\BasketsStoreValidator;
-use App\Models\Basket;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
@@ -36,7 +34,7 @@ class BasketsController extends Controller
     {
         $validationErrors = $req->errors();
         if ($validationErrors) {
-            flash($validationErrors)->error();
+            flash($validationErrors->first())->error();
         } else if ($this->reqProcessingForStoreNewPosition(request())) {
             flash('Товар успешно добавлен в корзину')->success();
         } else {
