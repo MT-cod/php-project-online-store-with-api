@@ -21,6 +21,6 @@ class ShopController extends Controller
             $_REQUEST = ['filter_expand' => "1"];
         }
 
-        return view('index', $result);
+        return view('shop.index', $result);
     }
 }
