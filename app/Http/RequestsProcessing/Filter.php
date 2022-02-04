@@ -17,6 +17,7 @@ trait Filter
                 'update_min' => fn($val, $data) => $data->whereDate('updated_at', '>=', $val ?? 0),
                 'update_max' => fn($val, $data) => $data->whereDate('updated_at', '<=', $val ?? Carbon::now()),
                 'name' => fn($val, $data) => $data->where('name', 'like', '%' . $val . '%'),
+                'slug' => fn($val, $data) => $data->where('slug', 'like', '%' . $val . '%'),
                 'email' => fn($val, $data) => $data->where('email', 'like', '%' . $val . '%'),
                 'phone' => fn($val, $data) => $data->where('phone', 'like', '%' . $val . '%'),
                 'address' => fn($val, $data) => $data->where('address', 'like', '%' . $val . '%'),

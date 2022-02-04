@@ -29,10 +29,9 @@ class GoodsTest extends TestCase
     {
         $response = $this->get('/goods');
         $response->assertOk();
-        $response->assertSeeTextInOrder(
-            ['Test item', 'Тестовое описание', '111.11'],
-            true
-        );
+        $this->assertContains('Test item', $response['goods'][0]->toArray());
+        $this->assertContains('Тестовое описание', $response['goods'][0]->toArray());
+        $this->assertContains(111.11, $response['goods'][0]->toArray());
     }
 
     public function testShow(): void
@@ -55,9 +54,7 @@ class GoodsTest extends TestCase
         $response->assertStatus(403);
         Auth::loginUsingId(1);
         $this->storeTestGoods();
-        $this->assertDatabaseHas('goods', ['name' => 'Test item']);
-        $response = $this->get('/goods');
-        $response->assertSeeTextInOrder(['Test item'], true);
+        $this->assertDatabaseHas('goods', ['name' => 'Test item 2']);
     }
 
     public function testEdit(): void
@@ -85,7 +82,7 @@ class GoodsTest extends TestCase
         ]);
         $this->assertDatabaseHas('goods', ['name' => 'Тестовый товар2']);
         $response = $this->get('/goods');
-        $response->assertSeeTextInOrder(['Тестовый товар2'], true);
+        $this->assertContains('Тестовый товар2', $response['goods'][0]->toArray());
     }
 
     public function testDestroy(): void
@@ -95,8 +92,6 @@ class GoodsTest extends TestCase
         Auth::loginUsingId(1);
         $this->post(route('goods.destroy', 1), ['_method' => 'DELETE']);
         $this->assertDatabaseMissing('goods', ['name' => 'Тестовый товар']);
-        $response = $this->get('/goods');
-        $response->assertSeeTextInOrder(["Товар успешно удален."], true);
     }
 
     private function storeTestGoods(): TestResponse
