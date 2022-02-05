@@ -18,6 +18,7 @@
                         scope="col"
                         class="text-center clickableRow sortingGoodsTable"
                         data-sort_col_name="name"
+                        data-sort_col_name_text="Наименование товара"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -27,6 +28,7 @@
                     <th scope="col"
                         class="text-center clickableRow sortingGoodsTable"
                         data-sort_col_name="name"
+                        data-sort_col_name_text="Наименование товара"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -36,6 +38,7 @@
                     <th scope="col"
                         class="text-center clickableRow sortingGoodsTable AddSortSimbol"
                         data-sort_col_name="name"
+                        data-sort_col_name_text="Наименование товара"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -48,6 +51,7 @@
                         scope="col"
                         class="clickableRow sortingGoodsTable"
                         data-sort_col_name="price"
+                        data-sort_col_name_text="Цена"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -57,6 +61,7 @@
                     <th scope="col"
                         class="clickableRow sortingGoodsTable"
                         data-sort_col_name="price"
+                        data-sort_col_name_text="Цена"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -66,6 +71,7 @@
                     <th scope="col"
                         class="clickableRow sortingGoodsTable AddSortSimbol"
                         data-sort_col_name="price"
+                        data-sort_col_name_text="Цена"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">

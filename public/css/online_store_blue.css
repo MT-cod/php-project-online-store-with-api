@@ -1,0 +1,21 @@
+.pagination > li{
+    color: black;
+    background-color: #d6ebff;
+    border: 1px solid black;
+}
+.pagination > li > a:hover,
+.pagination > li > span:hover
+{
+    color: black;
+    background-color: #a1aebe;
+}
+.page-item.active .page-link {
+    z-index: 3;
+    color: white;
+    background-color: #363646;
+    border-color: #1c1c1c;
+}
+.page-link {
+    color: black;
+    background-color: #d6ebff;
+}

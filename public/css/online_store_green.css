@@ -1,13 +1,3 @@
-.carousel-control-prev-icon {
-    filter: invert(100%);
-}
-.carousel-control-next-icon {
-    filter: invert(100%);
-}
-.carousel-indicators {
-    filter: invert(100%);
-}
-
 .pagination > li{
     color: black;
     background-color: #e5ffe6;

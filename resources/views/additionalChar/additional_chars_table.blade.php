@@ -1,7 +1,7 @@
 <div class="col text-left" style="height: 91vh !important; overflow-y: auto;">
     <div class="row p-0 m-0">
         <div class="col-10 d-flex justify-content-center pagination pagination-sm">
-            {{ $goods->links('pagination::bootstrap-4') }}
+            {{ $additChars->links('pagination::bootstrap-4') }}
         </div>
         <div class="col-2 p-sm-1 m-0 d-flex justify-content-center">
             <b>Показать&nbsp;</b>
@@ -18,31 +18,63 @@
                         scope="col"
                         class="text-center clickableRow sortingGoodsTable"
                         data-sort_col_name="name"
-                        data-sort_col_name_text="Наименование товара"
+                        data-sort_col_name_text="Наименование"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Наименование товара ▲
+                        Наименование ▲
                     </th>
                 @elseif (isset($_REQUEST['sort']['name']) && ($_REQUEST['sort']['name'] === 'desc'))
                     <th scope="col"
                         class="text-center clickableRow sortingGoodsTable"
                         data-sort_col_name="name"
-                        data-sort_col_name_text="Наименование товара"
+                        data-sort_col_name_text="Наименование"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Наименование товара ▼
+                        Наименование ▼
                     </th>
                 @else
                     <th scope="col"
                         class="text-center clickableRow sortingGoodsTable AddSortSimbol"
                         data-sort_col_name="name"
-                        data-sort_col_name_text="Наименование товара"
+                        data-sort_col_name_text="Наименование"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Наименование товара
+                        Наименование
+                    </th>
+                @endif
+                @if (isset($_REQUEST['sort']['value']) && ($_REQUEST['sort']['value'] === 'asc'))
+                    <th
+                        scope="col"
+                        class="text-center clickableRow sortingGoodsTable"
+                        data-sort_col_name="value"
+                        data-sort_col_name_text="Значение"
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="Нажать для сортировки">
+                        Значение ▲
+                    </th>
+                @elseif (isset($_REQUEST['sort']['value']) && ($_REQUEST['sort']['value'] === 'desc'))
+                    <th scope="col"
+                        class="text-center clickableRow sortingGoodsTable"
+                        data-sort_col_name="value"
+                        data-sort_col_name_text="Значение"
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="Нажать для сортировки">
+                        Значение ▼
+                    </th>
+                @else
+                    <th scope="col"
+                        class="text-center clickableRow sortingGoodsTable AddSortSimbol"
+                        data-sort_col_name="value"
+                        data-sort_col_name_text="Значение"
+                        data-toggle="tooltip"
+                        data-placement="bottom"
+                        title="Нажать для сортировки">
+                        Значение
                     </th>
                 @endif
                 @if (isset($_REQUEST['sort']['created_at']) && ($_REQUEST['sort']['created_at'] === 'asc'))
@@ -50,31 +82,31 @@
                         scope="col"
                         class="text-center clickableRow sortingGoodsTable"
                         data-sort_col_name="created_at"
-                        data-sort_col_name_text="Создан"
+                        data-sort_col_name_text="Создана"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Создан ▲
+                        Создана ▲
                     </th>
                 @elseif (isset($_REQUEST['sort']['created_at']) && ($_REQUEST['sort']['created_at'] === 'desc'))
                     <th scope="col"
                         class="text-center clickableRow sortingGoodsTable"
                         data-sort_col_name="created_at"
-                        data-sort_col_name_text="Создан"
+                        data-sort_col_name_text="Создана"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Создан ▼
+                        Создана ▼
                     </th>
                 @else
                     <th scope="col"
                         class="text-center clickableRow sortingGoodsTable AddSortSimbol"
                         data-sort_col_name="created_at"
-                        data-sort_col_name_text="Создан"
+                        data-sort_col_name_text="Создана"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Создан
+                        Создана
                     </th>
                 @endif
                 @if (isset($_REQUEST['sort']['updated_at']) && ($_REQUEST['sort']['updated_at'] === 'asc'))
@@ -82,84 +114,60 @@
                         scope="col"
                         class="text-center clickableRow sortingGoodsTable"
                         data-sort_col_name="updated_at"
-                        data-sort_col_name_text="Изменён"
+                        data-sort_col_name_text="Изменена"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Изменён ▲
+                        Изменена ▲
                     </th>
                 @elseif (isset($_REQUEST['sort']['updated_at']) && ($_REQUEST['sort']['updated_at'] === 'desc'))
                     <th scope="col"
                         class="text-center clickableRow sortingGoodsTable"
                         data-sort_col_name="updated_at"
-                        data-sort_col_name_text="Изменён"
+                        data-sort_col_name_text="Изменена"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Изменён ▼
+                        Изменена ▼
                     </th>
                 @else
                     <th scope="col"
                         class="text-center clickableRow sortingGoodsTable AddSortSimbol"
                         data-sort_col_name="updated_at"
-                        data-sort_col_name_text="Изменён"
+                        data-sort_col_name_text="Изменена"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Изменён
+                        Изменена
                     </th>
                 @endif
-                <th scope="col" class="text-center">Описание товара</th>
-                @if (isset($_REQUEST['sort']['price']) && ($_REQUEST['sort']['price'] === 'asc'))
-                    <th
-                        scope="col"
-                        class="clickableRow sortingGoodsTable"
-                        data-sort_col_name="price"
-                        data-sort_col_name_text="Цена"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="Нажать для сортировки">
-                        Цена ▲
-                    </th>
-                @elseif (isset($_REQUEST['sort']['price']) && ($_REQUEST['sort']['price'] === 'desc'))
-                    <th scope="col"
-                        class="clickableRow sortingGoodsTable"
-                        data-sort_col_name="price"
-                        data-sort_col_name_text="Цена"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="Нажать для сортировки">
-                        Цена ▼
-                    </th>
-                @else
-                    <th scope="col"
-                        class="clickableRow sortingGoodsTable AddSortSimbol"
-                        data-sort_col_name="price"
-                        data-sort_col_name_text="Цена"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="Нажать для сортировки">
-                        Цена
-                    </th>
-                @endif
+                <th scope="col" class="text-center">Действия</th>
             </tr>
         </thead>
         <tbody style="background-color: rgba(0,0,0,0.05);">
-            @foreach ($goods as $item)
-                <tr
-                    class="text-left clickableRow btn-modal_goods_show"
-                    data-id="{{$item['id']}}"
-                    data-edit_route="{{route('goods.update', $item['id'])}}"
-                    data-delete_route="{{route('goods.destroy', $item['id'])}}"
-                    data-toggle="tooltip"
-                    data-placement="bottom"
-                    title="Нажать для подробностей/изменения"
-                >
-                    <td><h6><b>{{Str::limit($item['name'], 40)}}</b></h6></td>
-                    <td class="text-center">{{Str::limit($item['created_at'], 40)}}</td>
-                    <td class="text-center">{{Str::limit($item['updated_at'], 40)}}</td>
-                    <td>{{Str::limit($item['description'], 120)}}</td>
-                    <td><b>{{$item['price']}}</b></td>
+            @foreach ($additChars as $char)
+                <tr class="text-left">
+                    <td><b>{{$char['name']}}</b></td>
+                    <td><b>{{$char['value']}}</b></td>
+                    <td class="text-center">{{Str::limit($char['created_at'], 40)}}</td>
+                    <td class="text-center">{{Str::limit($char['updated_at'], 40)}}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-outline-secondary btn-sm btn-modal_additChar_edit" data-id="{{$char['id']}}">Изменить</button>
+                        @if (count($char['goods']))
+                            @php($goodsNames = implode(array_map(static fn ($goodsName) => $goodsName['name'] . '\n', $char['goods']->toArray())))
+                            <form method="POST" action="{{route('additionalChars.destroy', $char['id'])}}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('В базе имеются товары с данной характеристикой!\n{{$goodsNames}}Вы действительно хотите удалить характеристику?\nУ товаров будет убрана данная характеристика!')">Удалить</button>
+                            </form>
+                        @else
+                            <form method="POST" action="{{route('additionalChars.destroy', $char['id'])}}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Вы действительно хотите удалить характеристику?')">Удалить</button>
+                            </form>
+                        @endif
+                    </td>
                 </tr>
             @endforeach
         </tbody>

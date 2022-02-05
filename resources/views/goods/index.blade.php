@@ -41,11 +41,11 @@
     </div>
 
     <div class="row justify-content-center">
-    <!-- Filter -->
-    @include('goods.filter')
+        <!-- Filter -->
+        @include('goods.filter')
 
-    <!-- Goods -->
-    @include('goods.goods_table')
+        <!-- Goods -->
+        @include('goods.goods_table')
     </div>
 
     <!-- Modals -->
