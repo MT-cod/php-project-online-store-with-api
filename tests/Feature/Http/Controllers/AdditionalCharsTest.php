@@ -27,10 +27,7 @@ class AdditionalCharsTest extends TestCase
     {
         $response = $this->get('/additionalChars');
         $response->assertOk();
-        $response->assertSeeTextInOrder(
-            ['Тестовая характеристика'],
-            true
-        );
+        $this->assertContains('Тестовая характеристика', $response['additChars'][0]->toArray());
     }
 
     public function testStore(): void
@@ -40,8 +37,6 @@ class AdditionalCharsTest extends TestCase
             'value' => 'Тестовое описание 2'
         ]);
         $this->assertDatabaseHas('additional_chars', ['name' => 'Тестовая характеристика 2']);
-        $response = $this->get('/additionalChars');
-        $response->assertSeeTextInOrder(['Тестовая характеристика 2'], true);
     }
 
     public function testEdit(): void
@@ -57,16 +52,12 @@ class AdditionalCharsTest extends TestCase
             'name' => 'Тестовая характеристика Upd'
         ]);
         $this->assertDatabaseHas('additional_chars', ['name' => 'Тестовая характеристика Upd']);
-        $response = $this->get('/additionalChars');
-        $response->assertSeeTextInOrder(['Тестовая характеристика Upd'], true);
     }
 
     public function testDestroy(): void
     {
         $this->post(route('additionalChars.destroy', 1), ['_method' => 'DELETE']);
         $this->assertDatabaseMissing('additional_chars', ['name' => 'Тестовая характеристика']);
-        $response = $this->get('/additionalChars');
-        $response->assertSeeTextInOrder(['Характеристика успешно удалена.'], true);
     }
 
     protected function tearDown(): void
