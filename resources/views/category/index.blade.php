@@ -2,16 +2,8 @@
 
 @section('content')
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="/js/modals.js"></script>
-
-<style>
-    .badge-hover:hover {
-        box-shadow: 0 0 5px rgba(0,0,0,0.3);
-        background: linear-gradient(to bottom, #acfff4, #e9e9ce);
-        color: #a00;
-    }
-</style>
+<!-- Scripts -->
+<script src="/js/online_store_modals_categories.js"></script>
 
 <div class="container-fluid" style="height: 95vh !important; background: url(/back_sunny.jpg) repeat">
     <div class="row text-center shadow-lg">
@@ -125,96 +117,10 @@
         </div>
     </div>
 
-    {{--Modal-create--}}
-    <div class="modal fade" id="modal-categ-create" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important;">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form id="modal-categ-create-form" method="POST" action="{{route('categories.store')}}">
-                    @csrf
-                    <div class="modal-header shadow" style="background-color: #fff89f">
-                        <h4 class="modal_categ_create_title"><b></b></h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" style="background-color: #fff8ae">
-                        <span class="modal_categ_create_results"></span>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item" style="background-color: #fff9b9">
-                                <h6><b><label for="modal_categ_create_name">Имя категории</label></b></h6>
-                                <input class="form-control modal_categ_create_name" id="modal_categ_create_name" type="text" name="name">
-                            </li>
-                            <li class="list-group-item" style="background-color: #fff9b9">
-                                <h6><b><label for="modal_categ_create_description">Описание категории</label></b></h6>
-                                <textarea class="form-control modal_categ_create_description" id="modal_categ_create_description" rows="2" name="description"></textarea>
-                            </li>
-                            <li class="list-group-item" style="background-color: #fff9b9">
-                                <h6><b><label for="modal_create_categ_parent_category">Категория будет является дочерней для:</label></b></h6>
-                                <span class="modal_create_categ_parent_category" id="modal_create_categ_parent_category"></span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="modal-footer shadow" style="background-color: #fff89f">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn btn-outline-primary btn-modal_categ_try_store">Сохранить</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    {{--Modal-create-end--}}
-
-    {{--Modal-edit--}}
-    <div class="modal fade" id="modal-categ-edit" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important;">
-        <div class="modal-dialog modal-dialog-centered modal-xl">
-            <div class="modal-content">
-                <form id="modal-categ-edit-form" method="POST" action="/categories/">
-                    @csrf
-                    @method('PATCH')
-                    <div class="modal-header shadow" style="background-color: #fff89f">
-                        <h4 class="modal_categ_edit_title"><b></b></h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" style="background-color: #fff8ae">
-                        <span class="modal_categ_edit_save_results"></span>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item" style="background-color: #fff9b9">
-                                <h6><b><label for="modal_categ_edit_name">Имя категории</label></b></h6>
-                                <input class="form-control modal_categ_edit_name" id="modal_categ_edit_name" type="text" name="name">
-                            </li>
-                            <li class="list-group-item" style="background-color: #fff9b9">
-                                <h6><b><label for="modal_categ_edit_description">Описание категории</label></b></h6>
-                                <textarea class="form-control modal_categ_edit_description" id="modal_categ_edit_description" rows="2" name="description"></textarea>
-                            </li>
-                            <li class="list-group-item" style="background-color: #fff9b9">
-                                <div class="row">
-                                    <div class="col">
-                                        <h6><b>Время создания категории</b></h6>
-                                        <p><span class="modal_categ_edit_created_at"></span></p>
-                                    </div>
-                                    <div class="col">
-                                        <h6><b>Время последнего изменения категории</b></h6>
-                                        <p><span class="modal_categ_edit_updated_at"></span></p>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="list-group-item" style="background-color: #fff9b9">
-                                <h6><b><label for="modal_categ_edit_parent_category">Категория является дочерней для:</label></b></h6>
-                                <span class="modal_categ_edit_parent_category" id="modal_categ_edit_parent_category"></span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="modal-footer shadow" style="background-color: #fff89f">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-                        <div class="btn-modal_categ_edit_save"></div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    {{--Modal-edit-end--}}
+    <!-- Modals -->
+    @include('category.modal_category_create')
+    @include('category.modal_category_edit')
+    <!-- Modals-end -->
 
 </div>
 

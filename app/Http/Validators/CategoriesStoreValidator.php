@@ -22,7 +22,6 @@ class CategoriesStoreValidator extends \App\Http\Validators\Validator
                 'bail',
                 'nullable',
                 'integer',
-                'exists:categories,id',
                 function ($attribute, $value, $fail): void {
                     if ($value > 0  && Category::find($value)->level === 3) {
                         $fail('Категория не может быть подкатегорией категории 3-го уровня!');
