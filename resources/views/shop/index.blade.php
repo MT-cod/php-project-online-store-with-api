@@ -4,7 +4,6 @@
 
 <!-- Scripts -->
 <script src="/js/online_store_modals_shop.js"></script>
-<script src="/js/online_store_sorting_arrows_funcs.js"></script>
 
 <!-- Styles -->
 <link href="{{ asset('css/online_store_gray.css') }}" rel="stylesheet">
@@ -28,6 +27,7 @@
             </div>
 
         <div class="col-8 text-center btn-sm pl-5 pr-5 pt-0">
+            <div style="position: absolute"><h3><b>Online store</b></h3></div>
             @include('flash::message')
         </div>
 

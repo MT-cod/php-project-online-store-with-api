@@ -16,9 +16,8 @@
                 @if (isset($_REQUEST['sort']['name']) && ($_REQUEST['sort']['name'] === 'asc'))
                     <th
                         scope="col"
-                        class="text-center clickableRow sortingGoodsTable"
-                        data-sort_col_name="name"
-                        data-sort_col_name_text="Наименование товара"
+                        class="text-center clickableRow"
+                        onclick="$('#sortByName').val('desc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -26,9 +25,8 @@
                     </th>
                 @elseif (isset($_REQUEST['sort']['name']) && ($_REQUEST['sort']['name'] === 'desc'))
                     <th scope="col"
-                        class="text-center clickableRow sortingGoodsTable"
-                        data-sort_col_name="name"
-                        data-sort_col_name_text="Наименование товара"
+                        class="text-center clickableRow"
+                        onclick="$('#sortByName').val('');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -36,9 +34,8 @@
                     </th>
                 @else
                     <th scope="col"
-                        class="text-center clickableRow sortingGoodsTable AddSortSimbol"
-                        data-sort_col_name="name"
-                        data-sort_col_name_text="Наименование товара"
+                        class="text-center clickableRow AddSortSimbol"
+                        onclick="$('#sortByName').val('asc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -48,9 +45,8 @@
                 @if (isset($_REQUEST['sort']['created_at']) && ($_REQUEST['sort']['created_at'] === 'asc'))
                     <th
                         scope="col"
-                        class="text-center clickableRow sortingGoodsTable"
-                        data-sort_col_name="created_at"
-                        data-sort_col_name_text="Создан"
+                        class="text-center clickableRow"
+                        onclick="$('#sortByCreated').val('desc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -58,9 +54,8 @@
                     </th>
                 @elseif (isset($_REQUEST['sort']['created_at']) && ($_REQUEST['sort']['created_at'] === 'desc'))
                     <th scope="col"
-                        class="text-center clickableRow sortingGoodsTable"
-                        data-sort_col_name="created_at"
-                        data-sort_col_name_text="Создан"
+                        class="text-center clickableRow"
+                        onclick="$('#sortByCreated').val('');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -68,9 +63,8 @@
                     </th>
                 @else
                     <th scope="col"
-                        class="text-center clickableRow sortingGoodsTable AddSortSimbol"
-                        data-sort_col_name="created_at"
-                        data-sort_col_name_text="Создан"
+                        class="text-center clickableRow AddSortSimbol"
+                        onclick="$('#sortByCreated').val('asc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -80,9 +74,8 @@
                 @if (isset($_REQUEST['sort']['updated_at']) && ($_REQUEST['sort']['updated_at'] === 'asc'))
                     <th
                         scope="col"
-                        class="text-center clickableRow sortingGoodsTable"
-                        data-sort_col_name="updated_at"
-                        data-sort_col_name_text="Изменён"
+                        class="text-center clickableRow"
+                        onclick="$('#sortByUpdated').val('desc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -90,9 +83,8 @@
                     </th>
                 @elseif (isset($_REQUEST['sort']['updated_at']) && ($_REQUEST['sort']['updated_at'] === 'desc'))
                     <th scope="col"
-                        class="text-center clickableRow sortingGoodsTable"
-                        data-sort_col_name="updated_at"
-                        data-sort_col_name_text="Изменён"
+                        class="text-center clickableRow"
+                        onclick="$('#sortByUpdated').val('');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -100,9 +92,8 @@
                     </th>
                 @else
                     <th scope="col"
-                        class="text-center clickableRow sortingGoodsTable AddSortSimbol"
-                        data-sort_col_name="updated_at"
-                        data-sort_col_name_text="Изменён"
+                        class="text-center clickableRow AddSortSimbol"
+                        onclick="$('#sortByUpdated').val('asc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -113,9 +104,8 @@
                 @if (isset($_REQUEST['sort']['price']) && ($_REQUEST['sort']['price'] === 'asc'))
                     <th
                         scope="col"
-                        class="clickableRow sortingGoodsTable"
-                        data-sort_col_name="price"
-                        data-sort_col_name_text="Цена"
+                        class="clickableRow"
+                        onclick="$('#sortByPrice').val('desc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -123,9 +113,8 @@
                     </th>
                 @elseif (isset($_REQUEST['sort']['price']) && ($_REQUEST['sort']['price'] === 'desc'))
                     <th scope="col"
-                        class="clickableRow sortingGoodsTable"
-                        data-sort_col_name="price"
-                        data-sort_col_name_text="Цена"
+                        class="clickableRow"
+                        onclick="$('#sortByPrice').val('');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
@@ -133,9 +122,8 @@
                     </th>
                 @else
                     <th scope="col"
-                        class="clickableRow sortingGoodsTable AddSortSimbol"
-                        data-sort_col_name="price"
-                        data-sort_col_name_text="Цена"
+                        class="clickableRow AddSortSimbol"
+                        onclick="$('#sortByPrice').val('asc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
