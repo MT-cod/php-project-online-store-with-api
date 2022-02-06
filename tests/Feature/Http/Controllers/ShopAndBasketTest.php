@@ -91,9 +91,4 @@ class ShopAndBasketTest extends TestCase
             'quantity' => 333
         ]);
     }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
 }

@@ -31,7 +31,7 @@ class OrdersTest extends TestCase
     {
         $response = $this->get('/orders');
         $response->assertOk();
-        $response->assertSeeTextInOrder([$this->testOrder->name], true);
+        $this->assertContains($this->testOrder->name, $response['orders'][0]->toArray());
     }
 
     public function testCreate(): void
@@ -50,8 +50,6 @@ class OrdersTest extends TestCase
     {
         $this->storeTestOrder();
         $this->assertDatabaseHas('orders', ['name' => $this->testOrder->name]);
-        $response = $this->get('/orders');
-        $response->assertSeeTextInOrder([$this->testOrder->name], true);
     }
 
     public function testEdit(): void
@@ -66,8 +64,6 @@ class OrdersTest extends TestCase
         $this->storeTestOrder();
         $this->post(route('orders.update', 1), ['_method' => 'PATCH','completed' => 1]);
         $this->assertDatabaseHas('orders', ['completed' => 1]);
-        $response = $this->get('/orders');
-        $response->assertSeeTextInOrder(['Заказ №1 завершён.'], true);
     }
 
     private function storeTestOrder(): void
@@ -77,10 +73,5 @@ class OrdersTest extends TestCase
             'email' => $this->testUser->email,
             'phone' => $this->testUser->phone
         ]);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
     }
 }

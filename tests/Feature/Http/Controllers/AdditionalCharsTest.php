@@ -59,9 +59,4 @@ class AdditionalCharsTest extends TestCase
         $this->post(route('additionalChars.destroy', 1), ['_method' => 'DELETE']);
         $this->assertDatabaseMissing('additional_chars', ['name' => 'Тестовая характеристика']);
     }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-    }
 }

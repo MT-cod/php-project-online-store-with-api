@@ -45,8 +45,8 @@
     </div>
 
     <!-- Modals -->
-    @include('additionalChar.modal_additional_chars_edit')
-    @include('additionalChar.modal_additional_chars_create')
+    @include('additionalChar.modal_additional_char_edit')
+    @include('additionalChar.modal_additional_char_create')
     <!-- Modals-end -->
 
 </div>

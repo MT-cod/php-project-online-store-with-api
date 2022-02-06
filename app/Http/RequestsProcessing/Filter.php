@@ -22,7 +22,6 @@ trait Filter
                 'phone' => fn($val, $data) => $data->where('phone', 'like', '%' . $val . '%'),
                 'address' => fn($val, $data) => $data->where('address', 'like', '%' . $val . '%'),
                 'value' => fn($val, $data) => $data->where('value', 'like', '%' . $val . '%'),
-                'completed' => fn($val, $data) => $data->where('completed', $val),
                 'price' => fn($val, $data) => $data->where('price', $val),
                 'price_min' => fn($val, $data) => $data->where('price', '>=', $val ?? 0),
                 'price_max' => fn($val, $data) => $data->where('price', '<=', $val ?? 10e20),
@@ -86,6 +85,14 @@ trait Filter
                         $data->whereHas('additionalChars', function (Builder $query) use ($char) {
                             $query->where('additional_char_id', $char);
                         });
+                    }
+                },
+                'completed' => function ($val, $data): void {
+                    if ($val == 1) {
+                        $data->where('completed', 1);
+                    }
+                    if ($val == 0 && !is_null($val)) {
+                        $data->where('completed', 0);
                     }
                 }
             ];
