@@ -7,12 +7,12 @@
     "require": {
         "php": "^8.1",
         "fruitcake/laravel-cors": "^2.0",
+        "fzaninotto/faker": "^1.5",
         "guzzlehttp/guzzle": "^7.0.1",
         "laracasts/flash": "^3.2",
         "laravel/framework": "^8.73.1",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "fakerphp/faker": "^1.9.1",
         "laravel/ui": "^3.3"
     },
     "require-dev": {
