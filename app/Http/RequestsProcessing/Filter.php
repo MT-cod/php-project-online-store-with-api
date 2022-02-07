@@ -12,9 +12,9 @@ trait Filter
     {
         if ($reqFilters) {
             $filters = [
-                'create_min' => fn($val, $data) => $data->whereDate('created_at', '>=', $val ?? Carbon::create(0)),
+                'create_min' => fn($val, $data) => $data->whereDate('created_at', '>=', $val ?? Carbon::create(1)),
                 'create_max' => fn($val, $data) => $data->whereDate('created_at', '<=', $val ?? Carbon::now()),
-                'update_min' => fn($val, $data) => $data->whereDate('updated_at', '>=', $val ?? Carbon::create(0)),
+                'update_min' => fn($val, $data) => $data->whereDate('updated_at', '>=', $val ?? Carbon::create(1)),
                 'update_max' => fn($val, $data) => $data->whereDate('updated_at', '<=', $val ?? Carbon::now()),
                 'name' => fn($val, $data) => $data->where('name', 'like', '%' . $val . '%'),
                 'slug' => fn($val, $data) => $data->where('slug', 'like', '%' . $val . '%'),
