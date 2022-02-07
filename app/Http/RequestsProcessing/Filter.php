@@ -94,6 +94,11 @@ trait Filter
                     if ($val == 0 && !is_null($val)) {
                         $data->where('completed', 0);
                     }
+                },
+                'id' => function ($val, $data): void {
+                    if ($val > 0 && is_int($val)) {
+                        $data->where('id', $val);
+                    }
                 }
             ];
 

@@ -17,6 +17,7 @@
 
             @include('shared.filter.by_created_time')
             @include('shared.filter.by_updated_time')
+            @include('shared.filter.by_id')
             @include('shared.filter.by_name')
             @include('shared.filter.by_email')
             @include('shared.filter.by_phone')

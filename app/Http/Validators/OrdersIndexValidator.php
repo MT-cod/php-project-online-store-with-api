@@ -30,6 +30,7 @@ class OrdersIndexValidator extends \App\Http\Validators\Validator
             'perpage' => ['nullable', 'integer'],
             'filter.*' => function ($attr, $val, $fail): void {
                 $permitAttrs = [
+                    'id',
                     'create_min',
                     'create_max',
                     'update_min',
