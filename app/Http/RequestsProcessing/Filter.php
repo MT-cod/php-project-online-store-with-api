@@ -96,7 +96,7 @@ trait Filter
                     }
                 },
                 'id' => function ($val, $data): void {
-                    if ($val > 0 && is_int($val)) {
+                    if ($val > 0) {
                         $data->where('id', (int) $val);
                     }
                 }
