@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
         if ($maxCategLevel > 1) {
             for ($lvl = 2; $lvl <= $maxCategLevel; $lvl++) {
                 for ($i = 1; $i <= $categAmountForLvl; $i++) {
-                    $parent_id = rand($categAmountForLvl * ($lvl - 2) + 1, $categAmountForLvl * ($lvl - 1));
+                    $parent_id = random_int($categAmountForLvl * ($lvl - 2) + 1, $categAmountForLvl * ($lvl - 1));
                     Category::factory()->create(['parent_id' => $parent_id, 'level' => $lvl]);
                 }
             }
@@ -38,15 +38,15 @@ class DatabaseSeeder extends Seeder
         Goods::factory(300)->create();
         //Генерируем случайные связи между товарами и доп. характеристиками
         for ($i = 1; $i < 200; $i++) {
-            Goods::find(rand(1, Goods::count()))->additionalChars()->attach(AdditionalChar::find(rand(1, AdditionalChar::count())));
+            Goods::find(random_int(1, Goods::count()))->additionalChars()->attach(AdditionalChar::find(random_int(1, AdditionalChar::count())));
         }
 
         //Сгенерим случайные заказы с товарами
         Order::factory(50)->create();
         foreach (Order::all() as $order) {
             for ($i = 1; $i < rand(5, 15); $i++) {
-                $item = Goods::find(rand(1, Goods::count()));
-                $order->goods()->attach($item->id, ['price' => $item->price, 'quantity' => rand(1, 1000)]);
+                $item = Goods::find(random_int(1, Goods::count()));
+                $order->goods()->attach($item->id, ['price' => $item->price, 'quantity' => random_int(1, 1000)]);
             }
         }
     }

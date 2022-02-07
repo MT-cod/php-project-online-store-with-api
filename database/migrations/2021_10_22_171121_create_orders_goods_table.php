@@ -13,7 +13,7 @@ class CreateOrdersGoodsTable extends Migration
      */
     public function up()
     {
-        Schema::create('orders_goods', function (Blueprint $table) {
+        Schema::create('orders_goods', static function (Blueprint $table) {
             $table->index(['order_id', 'goods_id']);
             $table->bigInteger('order_id')->unsigned();
             $table->foreign('order_id')->references('id')->on('orders')->cascadeOnDelete();
