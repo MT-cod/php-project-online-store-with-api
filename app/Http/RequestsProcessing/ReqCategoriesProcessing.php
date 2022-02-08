@@ -47,9 +47,8 @@ trait ReqCategoriesProcessing
         $cat = new Category();
         $this->authorize('store', $cat);
         $data['name'] = $req->input('name');
-        $data['description'] = $req->input('description', '');
-        $data['parent_id'] = $req->input('parent_id', 0);
-        $data['category_id'] = $req->input('category_id');
+        $data['description'] = $req->description ?? '-';
+        $data['parent_id'] = $req->parent_id ?? 0;
         $data['level'] = ($req->input('parent_id'))
             ? Category::find($req->input('parent_id'))->level + 1
             : 1;
@@ -97,7 +96,7 @@ trait ReqCategoriesProcessing
                     $data['name'] = $val;
                     break;
                 case 'description':
-                    $data['description'] = $val;
+                    $data['description'] = $val ?? '-';
                     break;
                 case 'parent_id':
                     $data['parent_id'] = $val;

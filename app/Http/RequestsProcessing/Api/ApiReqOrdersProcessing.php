@@ -93,8 +93,8 @@ trait ApiReqOrdersProcessing
         $data['email'] = $req->input('email');
         $data['phone'] = $req->input('phone');
         $data['user_id'] = $user->id;
-        $data['address'] = $req->input('address', '');
-        $data['comment'] = $req->input('comment', '');
+        $data['address'] = $req->address ?? '-';
+        $data['comment'] = $req->comment ?? '-';
         $order->fill($data);
         if ($order->save()) {
             array_walk($basket, static fn($item) => $order->goods()

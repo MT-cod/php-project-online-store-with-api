@@ -41,7 +41,7 @@ trait ReqAdditionalCharsProcessing
         $req = request();
         $char = new AdditionalChar();
         $data['name'] = $req->name;
-        $data['value'] = $req->input('value', '');
+        $data['value'] = $req->value ?? '-';
         $char->fill($data);
         if ($char->save()) {
             return [['success' => "Доп характеристика &quot;$char->name&quot; успешно создана. Обновите список."], 200];
@@ -81,7 +81,7 @@ trait ReqAdditionalCharsProcessing
                     $data['name'] = $val;
                     break;
                 case 'value':
-                    $data['value'] = $val;
+                    $data['value'] = $val ?? '-';
                     break;
             }
         }

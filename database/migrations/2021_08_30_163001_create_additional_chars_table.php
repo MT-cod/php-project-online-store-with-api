@@ -17,7 +17,7 @@ class CreateAdditionalCharsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name', 100)->unique();
-            $table->string('value', 200)->nullable();
+            $table->string('value', 200)->default('-');
         });
     }
 

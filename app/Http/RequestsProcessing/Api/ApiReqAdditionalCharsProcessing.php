@@ -62,7 +62,7 @@ trait ApiReqAdditionalCharsProcessing
         $req = request();
         $char = new AdditionalChar();
         $data['name'] = $req->input('name');
-        $data['value'] = $req->input('value', '');
+        $data['value'] = $req->value ?? '-';
         $char->fill($data);
         if ($char->save()) {
             return ['success' => "Доп характеристика успешно создана.", 'data' => $char, 'status' => 200];
@@ -87,7 +87,7 @@ trait ApiReqAdditionalCharsProcessing
                     $data['name'] = $val;
                     break;
                 case 'value':
-                    $data['value'] = $val;
+                    $data['value'] = $val ?? '-';
                     break;
             }
         }

@@ -17,7 +17,7 @@ class CreateGoodsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->string('name', 100)->unique();
-            $table->text('description')->nullable();
+            $table->text('description')->default('-');
             $table->string('slug', 100)->unique();
             $table->decimal('price', 10, 2, true)->default(0);
             $table->bigInteger('category_id')->nullable()->unsigned();

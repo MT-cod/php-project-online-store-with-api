@@ -82,8 +82,8 @@ trait ApiReqGoodsProcessing
         $item = new Goods();
         $data['name'] = $req->input('name');
         $data['slug'] = $req->input('slug');
-        $data['description'] = $req->input('description', '');
-        $data['price'] = $req->input('price', 0);
+        $data['description'] = $req->description ?? '-';
+        $data['price'] = $req->price ?? 0;
         $data['category_id'] = $req->input('category_id');
         $item->fill($data);
         $additChars = $req->input('additChars', []);
@@ -115,10 +115,10 @@ trait ApiReqGoodsProcessing
                     $data['slug'] = $val;
                     break;
                 case 'description':
-                    $data['description'] = $val;
+                    $data['description'] = $val ?? '-';
                     break;
                 case 'price':
-                    $data['price'] = $val;
+                    $data['price'] = $val ?? 0;
                     break;
                 case 'category_id':
                     $data['category_id'] = $val;
