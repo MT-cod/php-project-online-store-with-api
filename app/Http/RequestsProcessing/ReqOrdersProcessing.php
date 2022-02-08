@@ -68,8 +68,8 @@ trait ReqOrdersProcessing
             $data['email'] = $req->email;
             $data['phone'] = $req->phone;
             $data['user_id'] = ($user) ? $user->id : 0;
-            $data['address'] = $req->input('address', '');
-            $data['comment'] = $req->input('comment', '');
+            $data['address'] = $req->address ?? '-';
+            $data['comment'] = $req->comment ?? '-';
             $order->fill($data);
             if ($order->save()) {
                 array_walk($basket, static fn($item) => $order->goods()
