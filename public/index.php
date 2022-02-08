@@ -53,3 +53,7 @@ $response = tap($kernel->handle(
 ))->send();
 
 $kernel->terminate($request, $response);
+
+//-----------------------For Faker
+if(! defined('STDIN')) define('STDIN', fopen("php://stdin","r"));
+//-----------------------For Faker

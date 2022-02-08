@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
         }
 
         //Создание фейковых товаров с доп. характеристиками
-        AdditionalChar::factory(15)->create();
+        AdditionalChar::factory(30)->create();
         Goods::factory(300)->create();
         //Генерируем случайные связи между товарами и доп. характеристиками
         for ($i = 1; $i < 200; $i++) {
