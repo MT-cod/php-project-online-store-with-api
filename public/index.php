@@ -55,5 +55,5 @@ $response = tap($kernel->handle(
 $kernel->terminate($request, $response);
 
 //-----------------------For Faker
-if(! defined('STDIN')) define('STDIN', fopen("php://stdin","r"));
+define('STDIN', fopen("php://stdin","r");
 //-----------------------For Faker
