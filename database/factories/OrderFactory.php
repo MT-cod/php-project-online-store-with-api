@@ -22,15 +22,15 @@ class OrderFactory extends Factory
      */
     public function definition()
     {
-        $user = User::findOrFail(rand(1, User::count()));
+        $user = User::findOrFail(random_int(1, User::count()));
         return [
             'name' => $user->name,
             'email' => $user->email,
             'phone' => $user->phone,
             'user_id' => $user->id,
-            'address' => $this->faker->text(50),
-            'comment' => $this->faker->text(50),
-            'completed' => rand(0, 1)
+            'address' => $this->faker->address,
+            'comment' => $this->faker->realText(50),
+            'completed' => random_int(0, 1)
         ];
     }
 }

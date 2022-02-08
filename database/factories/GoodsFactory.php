@@ -28,8 +28,8 @@ class GoodsFactory extends Factory
             'name' => 'Товар ' . $name,
             'description' => $this->faker->text(),
             'slug' => Str::slug($name),
-            'price' => rand(10000, 20000) / 100,
-            'category_id' => rand(
+            'price' => random_int(10000, 20000) / 100,
+            'category_id' => random_int(
                 (Category::all()
                     ->where('level', 1)
                     ->count()) + 1,

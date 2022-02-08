@@ -22,7 +22,7 @@ class CategoryFactory extends Factory
     public function definition()
     {
         return [
-            'name' => 'Категория_' . $this->faker->word() . rand(1, 100000000),
+            'name' => 'Категория_' . $this->faker->word() . random_int(1, 100000000),
             'description' => $this->faker->text()
         ];
     }
