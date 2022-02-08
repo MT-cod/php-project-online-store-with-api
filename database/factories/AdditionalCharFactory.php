@@ -23,7 +23,7 @@ class AdditionalCharFactory extends Factory
     {
         return [
             'name' => 'Характеристика_' . $this->faker->unique()->word(),
-            'value' => $this->faker->text()
+            'value' => $this->faker->words(2, true)
         ];
     }
 }

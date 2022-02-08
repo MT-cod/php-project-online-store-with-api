@@ -26,7 +26,7 @@ class GoodsFactory extends Factory
         $name = $this->faker->words(3, true);
         return [
             'name' => 'Товар ' . $name,
-            'description' => $this->faker->text(),
+            'description' => $this->faker->words(10, true),
             'slug' => Str::slug($name),
             'price' => random_int(10000, 20000) / 100,
             'category_id' => random_int(
