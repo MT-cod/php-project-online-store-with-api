@@ -11,7 +11,7 @@ class UtilsController extends Controller
     public function regenerateDb(): RedirectResponse
     {
         session()->flush();
-        Artisan::call('migrate:fresh --seed');
+        flash(exec('php ' . __DIR__ . '/../../../artisan migrate:fresh --seed'));
         return Redirect::to('/');
     }
 }
