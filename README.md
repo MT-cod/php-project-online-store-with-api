@@ -1,12 +1,14 @@
-## Учебный проект «Online store» (PHP(Laravel)/Bootstrap/JS/REST API)
+## Учебный проект «Online store» (PHP(8.1)/Laravel(8.73)/Bootstrap/JS/REST API)
 
 [![PHP%20CI](https://github.com/MT-cod/php-project-online-store-with-api/workflows/PHP%20CI/badge.svg)](https://github.com/MT-cod/php-project-online-store-with-api/actions)
-<br>
 [![Code Climate](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api/badges/gpa.svg)](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api)
-[![Issue Count](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api/badges/issue_count.svg)](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api/issues)
 [![Test Coverage](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api/badges/coverage.svg)](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api/coverage)
 
-<h2>Цель</h2>
+<h2>Описание</h2>
+В целях закрепления и усиления знаний при обучении программированию на PHP было найдено одно из понравившихся тестовых заданий, выдаваемых претендентам при найме на работу.
+Помимо выполнения самого задания было принято решение разрабатывать собственную версию "онлайн склада (магазина)".
+
+<h2>Текст тестового задания</h2>
 
 Нужно спроектировать каталог товаров, корзину и заказы для интернет-магазина. Затем реализовать для него JSON API. Для реализации использовать фреймворк Laravel.
 
@@ -39,5 +41,14 @@ API должно поддерживать авторизацию (рекомен
 Также будет плюсом, если разработанное приложение будет разворачиваться с помощью Docker.
 Желательно приложить небольшую документацию к API (рекомендуется использовать Postman).
 
-
+## Документация к API проекта на getpostman.com:
 https://documenter.getpostman.com/view/18230245/UVJfhuYT
+
+## Развёрнутый проект на Heroku:
+<a href="http://php-online-store-with-api.herokuapp.com/">php-online-store-with-api.herokuapp.com</a>
+
+## Готовый docker-образ с проектом:
+<a href="https://hub.docker.com/r/mtcod/php-project-online-store-with-api">mtcod/php-project-online-store-with-api</a>
+
+###### Пример загрузки и запуска контейнера проекта:
+<code>docker run -p 80:8000 -d mtcod/php-project-online-store-with-api php /srv/php-project-online-store-with-api/artisan serve --host 0.0.0.0</code>
