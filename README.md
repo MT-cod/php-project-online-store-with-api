@@ -1,5 +1,5 @@
 ## Учебный проект «Online store»
-###(PHP(8.1)/Laravel(8.73)/Bootstrap/JS/REST API)
+<h3>(PHP(8.1)/Laravel(8.73)/Bootstrap/JS/REST API)</h3>
 
 [![PHP%20CI](https://github.com/MT-cod/php-project-online-store-with-api/workflows/PHP%20CI/badge.svg)](https://github.com/MT-cod/php-project-online-store-with-api/actions)
 [![Code Climate](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api/badges/gpa.svg)](https://codeclimate.com/github/MT-cod/php-project-online-store-with-api)
