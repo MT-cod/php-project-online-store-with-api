@@ -35,10 +35,6 @@
   --breakpoint-xl: 1200px;
   --font-family-sans-serif: "Nunito", sans-serif;
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    scrollbar-color: #996423 #141111;
-    scrollbar-track-color: yellow;
-    scrollbar-base-color: #141111;
-    scrollbar-width: thin;
 }
 
 *,
