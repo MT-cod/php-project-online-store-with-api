@@ -11,9 +11,9 @@ class CreateGoodsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('goods', function (Blueprint $table) {
+        Schema::create('goods', static function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->string('name', 100)->unique();
@@ -22,6 +22,7 @@ class CreateGoodsTable extends Migration
             $table->decimal('price', 10, 2, true)->default(0);
             $table->bigInteger('category_id')->nullable()->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->nullOnDelete();
+            $table->string('image', 100)->nullable();
         });
     }
 
@@ -30,7 +31,7 @@ class CreateGoodsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('goods');
     }
