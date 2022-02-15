@@ -1,7 +1,7 @@
 <div class="modal fade" id="modal-item-edit" tabindex="-1" role="dialog" aria-hidden="true" style="max-height:100vh !important; overflow-y:scroll !important;">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
-            <form id="modal-item-edit-form" method="POST" action="/goods/">
+            <form id="modal-item-edit-form" method="POST" action="/goods/" enctype="multipart/form-data">
                 @csrf
                 @method('PATCH')
                 <div class="modal-header shadow" style="background-color: #c0ffe2">
@@ -13,6 +13,17 @@
                 <div class="modal-body" style="background-color: #d5fdef">
                     <span class="modal_goods_edit_save_results"></span>
                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item" style="background-color: #e6fff4">
+                            <div class="row">
+                                <div class="col">
+                                    <h6><b><label for="modal_goods_edit_image">Изображение товара</label></b></h6>
+                                    <input type="file" name="file" id="modal_goods_edit_image" class="form-control-file">
+                                </div>
+                                <div class="col">
+                                    <span class="modal_goods_edit_image" id="modal_goods_edit_image"></span>
+                                </div>
+                            </div>
+                        </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
                             <div class="row">
                                 <div class="col">

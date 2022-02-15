@@ -119,6 +119,11 @@ trait ReqGoodsProcessing
             ->orderBy('name')
             ->get()
             ->toArray();
+        try {
+            $item['image'] = $prepareItem->getMedia('images')->first()->getUrl();
+        } catch (\Throwable $e) {
+            $a = $e;
+        }
         return $item;
     }
 
@@ -159,6 +164,10 @@ trait ReqGoodsProcessing
         }
         $item->fill($data);
         if ($item->save()) {
+            if ($req->file('file')) {
+                $item->addMediaFromRequest('file')->toMediaCollection('images');
+            }
+
             return [['success' => "Параметры товара успешно изменены."], 200];
         }
         return [['errors' => 'Ошибка изменения данных.'], 400];

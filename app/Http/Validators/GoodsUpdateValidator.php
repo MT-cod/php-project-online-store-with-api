@@ -19,6 +19,7 @@ class GoodsUpdateValidator extends \App\Http\Validators\Validator
     public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
         return Validator::make($request->all() + ['id' => $request->good], [
+            'file' => ['image', 'mimetypes:image/jpeg,image/png'],
             'id' => 'exists:goods',
             'name' => ['max:100', Rule::unique('goods')->ignore($request->good)],
             'slug' => ['max:100', Rule::unique('goods')->ignore($request->good)],

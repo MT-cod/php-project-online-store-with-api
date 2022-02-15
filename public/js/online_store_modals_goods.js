@@ -36,6 +36,7 @@ $(document).on("click", ".btn-modal_goods_edit", function() {
         method: "get",
         success: function(data, textStatus, jqXHR) {
             $('.modal_goods_edit_title').html('<b>' + data.item.name + '</b>');
+            $('.modal_goods_edit_image').html(`<img src="${data.item.image}" className="img-fluid" alt="">`);
             $('.modal_goods_edit_name').val(data.item.name);
             $('.modal_goods_edit_slug').val(data.item.slug);
             $('.modal_goods_edit_description').val(data.item.description);
