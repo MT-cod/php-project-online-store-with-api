@@ -92,7 +92,7 @@
                             $item['media'][0]['id'],
                             'conversions',
                             $item['media'][0]['name'] . '-thumb.jpg'
-                            ])}}" alt="миниизображение товара"></td>
+                            ])}}" alt="https://via.placeholder.com/40x30"></td>
                     @else
                         <td></td>
                     @endif
