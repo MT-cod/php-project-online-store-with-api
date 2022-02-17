@@ -10,12 +10,20 @@
             <div class="modal-body" style="background: url(/back_gray.jpg) repeat">
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
-                        <h6><b>Имя товара</b></h6>
-                        <p><span class="modal_goods_show_name"></span></p>
-                    </li>
-                    <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
-                        <h6><b>Описание</b></h6>
-                        <p><span class="modal_goods_show_description"></span></p>
+                        <div class="row">
+                            <div class="col">
+                                <h6><b>Имя товара</b></h6>
+                                <p><span class="modal_goods_show_name"></span></p>
+                                <br>
+                                <h6><b>Описание</b></h6>
+                                <p><span class="modal_goods_show_description"></span></p>
+                            </div>
+                            <div class="col">
+                                <h6><b><label for="modal_goods_show_image">Изображение товара</label></b></h6>
+                                <br>
+                                <span class="modal_goods_show_image" id="modal_goods_show_image"></span>
+                            </div>
+                        </div>
                     </li>
                     <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
                         <div class="row">
@@ -29,20 +37,8 @@
                             </div>
                         </div>
                     </li>
-                    <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
-                        <div class="row">
-                            <div class="col">
-                                <h6><b>Время создания товара</b></h6>
-                                <p><span class="modal_goods_show_created_at"></span></p>
-                            </div>
-                            <div class="col">
-                                <h6><b>Время последнего изменения товара</b></h6>
-                                <p><span class="modal_goods_show_updated_at"></span></p>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="list-group-item" style="background-color: rgba(255,255,255,0.5)">
-                        <h6><b><center>Дополнительные характеристики товара</center></b></h6>
+                    <li class="list-group-item text-center" style="background-color: rgba(255,255,255,0.5)">
+                        <h6><b>Дополнительные характеристики товара</b></h6>
                         <span class="modal_goods_show_additional_chars"></span>
                     </li>
                 </ul>

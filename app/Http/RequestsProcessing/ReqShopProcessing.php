@@ -26,10 +26,10 @@ trait ReqShopProcessing
         $categories = Category::categsForSelectsWithMarkers();
         $additCharacteristics = AdditionalChar::additCharsForFilters();
 
-        $carouselData = Goods::where('price', Goods::max('price'))->get()->toArray();
-        $carouselData[] = Goods::where('price', Goods::min('price'))->get()->toArray()[0];
-        $carouselData[] = Goods::where('id', Goods::min('id'))->get()->toArray()[0];
-        $carouselData[] = Goods::where('id', Goods::max('id'))->get()->toArray()[0];
+        $carouselData = Goods::where('price', Goods::max('price'))->with('media')->get()->toArray();
+        $carouselData[] = Goods::where('price', Goods::min('price'))->with('media')->get()->toArray()[0];
+        $carouselData[] = Goods::where('id', Goods::min('id'))->with('media')->get()->toArray()[0];
+        $carouselData[] = Goods::where('id', Goods::max('id'))->with('media')->get()->toArray()[0];
 
         $baskCount = Basket::countOfPositionsInBasket();
 

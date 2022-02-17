@@ -8,11 +8,10 @@ $(document).on("click", ".btn-modal_shop_goods_show", function() {
         success: function(data, textStatus, jqXHR) {
             $('.modal_goods_show_title').html('<b>' + data.name + '</b>');
             $('.modal_goods_show_name').html(data.name);
+            $('.modal_goods_show_image').html(`<img src="${data.image}" className="img-fluid" alt="">`);
             $('.modal_goods_show_description').html(data.description);
             $('.modal_goods_show_price').html(data.price);
             $('.modal_goods_show_category').html(data.category);
-            $('.modal_goods_show_created_at').html(data.created_at);
-            $('.modal_goods_show_updated_at').html(data.updated_at);
             $('.modal_goods_show_additional_chars').html(`${data.additional_chars.map((e) => {return `<b>${e.name}</b> (${e.value})<br/>`;}).join``}`);
             $('#goods_id').val(id);
             $('#modal-item-show').modal('show');

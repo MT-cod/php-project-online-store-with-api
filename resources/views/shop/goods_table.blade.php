@@ -91,8 +91,8 @@
                             'storage',
                             $item['media'][0]['id'],
                             'conversions',
-                            $item['media'][0]['name'] . '-thumb.' . (new SplFileInfo($item['media'][0]['file_name']))->getExtension()
-                            ])}}" alt=""></td>
+                            $item['media'][0]['name'] . '-thumb.jpg'
+                            ])}}" alt="миниизображение товара"></td>
                     @else
                         <td></td>
                     @endif
