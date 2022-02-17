@@ -10,6 +10,7 @@ $(document).on("click", ".btn-modal_goods_show", function() {
         success: function(data, textStatus, jqXHR) {
             $('.modal_goods_show_title').html('<b>' + data.name + '</b>');
             $('.modal_goods_show_name').html(data.name);
+            $('.modal_goods_show_image').html(`<img src="${data.image}" className="img-fluid" alt="">`);
             $('.modal_goods_show_slug').html(data.slug);
             $('.modal_goods_show_description').html(data.description);
             $('.modal_goods_show_price').html(data.price);
@@ -122,11 +123,11 @@ $(document).ready(function() {
 //Изменение товара - end
 
 //Создание товара
-$(document).on("click", ".btn-modal_goods_create", function() {
+$(document).on("click", ".btn-modal_goods_create", function () {
     $.ajax({
         url: '/goods/create',
         method: "get",
-        success: function(data, textStatus, jqXHR) {
+        success: function (data, textStatus, jqXHR) {
             $('.modal_goods_create_title').html('<b>Создание нового товара</b>');
             $('.modal_goods_create_category').html(
                 `<select class="form-control" name="category_id">` +

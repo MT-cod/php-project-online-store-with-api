@@ -16,29 +16,22 @@
                         <li class="list-group-item" style="background-color: #e6fff4">
                             <div class="row">
                                 <div class="col">
-                                    <h6><b><label for="modal_goods_edit_image">Изображение товара</label></b></h6>
-                                    <input type="file" name="file" id="modal_goods_edit_image" class="form-control-file">
+                                    <h6><b><label for="modal_goods_edit_name">Имя товара</label></b></h6>
+                                    <input class="form-control modal_goods_edit_name" id="modal_goods_edit_name" type="text" name="name">
+                                    <br>
+                                    <h6><b><label for="modal_goods_edit_slug">slug товара</label></b></h6>
+                                    <input class="form-control modal_goods_edit_slug" id="modal_goods_edit_slug" type="text" name="slug">
+                                    <br>
+                                    <h6><b><label for="modal_goods_edit_description">Описание</label></b></h6>
+                                    <textarea class="form-control modal_goods_edit_description" id="modal_goods_edit_description" rows="2" name="description"></textarea>
                                 </div>
                                 <div class="col">
+                                    <h6><b><label for="modal_goods_edit_image">Изображение товара</label></b></h6>
+                                    <input type="file" name="file" id="modal_goods_edit_image" class="form-control-file">
+                                    <br>
                                     <span class="modal_goods_edit_image" id="modal_goods_edit_image"></span>
                                 </div>
                             </div>
-                        </li>
-                        <li class="list-group-item" style="background-color: #e6fff4">
-                            <div class="row">
-                                <div class="col">
-                                    <h6><b><label for="modal_goods_edit_name">Имя товара</label></b></h6>
-                                    <input class="form-control modal_goods_edit_name" id="modal_goods_edit_name" type="text" name="name">
-                                </div>
-                                <div class="col">
-                                    <h6><b><label for="modal_goods_edit_slug">slug товара</label></b></h6>
-                                    <input class="form-control modal_goods_edit_slug" id="modal_goods_edit_slug" type="text" name="slug">
-                                </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item" style="background-color: #e6fff4">
-                            <h6><b><label for="modal_goods_edit_description">Описание</label></b></h6>
-                            <textarea class="form-control modal_goods_edit_description" id="modal_goods_edit_description" rows="2" name="description"></textarea>
                         </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
                             <div class="row">
@@ -52,6 +45,10 @@
                                 </div>
                             </div>
                         </li>
+                        <li class="list-group-item text-center" style="background-color: #e6fff4">
+                            <h6><b>Дополнительные характеристики товара</b></h6>
+                            <span class="modal_goods_edit_additional_chars"></span>
+                        </li>
                         <li class="list-group-item" style="background-color: #e6fff4">
                             <div class="row">
                                 <div class="col">
@@ -63,10 +60,6 @@
                                     <p><span class="modal_goods_edit_updated_at"></span></p>
                                 </div>
                             </div>
-                        </li>
-                        <li class="list-group-item" style="background-color: #e6fff4">
-                            <h6><b><center>Дополнительные характеристики товара</center></b></h6>
-                            <span class="modal_goods_edit_additional_chars"></span>
                         </li>
                     </ul>
                 </div>

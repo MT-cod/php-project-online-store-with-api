@@ -14,16 +14,19 @@
                             <div class="col">
                                 <h6><b>Имя товара</b></h6>
                                 <p><span class="modal_goods_show_name"></span></p>
-                            </div>
-                            <div class="col">
+                                <br>
                                 <h6><b>slug товара</b></h6>
                                 <p><span class="modal_goods_show_slug"></span></p>
+                                <br>
+                                <h6><b>Описание</b></h6>
+                                <p><span class="modal_goods_show_description"></span></p>
+                            </div>
+                            <div class="col">
+                                <h6><b><label for="modal_goods_show_image">Изображение товара</label></b></h6>
+                                <br>
+                                <span class="modal_goods_show_image" id="modal_goods_show_image"></span>
                             </div>
                         </div>
-                    </li>
-                    <li class="list-group-item" style="background-color: #e6fff4">
-                        <h6><b>Описание</b></h6>
-                        <p><span class="modal_goods_show_description"></span></p>
                     </li>
                     <li class="list-group-item" style="background-color: #e6fff4">
                         <div class="row">
@@ -37,6 +40,10 @@
                             </div>
                         </div>
                     </li>
+                    <li class="list-group-item text-center" style="background-color: #e6fff4">
+                        <h6><b>Дополнительные характеристики товара</b></h6>
+                        <span class="modal_goods_show_additional_chars"></span>
+                    </li>
                     <li class="list-group-item" style="background-color: #e6fff4">
                         <div class="row">
                             <div class="col">
@@ -48,10 +55,6 @@
                                 <p><span class="modal_goods_show_updated_at"></span></p>
                             </div>
                         </div>
-                    </li>
-                    <li class="list-group-item" style="background-color: #e6fff4">
-                        <h6><b><center>Дополнительные характеристики товара</center></b></h6>
-                        <span class="modal_goods_show_additional_chars"></span>
                     </li>
                 </ul>
             </div>

@@ -14,13 +14,17 @@
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" style="background-color: #e6fff4">
                             <div class="row">
-                                <div class="col">
+                                <div class="col-6">
                                     <h6><b><label for="modal_goods_create_name">Имя товара</label></b></h6>
                                     <input class="form-control modal_goods_create_name" id="modal_goods_create_name" type="text" name="name">
                                 </div>
-                                <div class="col">
+                                <div class="col-3">
                                     <h6><b><label for="modal_goods_create_slug">slug товара</label></b></h6>
                                     <input class="form-control modal_goods_create_slug" id="modal_goods_create_slug" type="text" name="slug">
+                                </div>
+                                <div class="col-3">
+                                    <h6><b><label for="modal_goods_create_image">Изображение товара</label></b></h6>
+                                    <input type="file" name="file" id="modal_goods_create_image" class="form-control-file">
                                 </div>
                             </div>
                         </li>

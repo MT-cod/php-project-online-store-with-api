@@ -22,7 +22,6 @@ class CreateGoodsTable extends Migration
             $table->decimal('price', 10, 2, true)->default(0);
             $table->bigInteger('category_id')->nullable()->unsigned();
             $table->foreign('category_id')->references('id')->on('categories')->nullOnDelete();
-            $table->string('image', 100)->nullable();
         });
     }
 

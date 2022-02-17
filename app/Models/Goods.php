@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Goods extends Model implements HasMedia
 {
@@ -38,6 +40,15 @@ class Goods extends Model implements HasMedia
             $res[$item->id]['additional_chars'] = $item->additionalChars()->get()->toArray();
         }
         return $res;
+    }
+
+    /**
+     * @throws InvalidManipulation
+     */
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('thumb')->width(40)->height(30);
+        $this->addMediaConversion('normal')->width(300)->height(200);
     }
 
     public function basketOwners(): BelongsToMany

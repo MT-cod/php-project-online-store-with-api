@@ -13,6 +13,7 @@
     <table class="table table-bordered table-hover table-sm mx-auto">
         <thead style="background-color: rgba(0,0,0,0.1);">
             <tr style="font-size: 1.2rem;">
+                <th scope="col" class="text-center">📷</th>
                 @if (isset($_REQUEST['sort']['name']) && ($_REQUEST['sort']['name'] === 'asc'))
                     <th
                         scope="col"
@@ -83,7 +84,19 @@
                     data-placement="bottom"
                     title="Нажать для подробностей/покупки"
                 >
-                    <td><h6><b>{{Str::limit($item['name'], 40)}}</b></h6></td>
+                    @if (isset($item['media'][0]['id']))
+                        <td class="text-center"><img src="{{implode('/', [
+                            str_contains($_SERVER['SERVER_PROTOCOL'], 'https') ? 'https://' : 'http://',
+                            $_SERVER['HTTP_HOST'],
+                            'storage',
+                            $item['media'][0]['id'],
+                            'conversions',
+                            $item['media'][0]['name'] . '-thumb.' . (new SplFileInfo($item['media'][0]['file_name']))->getExtension()
+                            ])}}" alt=""></td>
+                    @else
+                        <td></td>
+                    @endif
+                    <td><b>{{Str::limit($item['name'], 40)}}</b></td>
                     <td>{{Str::limit($item['description'], 120)}}</td>
                     <td><b>{{$item['price']}}</b></td>
                 </tr>
