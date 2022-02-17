@@ -22,7 +22,7 @@
                             $carouselData[0]['media'][0]['id'],
                             'conversions',
                             $carouselData[0]['media'][0]['name'] . '-normal.jpg'
-                            ])}}" alt="https://via.placeholder.com/300x200">
+                            ])}}" alt="[изображение]">
                 @endif
                 <div class="display-4 p-lg-5">{{Str::limit($carouselData[0]['name'], 40)}}</div>
                 <div><h4><b>{{Str::limit($carouselData[0]['description'], 500)}}</b></h4></div>
@@ -45,7 +45,7 @@
                             $carouselData[1]['media'][0]['id'],
                             'conversions',
                             $carouselData[1]['media'][0]['name'] . '-normal.jpg'
-                            ])}}" alt="https://via.placeholder.com/300x200">
+                            ])}}" alt="[изображение]">
                 @endif
                 <div class="display-4 p-lg-5">{{Str::limit($carouselData[1]['name'], 40)}}</div>
                 <div><h4><b>{{Str::limit($carouselData[1]['description'], 500)}}</b></h4></div>
@@ -68,7 +68,7 @@
                             $carouselData[2]['media'][0]['id'],
                             'conversions',
                             $carouselData[2]['media'][0]['name'] . '-normal.jpg'
-                            ])}}" alt="https://via.placeholder.com/300x200">
+                            ])}}" alt="[изображение]">
                 @endif
                 <div class="display-4 p-lg-5">{{Str::limit($carouselData[2]['name'], 40)}}</div>
                 <div><h4><b>{{Str::limit($carouselData[2]['description'], 500)}}</b></h4></div>
@@ -91,7 +91,7 @@
                             $carouselData[3]['media'][0]['id'],
                             'conversions',
                             $carouselData[3]['media'][0]['name'] . '-normal.jpg'
-                            ])}}" alt="https://via.placeholder.com/300x200">
+                            ])}}" alt="[изображение]">
                 @endif
                 <div class="display-4 p-lg-5">{{Str::limit($carouselData[3]['name'], 40)}}</div>
                 <div><h4><b>{{Str::limit($carouselData[3]['description'], 500)}}</b></h4></div>

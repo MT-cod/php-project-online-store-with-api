@@ -10,7 +10,7 @@ $(document).on("click", ".btn-modal_goods_show", function() {
         success: function(data, textStatus, jqXHR) {
             $('.modal_goods_show_title').html('<b>' + data.name + '</b>');
             $('.modal_goods_show_name').html(data.name);
-            $('.modal_goods_show_image').html(`<img src="${data.image}" className="img-fluid" alt="https://via.placeholder.com/300x200">`);
+            $('.modal_goods_show_image').html(`<img src="${data.image}" className="img-fluid" alt="[изображение]">`);
             $('.modal_goods_show_slug').html(data.slug);
             $('.modal_goods_show_description').html(data.description);
             $('.modal_goods_show_price').html(data.price);
@@ -37,7 +37,7 @@ $(document).on("click", ".btn-modal_goods_edit", function() {
         method: "get",
         success: function(data, textStatus, jqXHR) {
             $('.modal_goods_edit_title').html('<b>' + data.item.name + '</b>');
-            $('.modal_goods_edit_image').html(`<img src="${data.item.image}" className="img-fluid" alt="https://via.placeholder.com/300x200">`);
+            $('.modal_goods_edit_image').html(`<img src="${data.item.image}" className="img-fluid" alt="[изображение]">`);
             $('.modal_goods_edit_name').val(data.item.name);
             $('.modal_goods_edit_slug').val(data.item.slug);
             $('.modal_goods_edit_description').val(data.item.description);
