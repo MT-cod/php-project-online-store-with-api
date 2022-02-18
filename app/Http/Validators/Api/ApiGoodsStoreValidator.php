@@ -18,6 +18,7 @@ class ApiGoodsStoreValidator extends \App\Http\Validators\Validator
     public function validate(Request $request): \Illuminate\Contracts\Validation\Validator
     {
         return Validator::make($request->all(), [
+            'file' => ['image', 'mimetypes:image/jpeg,image/png'],
             'name' => ['required', 'unique:goods', 'max:100'],
             'slug' => ['required', 'unique:goods', 'max:100'],
             'price' => ['regex:/^\d*\.?\d{0,2}$/'],

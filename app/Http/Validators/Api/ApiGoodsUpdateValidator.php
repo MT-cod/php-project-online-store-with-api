@@ -20,6 +20,7 @@ class ApiGoodsUpdateValidator extends \App\Http\Validators\Validator
     {
         return Validator::make($request->all() + ['id' => $request->id], [
             'id' => 'exists:goods',
+            'file' => ['image', 'mimetypes:image/jpeg,image/png'],
             'name' => ['max:100', Rule::unique('goods')->ignore($request->id)],
             'slug' => ['max:100', Rule::unique('goods')->ignore($request->id)],
             'price' => ['regex:/^\d*\.?\d{0,2}$/'],

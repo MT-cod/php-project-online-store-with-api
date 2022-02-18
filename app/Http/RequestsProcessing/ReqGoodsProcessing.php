@@ -32,6 +32,8 @@ trait ReqGoodsProcessing
 
         //добавим доп характеристики товаров в результат
         $sortedData->with('additionalChars:id,name,value');
+
+        //добавим изображения товаров в результат
         $sortedData->with('media');
 
         $result = $sortedData->paginate($req->input('perpage') ?? 20)->withQueryString();
@@ -74,7 +76,9 @@ trait ReqGoodsProcessing
             $additChars = $req->input('additChars', []);
             if ($item->save()) {
                 $item->additionalChars()->attach($additChars);
-                $item->addMediaFromRequest('file')->toMediaCollection('images');
+                if ($req->file('file')) {
+                    $item->addMediaFromRequest('file')->toMediaCollection('images');
+                }
                 return [['success' => "Товар $item->name успешно создан. Обновите список товаров."], 200];
             }
             return [['errors' => 'Не удалось создать товар.'], 400];

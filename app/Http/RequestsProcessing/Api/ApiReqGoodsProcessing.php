@@ -32,6 +32,9 @@ trait ApiReqGoodsProcessing
         //добавим доп характеристики товаров в результат
         $sortedData->with('additionalChars:id,name,value');
 
+        //добавим изображения товаров в результат
+        $sortedData->with('media');
+
         $result = $sortedData->paginate($req->input('perpage') ?? 1000);
 
         return [
@@ -49,7 +52,7 @@ trait ApiReqGoodsProcessing
      */
     public function reqProcessingForSlug(string $slug): array
     {
-        $item = Goods::where('slug', $slug)->with('additionalChars:id,name,value')->first();
+        $item = Goods::where('slug', $slug)->with('additionalChars:id,name,value')->with('media')->first();
         if ($item) {
             return ['success' => 'Данные о товаре успешно получены.', 'data' => $item, 'status' => 200];
         }
@@ -64,7 +67,7 @@ trait ApiReqGoodsProcessing
      */
     public function reqProcessingForShow(int $id): array
     {
-        $item = Goods::whereId($id)->with('additionalChars:id,name,value')->first();
+        $item = Goods::whereId($id)->with('additionalChars:id,name,value')->with('media')->first();
         if ($item) {
             return ['success' => 'Данные о товаре успешно получены.', 'data' => $item, 'status' => 200];
         }
@@ -78,21 +81,28 @@ trait ApiReqGoodsProcessing
      */
     public function reqProcessingForStore(): array
     {
-        $req = request();
-        $item = new Goods();
-        $data['name'] = $req->input('name');
-        $data['slug'] = $req->input('slug');
-        $data['description'] = $req->description ?? '-';
-        $data['price'] = $req->price ?? 0;
-        $data['category_id'] = $req->input('category_id');
-        $item->fill($data);
-        $additChars = $req->input('additChars', []);
-        if ($item->save()) {
-            $item->additionalChars()->attach($additChars);
-            $result = Goods::whereId($item->id)->with('additionalChars:id,name,value')->first();
-            return ['success' => "Товар $item->name успешно создан.", 'data' => $result, 'status' => 200];
+        try {
+            $req = request();
+            $item = new Goods();
+            $data['name'] = $req->input('name');
+            $data['slug'] = $req->input('slug');
+            $data['description'] = $req->description ?? '-';
+            $data['price'] = $req->price ?? 0;
+            $data['category_id'] = $req->input('category_id');
+            $item->fill($data);
+            $additChars = $req->input('additChars', []);
+            if ($item->save()) {
+                $item->additionalChars()->attach($additChars);
+                if ($req->file('file')) {
+                    $item->addMediaFromRequest('file')->toMediaCollection('images');
+                }
+                $result = Goods::whereId($item->id)->with('additionalChars:id,name,value')->with('media')->first();
+                return ['success' => "Товар $item->name успешно создан.", 'data' => $result, 'status' => 200];
+            }
+            return ['errors' => 'Не удалось создать товар.', 'status' => 400];
+        } catch (\Throwable $e) {
+            return ['errors' => 'Не удалось создать товар.', 'status' => 400];
         }
-        return ['errors' => 'Не удалось создать товар.', 'status' => 400];
     }
 
     /**
@@ -103,37 +113,44 @@ trait ApiReqGoodsProcessing
      */
     public function reqProcessingForUpdate(int $id): array
     {
-        $req = request();
-        $item = Goods::find($id);
-        $data = [];
-        foreach ($req->input() as $row => $val) {
-            switch ($row) {
-                case 'name':
-                    $data['name'] = $val;
-                    break;
-                case 'slug':
-                    $data['slug'] = $val;
-                    break;
-                case 'description':
-                    $data['description'] = $val ?? '-';
-                    break;
-                case 'price':
-                    $data['price'] = $val ?? 0;
-                    break;
-                case 'category_id':
-                    $data['category_id'] = $val;
-                    break;
-                case 'additChars':
-                    $item->additionalChars()->sync($val);
-                    break;
+        try {
+            $req = request();
+            $item = Goods::find($id);
+            $data = [];
+            foreach ($req->input() as $row => $val) {
+                switch ($row) {
+                    case 'name':
+                        $data['name'] = $val;
+                        break;
+                    case 'slug':
+                        $data['slug'] = $val;
+                        break;
+                    case 'description':
+                        $data['description'] = $val ?? '-';
+                        break;
+                    case 'price':
+                        $data['price'] = $val ?? 0;
+                        break;
+                    case 'category_id':
+                        $data['category_id'] = $val;
+                        break;
+                    case 'additChars':
+                        $item->additionalChars()->sync($val);
+                        break;
+                }
             }
+            $item->fill($data);
+            if ($item->save()) {
+                if ($req->file('file')) {
+                    $item->clearMediaCollection('images')->addMediaFromRequest('file')->toMediaCollection('images');
+                }
+                $result = Goods::whereId($id)->with('additionalChars:id,name,value')->with('media')->first();
+                return ['success' => "Параметры товара успешно изменены.", 'data' => $result, 'status' => 200];
+            }
+            return ['errors' => 'Ошибка изменения данных.', 'status' => 400];
+        } catch (\Throwable $e) {
+            return ['errors' => 'Ошибка изменения данных.', 'status' => 400];
         }
-        $item->fill($data);
-        if ($item->save()) {
-            $result = Goods::whereId($id)->with('additionalChars:id,name,value')->first();
-            return ['success' => "Параметры товара успешно изменены.", 'data' => $result, 'status' => 200];
-        }
-        return ['errors' => 'Ошибка изменения данных.', 'status' => 400];
     }
 
     /**
