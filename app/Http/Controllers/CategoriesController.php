@@ -36,6 +36,10 @@ class CategoriesController extends Controller
 
         [$result, $status] = $this->reqProcessingForStore();
 
+        if (isset($result['success'])) {
+            flash($result['success'])->success();
+        }
+
         return Response::json($result, $status);
     }
 
@@ -52,6 +56,10 @@ class CategoriesController extends Controller
         }
 
         [$result, $status] = $this->reqProcessingForUpdate($id);
+
+        if (isset($result['success'])) {
+            flash($result['success'])->success();
+        }
 
         return Response::json($result, $status);
     }

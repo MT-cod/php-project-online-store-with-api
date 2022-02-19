@@ -59,7 +59,6 @@ trait ReqGoodsProcessing
      * Обработка запроса на создание товара.
      *
      * @return array
-     * @throws AuthorizationException
      */
     public function reqProcessingForGoodsStore(): array
     {
@@ -221,6 +220,7 @@ trait ReqGoodsProcessing
      *
      * @param int $id
      * @return array
+     * @throws AuthorizationException
      */
     public function reqProcessingForGoodsDestroy(int $id): array
     {

@@ -4,6 +4,7 @@
 
 <!-- Scripts -->
 <script src="/js/online_store_modals_additional_chars.js"></script>
+<script src="/js/online_store_common_funcs.js"></script>
 
 <!-- Styles -->
 <link href="{{ asset('css/online_store_blue.css') }}" rel="stylesheet">

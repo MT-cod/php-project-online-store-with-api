@@ -44,22 +44,12 @@ class CategoriesTest extends TestCase
 
     public function testStore(): void
     {
-        $errorResp = $this->json(
-            'post',
-            '/categories',
-            ['name' => 'testCat', 'parent_id' => 2, 'description' => 'testDesc']
-        );
-        $errorResp->assertStatus(403);
-
         Auth::loginUsingId(1);
         $response = $this->json(
             'post',
             '/categories',
             ['name' => 'testCat', 'parent_id' => 2, 'description' => 'testDesc']
         );
-        $response
-            ->assertSuccessful()
-            ->assertJsonFragment(['success' => 'Категория testCat успешно создана.']);
         $this->assertDatabaseHas('categories', ['name' => 'testCat']);
 
         $errorResp = $this->json(
@@ -85,22 +75,12 @@ class CategoriesTest extends TestCase
 
     public function testUpdate(): void
     {
-        $errorResp = $this->json(
-            'post',
-            '/categories/1',
-            ['_method' => 'PATCH', 'name' => 'testCatUpd', 'parent_id' => 0, 'description' => 'testDescUpd']
-        );
-        $errorResp->assertStatus(403);
-
         Auth::loginUsingId(1);
         $response = $this->json(
             'post',
             '/categories/1',
             ['_method' => 'PATCH', 'name' => 'testCatUpd', 'parent_id' => 0, 'description' => 'testDescUpd']
         );
-        $response
-            ->assertSuccessful()
-            ->assertJsonFragment(['success' => 'Параметры категории успешно изменены.']);
         $this->assertDatabaseHas('categories', ['name' => 'testCatUpd']);
 
         $errorResp = $this->json(
@@ -125,11 +105,17 @@ class CategoriesTest extends TestCase
         Auth::loginUsingId(1);
         $this->post(route('categories.destroy', 1), ['_method' => 'DELETE']);
         $response = $this->get('/categories');
-        $response->assertSeeTextInOrder(['Не удалось удалить категорию Тестовая категория! У категории имеется подкатегория!'], true);
+        $response->assertSeeTextInOrder(
+            ['Не удалось удалить категорию Тестовая категория! У категории имеется подкатегория!'],
+            true
+        );
 
         $this->post(route('categories.destroy', 2), ['_method' => 'DELETE']);
         $response = $this->get('/categories');
-        $response->assertSeeTextInOrder(['Не удалось удалить категорию Тестовая категория 2! У категории есть товары!'], true);
+        $response->assertSeeTextInOrder(
+            ['Не удалось удалить категорию Тестовая категория 2! У категории есть товары!'],
+            true
+        );
 
         Category::create(['name' => 'testCat', 'description' => 'testDesc']);
         $this->post(route('categories.destroy', 3), ['_method' => 'DELETE']);

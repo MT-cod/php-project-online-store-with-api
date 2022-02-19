@@ -4,6 +4,7 @@
 
 <!-- Scripts -->
 <script src="/js/online_store_modals_goods.js"></script>
+<script src="/js/online_store_common_funcs.js"></script>
 
 <!-- Styles -->
 <link href="{{ asset('css/online_store_green.css') }}" rel="stylesheet">

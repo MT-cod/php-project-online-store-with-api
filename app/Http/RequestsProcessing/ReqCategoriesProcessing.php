@@ -39,24 +39,30 @@ trait ReqCategoriesProcessing
      * Обработка запроса на создание категории.
      *
      * @return array
-     * @throws AuthorizationException
      */
     public function reqProcessingForStore(): array
     {
-        $req = request();
-        $cat = new Category();
-        $this->authorize('store', $cat);
-        $data['name'] = $req->input('name');
-        $data['description'] = $req->description ?? '-';
-        $data['parent_id'] = $req->parent_id ?? 0;
-        $data['level'] = ($req->input('parent_id'))
-            ? Category::find($req->input('parent_id'))->level + 1
-            : 1;
-        $cat->fill($data);
-        if ($cat->save()) {
-            return [['success' => "Категория $cat->name успешно создана."], 200];
+        try {
+            $req = request();
+            $cat = new Category();
+            $this->authorize('store', $cat);
+            $data['name'] = $req->input('name');
+            $data['description'] = $req->description ?? '-';
+            $data['parent_id'] = $req->parent_id ?? 0;
+            $data['level'] = ($req->input('parent_id'))
+                ? Category::find($req->input('parent_id'))->level + 1
+                : 1;
+            $cat->fill($data);
+            if ($cat->save()) {
+                return [[
+                    'success' => "Категория $cat->name успешно создана.",
+                    'referer' => $_SERVER['HTTP_REFERER']
+                ], 200];
+            }
+            return [['errors' => 'Не удалось создать категорию.'], 400];
+        } catch (\Throwable $e) {
+            return [['errors' => 'Не удалось создать категорию.'], 400];
         }
-        return [['errors' => 'Не удалось создать категорию.'], 400];
     }
 
     /**
@@ -86,36 +92,43 @@ trait ReqCategoriesProcessing
      */
     public function reqProcessingForUpdate(int $id): array
     {
-        $req = request();
-        $cat = Category::whereId($id)->first();
-        $this->authorize('update', $cat);
-        $data = [];
-        foreach ($req->input() as $row => $val) {
-            switch ($row) {
-                case 'name':
-                    $data['name'] = $val;
-                    break;
-                case 'description':
-                    $data['description'] = $val ?? '-';
-                    break;
-                case 'parent_id':
-                    $data['parent_id'] = $val;
-                    $data['level'] = ($val)
-                    ? Category::find($val)->level + 1
-                    : 1;
-                    if ($cat->childrens()->count()) {
-                        foreach ($cat->childrens()->get() as $child) {
-                            $child->level = $data['level'] + 1;
+        try {
+            $req = request();
+            $cat = Category::whereId($id)->first();
+            $this->authorize('update', $cat);
+            $data = [];
+            foreach ($req->input() as $row => $val) {
+                switch ($row) {
+                    case 'name':
+                        $data['name'] = $val;
+                        break;
+                    case 'description':
+                        $data['description'] = $val ?? '-';
+                        break;
+                    case 'parent_id':
+                        $data['parent_id'] = $val;
+                        $data['level'] = ($val)
+                            ? Category::find($val)->level + 1
+                            : 1;
+                        if ($cat->childrens()->count()) {
+                            foreach ($cat->childrens()->get() as $child) {
+                                $child->level = $data['level'] + 1;
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
+            $cat->fill($data);
+            if ($cat->save()) {
+                return [[
+                    'success' => "Параметры категории $cat->name успешно изменены.",
+                    'referer' => $_SERVER['HTTP_REFERER']
+                ], 200];
+            }
+            return [['errors' => 'Ошибка изменения данных.'], 400];
+        } catch (\Throwable $e) {
+            return [['errors' => 'Ошибка изменения данных.'], 400];
         }
-        $cat->fill($data);
-        if ($cat->save()) {
-            return [['success' => "Параметры категории успешно изменены."], 200];
-        }
-        return [['errors' => 'Ошибка изменения данных.'], 400];
     }
 
     /**
@@ -123,6 +136,7 @@ trait ReqCategoriesProcessing
      *
      * @param int $id
      * @return array
+     * @throws AuthorizationException
      */
     public function reqProcessingForDestroy(int $id): array
     {

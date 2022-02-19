@@ -4,6 +4,7 @@
 
 <!-- Scripts -->
 <script src="/js/online_store_modals_categories.js"></script>
+<script src="/js/online_store_common_funcs.js"></script>
 
 <div class="container-fluid" style="height: 95vh !important; background: url(/back_sunny.jpg) repeat">
     <div class="row text-center shadow-lg">
