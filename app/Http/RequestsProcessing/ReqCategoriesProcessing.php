@@ -55,7 +55,7 @@ trait ReqCategoriesProcessing
             $cat->fill($data);
             if ($cat->save()) {
                 return [[
-                    'success' => "Категория $cat->name успешно создана.",
+                    'success' => "Категория &quot;$cat->name&quot; успешно создана.",
                     'referer' => $_SERVER['HTTP_REFERER']
                 ], 200];
             }
@@ -121,7 +121,7 @@ trait ReqCategoriesProcessing
             $cat->fill($data);
             if ($cat->save()) {
                 return [[
-                    'success' => "Параметры категории $cat->name успешно изменены.",
+                    'success' => "Параметры категории &quot;$cat->name&quot; успешно изменены.",
                     'referer' => $_SERVER['HTTP_REFERER']
                 ], 200];
             }
@@ -145,19 +145,19 @@ trait ReqCategoriesProcessing
         if ($cat) {
             if ($cat->childrens()->count()) {
                 return [
-                    ['errors' => "Не удалось удалить категорию $cat->name! У категории имеется подкатегория!"],
+                    ['errors' => "Не удалось удалить категорию &quot;$cat->name&quot;! У категории имеется подкатегория!"],
                     400
                 ];
             }
             if ($cat->goods()->count()) {
                 return [
-                    ['errors' => "Не удалось удалить категорию $cat->name! У категории есть товары!"],
+                    ['errors' => "Не удалось удалить категорию &quot;$cat->name&quot;! У категории есть товары!"],
                     400
                 ];
             }
             try {
                 $cat->delete();
-                return [['success' => "Категория $cat->name успешно удалена."], 200];
+                return [['success' => "Категория &quot;$cat->name&quot; успешно удалена."], 200];
             } catch (\Throwable $e) {
                 return [['errors' => 'Не удалось удалить категорию.'], 400];
             }

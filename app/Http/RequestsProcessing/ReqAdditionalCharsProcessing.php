@@ -38,15 +38,22 @@ trait ReqAdditionalCharsProcessing
      */
     public function reqProcessingForStore(): array
     {
-        $req = request();
-        $char = new AdditionalChar();
-        $data['name'] = $req->name;
-        $data['value'] = $req->value ?? '-';
-        $char->fill($data);
-        if ($char->save()) {
-            return [['success' => "Доп характеристика &quot;$char->name&quot; успешно создана. Обновите список."], 200];
+        try {
+            $req = request();
+            $char = new AdditionalChar();
+            $data['name'] = $req->name;
+            $data['value'] = $req->value ?? '-';
+            $char->fill($data);
+            if ($char->save()) {
+                return [[
+                    'success' => "Доп характеристика &quot;$char->name&quot; успешно создана.",
+                    'referer' => $_SERVER['HTTP_REFERER']
+                ], 200];
+            }
+            return [['errors' => 'Не удалось создать доп характеристику.'], 400];
+        } catch (\Throwable $e) {
+            return [['errors' => 'Не удалось создать доп характеристику.'], 400];
         }
-        return [['errors' => 'Не удалось создать доп характеристику.'], 400];
     }
 
     /**
@@ -72,24 +79,31 @@ trait ReqAdditionalCharsProcessing
      */
     public function reqProcessingForUpdate(int $id): array
     {
-        $req = request();
-        $char = AdditionalChar::find($id);
-        $data = [];
-        foreach ($req->input() as $row => $val) {
-            switch ($row) {
-                case 'name':
-                    $data['name'] = $val;
-                    break;
-                case 'value':
-                    $data['value'] = $val ?? '-';
-                    break;
+        try {
+            $req = request();
+            $char = AdditionalChar::find($id);
+            $data = [];
+            foreach ($req->input() as $row => $val) {
+                switch ($row) {
+                    case 'name':
+                        $data['name'] = $val;
+                        break;
+                    case 'value':
+                        $data['value'] = $val ?? '-';
+                        break;
+                }
             }
+            $char->fill($data);
+            if ($char->save()) {
+                return [[
+                    'success' => "Параметры доп характеристики &quot;$char->name&quot; успешно изменены.",
+                    'referer' => $_SERVER['HTTP_REFERER']
+                ], 200];
+            }
+            return [['errors' => 'Ошибка изменения данных.'], 400];
+        } catch (\Throwable $e) {
+            return [['errors' => 'Ошибка изменения данных.'], 400];
         }
-        $char->fill($data);
-        if ($char->save()) {
-            return [['success' => "Параметры доп характеристики успешно изменены."], 200];
-        }
-        return [['errors' => 'Ошибка изменения данных.'], 400];
     }
 
     /**
@@ -106,9 +120,9 @@ trait ReqAdditionalCharsProcessing
                 $char->goods()->detach();
                 $char->delete();
             } catch (\Throwable $e) {
-                return [['errors' => 'Не удалось удалить характеристику.'], 400];
+                return [['errors' => "Не удалось удалить доп характеристику &quot;$char->name&quot;."], 400];
             }
-            return [['success' => "Характеристика успешно удалена."], 200];
+            return [['success' => "Характеристика &quot;$char->name&quot; успешно удалена."], 200];
         }
         return [['errors' => "Не удалось найти указанную доп характеристику."], 400];
     }

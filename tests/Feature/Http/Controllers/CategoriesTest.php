@@ -106,14 +106,14 @@ class CategoriesTest extends TestCase
         $this->post(route('categories.destroy', 1), ['_method' => 'DELETE']);
         $response = $this->get('/categories');
         $response->assertSeeTextInOrder(
-            ['Не удалось удалить категорию Тестовая категория! У категории имеется подкатегория!'],
+            ['Не удалось удалить категорию "Тестовая категория"! У категории имеется подкатегория!'],
             true
         );
 
         $this->post(route('categories.destroy', 2), ['_method' => 'DELETE']);
         $response = $this->get('/categories');
         $response->assertSeeTextInOrder(
-            ['Не удалось удалить категорию Тестовая категория 2! У категории есть товары!'],
+            ['Не удалось удалить категорию "Тестовая категория 2"! У категории есть товары!'],
             true
         );
 
@@ -121,6 +121,6 @@ class CategoriesTest extends TestCase
         $this->post(route('categories.destroy', 3), ['_method' => 'DELETE']);
         $this->assertDatabaseMissing('categories', ['id' => 3]);
         $response = $this->get('/categories');
-        $response->assertSeeTextInOrder(['Категория testCat успешно удалена.'], true);
+        $response->assertSeeTextInOrder(['Категория "testCat" успешно удалена.'], true);
     }
 }

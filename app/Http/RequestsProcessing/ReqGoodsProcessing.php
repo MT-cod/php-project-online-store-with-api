@@ -81,11 +81,14 @@ trait ReqGoodsProcessing
                     }
                 } catch (\Throwable $e) {
                     return [[
-                        'success' => "Товар $item->name успешно создан, но не удалось установить изображение.",
+                        'success' => "Товар &quot;$item->name&quot; успешно создан, но не удалось установить изображение.",
                         'referer' => $_SERVER['HTTP_REFERER']
                     ], 200];
                 }
-                return [['success' => "Товар $item->name успешно создан.", 'referer' => $_SERVER['HTTP_REFERER']], 200];
+                return [[
+                    'success' => "Товар &quot;$item->name&quot; успешно создан.",
+                    'referer' => $_SERVER['HTTP_REFERER']
+                ], 200];
             }
             return [['errors' => 'Не удалось создать товар.'], 400];
         } catch (\Throwable $e) {
@@ -200,12 +203,12 @@ trait ReqGoodsProcessing
                     }
                 } catch (\Throwable $e) {
                     return [[
-                        'success' => "Параметры товара $item->name успешно изменены, не удалось изменить изображение.",
+                        'success' => "Параметры товара &quot;$item->name&quot; успешно изменены, но не удалось изменить изображение.",
                         'referer' => $_SERVER['HTTP_REFERER']
                     ], 200];
                 }
                 return [[
-                    'success' => "Параметры товара $item->name успешно изменены.",
+                    'success' => "Параметры товара &quot;$item->name&quot; успешно изменены.",
                     'referer' => $_SERVER['HTTP_REFERER']
                 ], 200];
             }
@@ -230,10 +233,10 @@ trait ReqGoodsProcessing
             try {
                 $item->additionalChars()->detach();
                 $item->delete();
-                return [['success' => 'Товар успешно удален.'], 200];
+                return [['success' => "Товар &quot;$item->name&quot; успешно удален."], 200];
             } catch (\Throwable $e) {
                 return [
-                    ['errors' => "Не удалось удалить товар. Товар может участвовать в транзакциях."],
+                    ['errors' => "Не удалось удалить товар &quot;$item->name&quot;. Товар может участвовать в транзакциях."],
                     400
                 ];
             }

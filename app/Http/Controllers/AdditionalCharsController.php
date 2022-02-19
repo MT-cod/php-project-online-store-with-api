@@ -40,6 +40,10 @@ class AdditionalCharsController extends Controller
 
         [$result, $status] = $this->reqProcessingForStore();
 
+        if (isset($result['success'])) {
+            flash($result['success'])->success();
+        }
+
         return Response::json($result, $status);
     }
 
@@ -56,6 +60,10 @@ class AdditionalCharsController extends Controller
         }
 
         [$result, $status] = $this->reqProcessingForUpdate($id);
+
+        if (isset($result['success'])) {
+            flash($result['success'])->success();
+        }
 
         return Response::json($result, $status);
     }

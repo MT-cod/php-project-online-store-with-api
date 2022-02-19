@@ -2,8 +2,8 @@
 
 //Создание новой доп характеристики
 //Попытка сохранения новой доп характеристики
-$(document).ready(function() {
-    $("#modal-additChar-create-form").submit(function(event) {
+$(document).ready(function () {
+    $("#modal-additChar-create-form").submit(function (event) {
         event.preventDefault();
         let data = new FormData(this);
         $.ajax({
@@ -14,27 +14,11 @@ $(document).ready(function() {
             dataType: 'json',
             processData: false,
             contentType: false,
-            success: function(data) {
-                $('.modal_additChar_create_results').html(
-                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button></div>');
+            success: function (data) {
+                location = data.referer;
             },
-            error: function(data) {
-                let errors = '';
-                let respErrors = data.responseJSON.errors;
-                if (typeof respErrors == 'string') {
-                    errors = respErrors;
-                }
-                if (typeof respErrors == 'object') {
-                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
-                        errors += errNote[1][0] + '<br>';
-                    });
-                }
-                $('.modal_additChar_create_results').html(
-                    '<div class="alert alert-danger text-center" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
+            error: function (data) {
+                inModalErrorFlashing(data.responseJSON.errors, ".modal_additChar_create_results")
             }
         });
     })
@@ -42,12 +26,12 @@ $(document).ready(function() {
 //Создание доп характеристики - end
 
 //Изменение доп характеристики
-$(document).on("click", ".btn-modal_additChar_edit", function() {
+$(document).on("click", ".btn-modal_additChar_edit", function () {
     let id = $(this).data('id');
     $.ajax({
         url: '/additionalChars/' + id + '/edit',
         method: "get",
-        success: function(data, textStatus, jqXHR) {
+        success: function (data, textStatus, jqXHR) {
             $('.modal_additChar_edit_title').html('<b>Редактирование ' + data.additChar.name + '</b>');
             $('#modal_additChar_edit_name').val(data.additChar.name);
             $('#modal_additChar_edit_value').val(data.additChar.value);
@@ -64,8 +48,8 @@ $(document).on("click", ".btn-modal_additChar_edit", function() {
 });
 
 //Попытка сохранения изменений доп характеристики
-$(document).ready(function() {
-    $("#modal-additChar-edit-form").submit(function(event) {
+$(document).ready(function () {
+    $("#modal-additChar-edit-form").submit(function (event) {
         event.preventDefault();
         let data = new FormData(this);
         $.ajax({
@@ -76,27 +60,11 @@ $(document).ready(function() {
             dataType: 'json',
             processData: false,
             contentType: false,
-            success: function(data) {
-                $('.modal_additChar_edit_save_results').html(
-                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button></div>');
+            success: function (data) {
+                location = data.referer;
             },
-            error: function(data) {
-                let errors = '';
-                let respErrors = data.responseJSON.errors;
-                if (typeof respErrors == 'string') {
-                    errors = respErrors;
-                }
-                if (typeof respErrors == 'object') {
-                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
-                        errors += errNote[1][0] + '<br>';
-                    });
-                }
-                $('.modal_additChar_edit_save_results').html(
-                    '<div class="alert alert-danger text-center" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
+            error: function (data) {
+                inModalErrorFlashing(data.responseJSON.errors, ".modal_additChar_edit_save_results")
             }
         });
     })
