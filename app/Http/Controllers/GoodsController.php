@@ -78,6 +78,10 @@ class GoodsController extends Controller
 
         [$result, $status] = $this->reqProcessingForGoodsUpdate($id);
 
+        if (isset($result['success'])) {
+            flash($result['success'])->success();
+        }
+
         return Response::json($result, $status);
     }
 

@@ -195,10 +195,20 @@ trait ReqGoodsProcessing
             }
             $item->fill($data);
             if ($item->save()) {
-                if ($req->file('file')) {
-                    $item->clearMediaCollection('images')->addMediaFromRequest('file')->toMediaCollection('images');
+                try {
+                    if ($req->file('file')) {
+                        $item->clearMediaCollection('images')->addMediaFromRequest('file')->toMediaCollection('images');
+                    }
+                } catch (\Throwable $e) {
+                    return [[
+                        'success' => "Параметры товара $item->name успешно изменены, не удалось изменить изображение.",
+                        'referer' => $_SERVER['HTTP_REFERER']
+                    ], 200];
                 }
-                return [['success' => "Параметры товара успешно изменены."], 200];
+                return [[
+                    'success' => "Параметры товара $item->name успешно изменены.",
+                    'referer' => $_SERVER['HTTP_REFERER']
+                ], 200];
             }
             return [['errors' => 'Ошибка изменения данных.'], 400];
         } catch (\Throwable $e) {

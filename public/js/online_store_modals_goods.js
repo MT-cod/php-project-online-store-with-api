@@ -1,16 +1,16 @@
 //Модалки по товарам-----------------------------------------------------------------------
 //Просмотр товара
-$(document).on("click", ".btn-modal_goods_show", function() {
+$(document).on("click", ".btn-modal_goods_show", function () {
     let id = $(this).data('id');
     let editRoute = $(this).data('edit_route');
     let deleteRoute = $(this).data('delete_route');
     $.ajax({
         url: '/goods/' + id,
         method: "get",
-        success: function(data, textStatus, jqXHR) {
+        success: function (data, textStatus, jqXHR) {
             $('.modal_goods_show_title').html('<b>' + data.name + '</b>');
             $('.modal_goods_show_name').html(data.name);
-            $('.modal_goods_show_image').html(`<img src="${data.image}" className="img-fluid" alt="[изображение]">`);
+            $('.modal_goods_show_image').html(`<img src="${data.image}" alt="[изображение]">`);
             $('.modal_goods_show_slug').html(data.slug);
             $('.modal_goods_show_description').html(data.description);
             $('.modal_goods_show_price').html(data.price);
@@ -29,15 +29,15 @@ $(document).on("click", ".btn-modal_goods_show", function() {
 //Просмотр товара - end
 
 //Изменение товара
-$(document).on("click", ".btn-modal_goods_edit", function() {
+$(document).on("click", ".btn-modal_goods_edit", function () {
     let id = $(this).data('id');
     let route = $(this).data('route');
     $.ajax({
         url: '/goods/' + id + "/edit",
         method: "get",
-        success: function(data, textStatus, jqXHR) {
+        success: function (data, textStatus, jqXHR) {
             $('.modal_goods_edit_title').html('<b>' + data.item.name + '</b>');
-            $('.modal_goods_edit_image').html(`<img src="${data.item.image}" className="img-fluid" alt="[изображение]">`);
+            $('.modal_goods_edit_image').html(`<img src="${data.item.image}" alt="[изображение]">`);
             $('.modal_goods_edit_name').val(data.item.name);
             $('.modal_goods_edit_slug').val(data.item.slug);
             $('.modal_goods_edit_description').val(data.item.description);
@@ -80,7 +80,7 @@ $(document).on("click", ".btn-modal_goods_edit", function() {
 });
 
 //Попытка сохранения изменений товара
-$(document).ready(function() {
+$(document).ready(function () {
     $("#modal-item-edit-form").submit(function(event) {
         // Отменяем стандартное поведение формы на submit.
         event.preventDefault();
@@ -95,27 +95,11 @@ $(document).ready(function() {
             dataType: 'json', // чтобы jQuery распарсил `success` ответ.
             processData: false, // чтобы jQuery не обрабатывал отправляемые данные.
             contentType: false, // чтобы jQuery не передавал в заголовке поле `Content-Type` совсем.
-            success: function(data) {
-                $('.modal_goods_edit_save_results').html(
-                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button></div>');
+            success: function (data) {
+                location = data.referer;
             },
-            error: function(data) {
-                let errors = '';
-                let respErrors = data.responseJSON.errors;
-                if (typeof respErrors == 'string') {
-                    errors = respErrors;
-                }
-                if (typeof respErrors == 'object') {
-                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
-                        errors += errNote[1][0] + '<br>';
-                    });
-                }
-                $('.modal_goods_edit_save_results').html(
-                    '<div class="alert alert-danger text-center" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
+            error: function (data) {
+                inModalErrorFlashing(data.responseJSON.errors, ".modal_goods_edit_save_results")
             }
         });
     })
@@ -173,20 +157,7 @@ $(document).ready(function () {
                 location = data.referer;
             },
             error: function (data) {
-                let errors = '';
-                let respErrors = data.responseJSON.errors;
-                if (typeof respErrors == 'string') {
-                    errors = respErrors;
-                }
-                if (typeof respErrors == 'object') {
-                    Object.entries(data.responseJSON.errors).forEach(function (errNote) {
-                        errors += errNote[1][0] + '<br>';
-                    });
-                }
-                $('.modal_goods_create_results').html(
-                    '<div class="alert alert-danger text-center" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button>' + errors + '</div>');
+                inModalErrorFlashing(data.responseJSON.errors, ".modal_goods_create_results")
             }
         });
     })
@@ -194,10 +165,32 @@ $(document).ready(function () {
 //Создание товара - end
 
 //Доп функции
-function idsInArray(needleId, haystack) {
-    var length = haystack.length;
-    for(var i = 0; i < length; i++) {
-        if (haystack[i]['id'] == needleId) return true;
+function idsInArray(needleId, haystack)
+{
+    let length = haystack.length;
+    for (let i = 0; i < length; i++) {
+        if (haystack[i]['id'] == needleId) {
+            return true
+        }
     }
     return false;
+}
+
+function inModalErrorFlashing(respErrors, spanClass)
+{
+    let errors = '';
+    if (typeof respErrors == 'string') {
+        errors = respErrors;
+    }
+    if (typeof respErrors == 'object') {
+        Object.entries(respErrors).forEach(function (errNote) {
+            errors += errNote[1][0] + '<br>';
+        });
+    }
+    $(spanClass).html(
+        '<div class="alert alert-danger text-center" role="alert">' +
+        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+        '<span aria-hidden="true">&times;</span></button>' + errors + '</div>'
+    );
+    return true;
 }
