@@ -94,7 +94,7 @@
                             $item['media'][0]['name'] . '-thumb.jpg'
                             ])}}" alt="[миниатюра]"></td>
                     @else
-                        <td></td>
+                        <td class="text-center"><img src="/placeholder-40x30.png" alt="[миниатюра]"></td>
                     @endif
                     <td><b>{{Str::limit($item['name'], 40)}}</b></td>
                     <td>{{Str::limit($item['description'], 120)}}</td>

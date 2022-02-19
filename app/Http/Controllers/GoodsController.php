@@ -39,7 +39,7 @@ class GoodsController extends Controller
         return $this->reqProcessingForGoodsCreate();
     }
 
-    public function store(GoodsStoreValidator $req): JsonResponse
+    public function store(GoodsStoreValidator $req): JsonResponse|RedirectResponse
     {
         $validationErrors = $req->errors();
         if ($validationErrors) {
@@ -47,6 +47,10 @@ class GoodsController extends Controller
         }
 
         [$result, $status] = $this->reqProcessingForGoodsStore();
+
+        if (isset($result['success'])) {
+            flash($result['success'])->success();
+        }
 
         return Response::json($result, $status);
     }

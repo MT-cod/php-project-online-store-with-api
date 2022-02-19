@@ -154,8 +154,8 @@ $(document).on("click", ".btn-modal_goods_create", function () {
 });
 
 //Попытка сохранения нового товара
-$(document).ready(function() {
-    $("#modal-item-create-form").submit(function(event) {
+$(document).ready(function () {
+    $("#modal-item-create-form").submit(function (event) {
         // Отменяем стандартное поведение формы на submit.
         event.preventDefault();
         // Собираем данные с формы. Здесь будут все поля у которых есть `name`, включая метод `_method` и `_token`.
@@ -169,13 +169,10 @@ $(document).ready(function() {
             dataType: 'json', // чтобы jQuery распарсил `success` ответ.
             processData: false, // чтобы jQuery не обрабатывал отправляемые данные.
             contentType: false, // чтобы jQuery не передавал в заголовке поле `Content-Type` совсем.
-            success: function(data) {
-                $('.modal_goods_create_results').html(
-                    '<div class="alert alert-warning text-center" role="alert">' + data.success +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span></button></div>');
+            success: function (data) {
+                location = data.referer;
             },
-            error: function(data) {
+            error: function (data) {
                 let errors = '';
                 let respErrors = data.responseJSON.errors;
                 if (typeof respErrors == 'string') {

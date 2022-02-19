@@ -76,10 +76,17 @@ trait ReqGoodsProcessing
             $additChars = $req->input('additChars', []);
             if ($item->save()) {
                 $item->additionalChars()->attach($additChars);
-                if ($req->file('file')) {
-                    $item->addMediaFromRequest('file')->toMediaCollection('images');
+                try {
+                    if ($req->file('file')) {
+                        $item->addMediaFromRequest('file')->toMediaCollection('images');
+                    }
+                } catch (\Throwable $e) {
+                    return [[
+                        'success' => "Товар $item->name успешно создан, но не удалось установить изображение.",
+                        'referer' => $_SERVER['HTTP_REFERER']
+                    ], 200];
                 }
-                return [['success' => "Товар $item->name успешно создан. Обновите список товаров."], 200];
+                return [['success' => "Товар $item->name успешно создан.", 'referer' => $_SERVER['HTTP_REFERER']], 200];
             }
             return [['errors' => 'Не удалось создать товар.'], 400];
         } catch (\Throwable $e) {
@@ -110,7 +117,7 @@ trait ReqGoodsProcessing
             try {
                 $item['image'] = $prepareItem->getMedia('images')->first()->getUrl('normal');
             } catch (\Throwable $e) {
-                $item['image'] = 'https://via.placeholder.com/300x200';
+                $item['image'] = '/placeholder-300x200.png';
             }
             return $item;
         } catch (\Throwable $e) {

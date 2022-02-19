@@ -8,7 +8,7 @@
     <div class="carousel-inner">
         <div class="carousel-item active">
             <div class="d-block display-1 btn-modal_shop_goods_show"
-                 style="cursor: pointer"
+                 style="cursor: pointer;background-color: rgba(0,0,0,0.05)"
                  data-id="{{$carouselData[0]['id']}}"
                  data-toggle="tooltip"
                  data-placement="bottom"
@@ -31,7 +31,7 @@
         </div>
         <div class="carousel-item">
             <div class="d-block display-1 btn-modal_shop_goods_show"
-                 style="cursor: pointer"
+                 style="cursor: pointer;background-color: rgba(0,0,0,0.05)"
                  data-id="{{$carouselData[1]['id']}}"
                  data-toggle="tooltip"
                  data-placement="bottom"
@@ -54,7 +54,7 @@
         </div>
         <div class="carousel-item">
             <div class="d-block display-1 btn-modal_shop_goods_show"
-                 style="cursor: pointer"
+                 style="cursor: pointer;background-color: rgba(0,0,0,0.05)"
                  data-id="{{$carouselData[2]['id']}}"
                  data-toggle="tooltip"
                  data-placement="bottom"
@@ -77,7 +77,7 @@
         </div>
         <div class="carousel-item">
             <div class="d-block display-1 btn-modal_shop_goods_show"
-                 style="cursor: pointer"
+                 style="cursor: pointer;background-color: rgba(0,0,0,0.05)"
                  data-id="{{$carouselData[3]['id']}}"
                  data-toggle="tooltip"
                  data-placement="bottom"
