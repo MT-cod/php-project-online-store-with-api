@@ -19,6 +19,7 @@ class CreateWarehousesTable extends Migration
             $table->string('name', 100)->unique();
             $table->text('description')->default('-');
             $table->string('address')->nullable()->default('-');
+            $table->integer('priority')->unsigned()->unique();
         });
     }
 

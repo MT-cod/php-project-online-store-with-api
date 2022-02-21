@@ -28,6 +28,11 @@ class Goods extends Model implements HasMedia
         return $this->belongsToMany(AdditionalChar::class, 'goods_additional_chars', 'goods_id', 'additional_char_id');
     }
 
+    public function warehouses(): BelongsToMany
+    {
+        return $this->belongsToMany(Warehouse::class, 'goods_warehouses', 'goods_id', 'warehouse_id');
+    }
+
     public static function goodsList(int $categoryId = 0): array
     {
         $res = [];

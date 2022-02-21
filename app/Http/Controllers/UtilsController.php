@@ -10,8 +10,13 @@ class UtilsController extends Controller
 {
     public function regenerateDb(): RedirectResponse
     {
-        session()->flush();
-        Artisan::call('migrate:fresh --seed --force');
+        try {
+            session()->flush();
+            Artisan::call('migrate:fresh --seed --force');
+        } catch (\Throwable $e) {
+            flash('При перегенерации возникло исключение. Запустите перегенерацию заново!')->error();
+            return Redirect::to('/');
+        }
         return Redirect::to('/');
     }
 }

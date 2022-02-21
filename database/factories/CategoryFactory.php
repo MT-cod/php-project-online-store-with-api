@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Throwable;
 
 class CategoryFactory extends Factory
 {
@@ -18,6 +19,7 @@ class CategoryFactory extends Factory
      * Define the model's default state.
      *
      * @return array
+     * @throws Throwable
      */
     public function definition()
     {

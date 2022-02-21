@@ -10,7 +10,17 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'name', 'email', 'phone', 'address', 'comment', 'created_at', 'updated_at', 'completed'];
+    protected $fillable = [
+        'user_id',
+        'name', 'email',
+        'phone',
+        'address',
+        'comment',
+        'created_at',
+        'updated_at',
+        'completed',
+        'movement_id'
+    ];
 
     public function goods(): BelongsToMany
     {

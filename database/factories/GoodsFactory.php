@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Goods;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Throwable;
 
 class GoodsFactory extends Factory
 {
@@ -20,6 +21,7 @@ class GoodsFactory extends Factory
      * Define the model's default state.
      *
      * @return array
+     * @throws Throwable
      */
     public function definition()
     {

@@ -23,6 +23,7 @@ class CreateOrdersTable extends Migration
             $table->string('address')->nullable()->default('-');
             $table->string('comment')->nullable()->default('-');
             $table->boolean('completed')->default(0);
+            $table->bigInteger('movement_id')->unsigned()->nullable()->default(0);
         });
     }
 

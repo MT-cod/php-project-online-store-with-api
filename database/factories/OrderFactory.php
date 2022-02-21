@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Throwable;
 
 class OrderFactory extends Factory
 {
@@ -19,6 +20,7 @@ class OrderFactory extends Factory
      * Define the model's default state.
      *
      * @return array
+     * @throws Throwable
      */
     public function definition()
     {
