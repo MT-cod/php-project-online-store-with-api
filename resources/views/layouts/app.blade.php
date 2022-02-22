@@ -56,7 +56,7 @@
                                 <a class="dropdown-item" href="{{ route('orders.index', ['sort[id]=desc']) }}"><b>{{ __('Заказы') }}</b></a>
                             </div>
                         </li>
-                        <li class="nav-item">
+                        {{--<li class="nav-item">
                             <a href="{{ route('utils.regenerateDb') }}" style="text-decoration: none" onclick="return confirm('Вы действительно хотите это сделать?\nВсе текущие данные будут уничтожены и заполнены случайно сгенерированными данными.\nПроцесс может занять значительное время до нескольких минут.')">
                                 <button class="btn btn-outline-danger collapse regen_btn show" type="button" id="regen_btn1" data-toggle="collapse" data-target=".regen_btn" aria-controls="regen_btn1 regen_btn2">
                                     &#9851;Перегенерировать базу
@@ -65,7 +65,7 @@
                             <button class="btn btn-outline-danger collapse regen_btn" type="button" id="regen_btn2" data-toggle="collapse" data-target=".regen_btn" aria-controls="regen_btn1 regen_btn2">
                                 <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>Перегенерировать базу
                             </button>
-                        </li>
+                        </li>--}}
                     </ul>
 
                     <!-- Right Side Of Navbar -->
