@@ -48,13 +48,13 @@ class DatabaseSeeder extends Seeder
                 ->attach(AdditionalChar::find(random_int(1, AdditionalChar::count())));
         }
         //Добавим изображения товаров, очистив старое хранилище
-        Storage::deleteDirectory('public');
+        /*Storage::deleteDirectory('public');
         foreach (Goods::all() as $item) {
             $item->clearMediaCollection('images')
-                ->addMediaFromUrl('http://placeimg.com/300/200/tech')
+                ->addMediaFromUrl('http://placeimg.com/300/200/tech')*/
                 /*->addMediaFromUrl('https://picsum.photos/300/200.jpg')*/
-                ->toMediaCollection('images');
-        }
+                /*->toMediaCollection('images');
+        }*/
 
         //Сгенерим склады с кол-вом товаров
         Warehouse::factory(3)->create();
