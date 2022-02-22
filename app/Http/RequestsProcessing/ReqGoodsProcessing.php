@@ -30,11 +30,10 @@ trait ReqGoodsProcessing
         $filteredData = $this->filtering($req->input('filter'), Goods::select());
         $sortedData = $this->sorting($req->input('sort'), $filteredData);
 
-        //добавим доп характеристики товаров в результат
+        //добавим доп характеристики, изображения и наличие на складах товаров в результат
         $sortedData->with('additionalChars:id,name,value');
-
-        //добавим изображения товаров в результат
         $sortedData->with('media');
+        $sortedData->with('warehouses');
 
         $result = $sortedData->paginate($req->input('perpage') ?? 20)->withQueryString();
 
@@ -114,6 +113,12 @@ trait ReqGoodsProcessing
                 ->additionalChars()
                 ->select('id', 'name', 'value')
                 ->orderBy('name')
+                ->get()
+                ->toArray();
+            $item['warehouses'] = $prepareItem
+                ->warehouses()
+                ->select('id', 'name', 'address', 'quantity', 'priority')
+                ->orderBy('priority')
                 ->get()
                 ->toArray();
             try {

@@ -1,11 +1,11 @@
 //Модалки по магазину-----------------------------------------------------------------------
 //Подробности товара
-$(document).on("click", ".btn-modal_shop_goods_show", function() {
+$(document).on("click", ".btn-modal_shop_goods_show", function () {
     let id = $(this).data('id');
     $.ajax({
         url: '/goods/' + id,
         method: "get",
-        success: function(data, textStatus, jqXHR) {
+        success: function (data, textStatus, jqXHR) {
             $('.modal_goods_show_title').html('<b>' + data.name + '</b>');
             $('.modal_goods_show_name').html(data.name);
             $('.modal_goods_show_image').html(`<img src="${data.image}" className="img-fluid" alt="[изображение]">`);
@@ -13,6 +13,7 @@ $(document).on("click", ".btn-modal_shop_goods_show", function() {
             $('.modal_goods_show_price').html(data.price);
             $('.modal_goods_show_category').html(data.category);
             $('.modal_goods_show_additional_chars').html(`${data.additional_chars.map((e) => {return `<b>${e.name}</b> (${e.value})<br/>`;}).join``}`);
+            $('.modal_goods_show_amounts').html(tableOfAmountOfGoodsInWarehouses(data.warehouses));
             $('#goods_id').val(id);
             $('#modal-item-show').modal('show');
         },
@@ -23,8 +24,8 @@ $(document).on("click", ".btn-modal_shop_goods_show", function() {
 //Подробности товара - end
 
 //Изменение корзины
-$(document).ready(function() {
-    $(".modal-basket-form").submit(function(event) {
+$(document).ready(function () {
+    $(".modal-basket-form").submit(function (event) {
         event.preventDefault();
         let data = new FormData(this);
         $.ajax({
@@ -35,7 +36,7 @@ $(document).ready(function() {
             dataType: 'json',
             processData: false,
             contentType: false,
-            success: function(data) {
+            success: function (data) {
                 $('.modal_basket_edit_results').html('');
                 $('.modal_basket_edit_results').html(
                     '<div class="alert alert-success text-center p-0 m-0" role="alert">' + data.success +
@@ -43,7 +44,7 @@ $(document).ready(function() {
                     '<span aria-hidden="true">&times;</span></button></div>');
                 showItemsOfBasket(data);
             },
-            error: function(data) {
+            error: function (data) {
                 $('.modal_basket_edit_results').html('');
                 let errors = '';
                 let respErrors = data.responseJSON.errors;
@@ -156,7 +157,8 @@ $(document).on("click", "#btn-basket-preorder", function() {
 //Окно оформления заказа - end
 
 //Доп функции
-function showItemsOfBasket(data) {
+function showItemsOfBasket(data)
+{
     let basketLen = Object.keys(data.basket).length;
     $('.baskCount').html(basketLen);
     let basketItems = `<b><div class="text-center">Нет выбранных товаров</div></b>`;
@@ -188,4 +190,28 @@ function showItemsOfBasket(data) {
     }
     $('.modal_basket_show_goods').html(basketItems);
     $('#modal-basket-show').modal('show');
+}
+
+function tableOfAmountOfGoodsInWarehouses(data)
+{
+    let amountOfWarehouses = Object.keys(data).length;
+    let table = `<b><div class="text-center">Нет зарегистрированных складов</div></b>`;
+    if (amountOfWarehouses !== 0) {
+        table = '';
+        table = `<table class="table table-bordered table-hover table-sm" style="background-color: rgba(0,0,0,0.05)">
+                        <thead><tr class="text-center" style="background-color: rgba(0,0,0,0.08)">
+                            <th scope="col">Склад</th>
+                            <th scope="col">Адрес</th>
+                            <th scope="col">Кол-во</th>
+                        </tr></thead><tbody>`;
+        for (i in data) {
+            table += `<tr>
+                                 <td class="text-left text-break"><b>${data[i].name}</b></td>
+                                 <td class="text-left text-break">${data[i].address}</td>
+                                 <td class="text-center text-break"><b>${data[i].quantity} ед.</b></td>
+                             </tr>`;
+        }
+        table += `</tbody></table>`;
+    }
+    return table;
 }

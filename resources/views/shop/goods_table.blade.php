@@ -47,7 +47,7 @@
                 @if (isset($_REQUEST['sort']['price']) && ($_REQUEST['sort']['price'] === 'asc'))
                     <th
                         scope="col"
-                        class="clickableRow"
+                        class="clickableRow text-center"
                         onclick="$('#sortByPrice').val('desc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
@@ -56,7 +56,7 @@
                     </th>
                 @elseif (isset($_REQUEST['sort']['price']) && ($_REQUEST['sort']['price'] === 'desc'))
                     <th scope="col"
-                        class="clickableRow"
+                        class="clickableRow text-center"
                         onclick="$('#sortByPrice').val('');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
@@ -65,7 +65,7 @@
                     </th>
                 @else
                     <th scope="col"
-                        class="clickableRow AddSortSimbol"
+                        class="clickableRow AddSortSimbol text-center"
                         onclick="$('#sortByPrice').val('asc');$('#fsp').submit();"
                         data-toggle="tooltip"
                         data-placement="bottom"
@@ -73,6 +73,7 @@
                         Цена
                     </th>
                 @endif
+                <th scope="col" class="text-center">В наличии</th>
             </tr>
         </thead>
         <tbody style="background-color: rgba(0,0,0,0.05);">
@@ -98,7 +99,8 @@
                     @endif
                     <td><b>{{Str::limit($item['name'], 40)}}</b></td>
                     <td>{{Str::limit($item['description'], 120)}}</td>
-                    <td><b>{{$item['price']}}</b></td>
+                    <td class="text-center"><b>{{$item['price']}}</b></td>
+                    <td class="text-center"><b>{{array_reduce($item['warehouses']->toArray(), static fn ($total, $cur) => $total + $cur['pivot']['quantity']) . ' ед.'}}</b></td>
                 </tr>
             @endforeach
         </tbody>
