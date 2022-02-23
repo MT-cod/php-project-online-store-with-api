@@ -1,9 +1,9 @@
-//Модалки по доп характеристикам-----------------------------------------------------------------------
+//Модалки по складам-----------------------------------------------------------------------
 
-//Создание новой доп характеристики
-//Попытка сохранения новой доп характеристики
+//Создание нового склада
+//Попытка сохранения нового склада
 $(document).ready(function () {
-    $("#modal-additChar-create-form").submit(function (event) {
+    $("#modal-warehouse-create-form").submit(function (event) {
         event.preventDefault();
         let data = new FormData(this);
         $.ajax({
@@ -18,14 +18,14 @@ $(document).ready(function () {
                 location = data.referer;
             },
             error: function (data) {
-                inModalErrorFlashing(data.responseJSON.errors, ".modal_additChar_create_results")
+                inModalErrorFlashing(data.responseJSON.errors, ".modal_warehouse_create_results")
             }
         });
     })
 });
-//Создание доп характеристики - end
+//Попытка сохранения нового склада - end
 
-//Изменение доп характеристики
+//Изменение нового склада
 $(document).on("click", ".btn-modal_additChar_edit", function () {
     let id = $(this).data('id');
     $.ajax({
@@ -47,7 +47,7 @@ $(document).on("click", ".btn-modal_additChar_edit", function () {
         }});
 });
 
-//Попытка сохранения изменений доп характеристики
+//Попытка сохранения изменений нового склада
 $(document).ready(function () {
     $("#modal-additChar-edit-form").submit(function (event) {
         event.preventDefault();
@@ -69,4 +69,4 @@ $(document).ready(function () {
         });
     })
 });
-//Изменение доп характеристики - end
+//Попытка сохранения изменений нового склада - end

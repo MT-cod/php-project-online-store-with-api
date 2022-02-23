@@ -3,6 +3,7 @@
 namespace App\Http\RequestsProcessing;
 
 use App\Models\AdditionalChar;
+use App\Models\Warehouse;
 
 trait ReqWarehousesProcessing
 {
@@ -18,19 +19,22 @@ trait ReqWarehousesProcessing
     {
         try {
             $req = request();
-            $char = new AdditionalChar();
+            $warehouse = new Warehouse();
+            $this->authorize('store', $warehouse);
             $data['name'] = $req->name;
-            $data['value'] = $req->value ?? '-';
-            $char->fill($data);
-            if ($char->save()) {
+            $data['description'] = $req->description ?? '-';
+            $data['address'] = $req->address ?? '-';
+            $data['priority'] = $req->priority;
+            $warehouse->fill($data);
+            if ($warehouse->save()) {
                 return [[
-                    'success' => "Доп характеристика &quot;$char->name&quot; успешно создана.",
+                    'success' => "Склад &quot;$warehouse->name&quot; успешно создан.",
                     'referer' => $_SERVER['HTTP_REFERER']
                 ], 200];
             }
-            return [['errors' => 'Не удалось создать доп характеристику.'], 400];
+            return [['errors' => 'Не удалось создать склад.'], 400];
         } catch (\Throwable $e) {
-            return [['errors' => 'Не удалось создать доп характеристику.'], 400];
+            return [['errors' => 'Не удалось создать склад.'], 400];
         }
     }
 

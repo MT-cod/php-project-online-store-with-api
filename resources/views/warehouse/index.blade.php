@@ -4,6 +4,7 @@
 
 <!-- Scripts -->
 <script src="/js/online_store_modals_warehouses.js"></script>
+<script src="/js/online_store_common_funcs.js"></script>
 
 <!-- Styles -->
 <link href="{{ asset('css/online_store_blue.css') }}" rel="stylesheet">
@@ -17,7 +18,11 @@
         </div>
 
         <div class="col-2 pr-3 pt-1 text-right">
-            <div class="btn btn-success shadow-lg btn-sm btn-block" data-toggle="modal" data-target="#modal-warehouse-create" data-toggle="tooltip" data-placement="bottom" title="Создать новый склад">Новый склад</div>
+            @guest
+                <div type="button" class="btn btn-success btn-sm btn-block" onclick="return alert('Для создания склада необходимо авторизоваться!')">Новый склад</div>
+            @else
+                <div class="btn btn-success shadow-lg btn-sm btn-block" data-toggle="modal" data-target="#modal-warehouse-create" data-toggle="tooltip" data-placement="bottom" title="Создать новый склад">Новый склад</div>
+            @endguest
         </div>
     </div>
 

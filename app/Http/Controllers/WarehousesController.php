@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\RequestsProcessing\ReqWarehousesProcessing;
+use App\Http\Validators\WarehousesStoreValidator;
 use App\Models\Warehouse;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Response;
 
 class WarehousesController extends Controller
 {
@@ -19,7 +20,7 @@ class WarehousesController extends Controller
         return view('warehouse.index', ['warehouses' => Warehouse::all()]);
     }
 
-    /*public function store(AdditionalCharsStoreValidator $req): JsonResponse
+    public function store(WarehousesStoreValidator $req): JsonResponse
     {
         $validationErrors = $req->errors();
         if ($validationErrors) {
@@ -33,7 +34,7 @@ class WarehousesController extends Controller
         }
 
         return Response::json($result, $status);
-    }*/
+    }
 
     /*public function edit(int $id): array
     {
