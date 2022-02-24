@@ -43,6 +43,7 @@
                                 Склад
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuStore" style="background: url(/back_gray_min.jpg) repeat">
+                                <a class="dropdown-item" href="{{ route('warehouses.index') }}"><b>{{ __('Склады') }}</b></a>
                                 <a class="dropdown-item" href="{{ route('goods.index') }}"><b>{{ __('Товары') }}</b></a>
                                 <a class="dropdown-item" href="{{ route('categories.index') }}"><b>{{ __('Категории') }}</b></a>
                                 <a class="dropdown-item" href="{{ route('additionalChars.index') }}"><b>{{ __('Дополнительные характеристики') }}</b></a>

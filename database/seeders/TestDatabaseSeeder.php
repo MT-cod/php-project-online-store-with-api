@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\AdditionalChar;
 use App\Models\Category;
 use App\Models\Goods;
+use App\Models\Warehouse;
 use Illuminate\Database\Seeder;
 
 class TestDatabaseSeeder extends Seeder
@@ -35,5 +36,12 @@ class TestDatabaseSeeder extends Seeder
         ]);
 
         Goods::find(1)->additionalChars()->attach(AdditionalChar::find(1));
+
+        Warehouse::create([
+            'name' => 'Test warehouse',
+            'description' => 'Тестовое описание склада',
+            'address' => '',
+            'priority' => 22
+        ]);
     }
 }

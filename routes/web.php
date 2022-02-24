@@ -7,6 +7,7 @@ use App\Http\Controllers\GoodsController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UtilsController;
+use App\Http\Controllers\WarehousesController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,5 +31,6 @@ Route::resource('goods', GoodsController::class);
 Route::resource('additionalChars', AdditionalCharsController::class);
 Route::resource('basket', BasketsController::class, ['only' => ['index', 'store', 'update', 'destroy']]);
 Route::resource('orders', OrdersController::class);
+Route::resource('warehouses', WarehousesController::class);
 
 Auth::routes();

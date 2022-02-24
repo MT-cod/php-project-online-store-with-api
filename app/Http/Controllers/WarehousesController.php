@@ -2,84 +2,75 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\RequestsProcessing\ReqWarehousesProcessing;
+use App\Http\Validators\WarehousesStoreValidator;
+use App\Http\Validators\WarehousesUpdateValidator;
 use App\Models\Warehouse;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Response;
 
 class WarehousesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    use ReqWarehousesProcessing;
+
+    public function index(): View|Factory|Application
     {
-        //
+        return view('warehouse.index', ['warehouses' => Warehouse::all()]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(WarehousesStoreValidator $req): JsonResponse
     {
-        //
+        $validationErrors = $req->errors();
+        if ($validationErrors) {
+            return Response::json(['errors' => $validationErrors], 400);
+        }
+
+        [$result, $status] = $this->reqProcessingForStore();
+
+        if (isset($result['success'])) {
+            flash($result['success'])->success()->important();
+        }
+
+        return Response::json($result, $status);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function edit(int $id): array
     {
-        //
+        return $this->reqProcessingForEdit($id);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Warehouse  $warehouse
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Warehouse $warehouse)
+    public function update(WarehousesUpdateValidator $req, $id): JsonResponse
     {
-        //
+        $validationErrors = $req->errors();
+        if ($validationErrors) {
+            return Response::json(['errors' => $validationErrors], 400);
+        }
+
+        [$result, $status] = $this->reqProcessingForUpdate($id);
+
+        if (isset($result['success'])) {
+            flash($result['success'])->success()->important();
+        }
+
+        return Response::json($result, $status);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Warehouse  $warehouse
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Warehouse $warehouse)
+    public function destroy(int $id): RedirectResponse
     {
-        //
-    }
+        [$result, $status] = $this->reqProcessingForDestroy($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Warehouse  $warehouse
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Warehouse $warehouse)
-    {
-        //
-    }
+        if (isset($result['errors'])) {
+            flash($result['errors'])->error()->important();
+        }
+        if (isset($result['success'])) {
+            flash($result['success'])->success()->important();
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Warehouse  $warehouse
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Warehouse $warehouse)
-    {
-        //
+        return Redirect::to($_SERVER['HTTP_REFERER']);
     }
 }

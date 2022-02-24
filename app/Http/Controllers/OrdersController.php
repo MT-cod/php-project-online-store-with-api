@@ -42,9 +42,9 @@ class OrdersController extends Controller
         if ($validationErrors) {
             flash($validationErrors)->error();
         } else if ($this->reqProcessingForStore()) {
-            flash('Спасибо! Ваш заказ передан в обработку.')->success();
+            flash('Спасибо! Ваш заказ передан в обработку.')->success()->important();
         } else {
-            flash('Не удалось создать заказ.')->error();
+            flash('Не удалось создать заказ.')->error()->important();
         }
 
         return Redirect::to($_SERVER['HTTP_REFERER']);
@@ -59,15 +59,15 @@ class OrdersController extends Controller
     {
         $validationErrors = $req->errors();
         if ($validationErrors) {
-            flash($validationErrors->first())->error();
+            flash($validationErrors->first())->error()->important();
         } else {
             [$result, $status] = $this->reqProcessingForUpdate($id);
 
             if (isset($result['errors'])) {
-                flash($result['errors'])->error();
+                flash($result['errors'])->error()->important();
             }
             if (isset($result['success'])) {
-                flash($result['success'])->success();
+                flash($result['success'])->success()->important();
             }
         }
 
