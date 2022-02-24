@@ -14,7 +14,7 @@ class UtilsController extends Controller
             session()->flush();
             Artisan::call('migrate:fresh --seed --force');
         } catch (\Throwable $e) {
-            flash('При перегенерации возникло исключение. Запустите перегенерацию заново!')->error();
+            flash('При перегенерации возникло исключение. Запустите перегенерацию заново!')->error()->important();
             return Redirect::to('/');
         }
         return Redirect::to('/');

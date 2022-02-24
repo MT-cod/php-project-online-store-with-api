@@ -39,7 +39,7 @@ class AdditionalCharsController extends Controller
         [$result, $status] = $this->reqProcessingForStore();
 
         if (isset($result['success'])) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         }
 
         return Response::json($result, $status);
@@ -60,7 +60,7 @@ class AdditionalCharsController extends Controller
         [$result, $status] = $this->reqProcessingForUpdate($id);
 
         if (isset($result['success'])) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         }
 
         return Response::json($result, $status);
@@ -74,7 +74,7 @@ class AdditionalCharsController extends Controller
             flash($result['errors'])->error();
         }
         if (isset($result['success'])) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         }
 
         return Redirect::to($_SERVER['HTTP_REFERER']);

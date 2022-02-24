@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\RequestsProcessing\ReqWarehousesProcessing;
 use App\Http\Validators\WarehousesStoreValidator;
+use App\Http\Validators\WarehousesUpdateValidator;
 use App\Models\Warehouse;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 
 class WarehousesController extends Controller
@@ -30,18 +33,18 @@ class WarehousesController extends Controller
         [$result, $status] = $this->reqProcessingForStore();
 
         if (isset($result['success'])) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         }
 
         return Response::json($result, $status);
     }
 
-    /*public function edit(int $id): array
+    public function edit(int $id): array
     {
         return $this->reqProcessingForEdit($id);
-    }*/
+    }
 
-    /*public function update(AdditionalCharsUpdateValidator $req, $id): JsonResponse
+    public function update(WarehousesUpdateValidator $req, $id): JsonResponse
     {
         $validationErrors = $req->errors();
         if ($validationErrors) {
@@ -51,23 +54,23 @@ class WarehousesController extends Controller
         [$result, $status] = $this->reqProcessingForUpdate($id);
 
         if (isset($result['success'])) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         }
 
         return Response::json($result, $status);
-    }*/
+    }
 
-    /*public function destroy(int $id): RedirectResponse
+    public function destroy(int $id): RedirectResponse
     {
         [$result, $status] = $this->reqProcessingForDestroy($id);
 
         if (isset($result['errors'])) {
-            flash($result['errors'])->error();
+            flash($result['errors'])->error()->important();
         }
         if (isset($result['success'])) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         }
 
         return Redirect::to($_SERVER['HTTP_REFERER']);
-    }*/
+    }
 }

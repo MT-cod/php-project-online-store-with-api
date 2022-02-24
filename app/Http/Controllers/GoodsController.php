@@ -49,7 +49,7 @@ class GoodsController extends Controller
         [$result, $status] = $this->reqProcessingForGoodsStore();
 
         if (isset($result['success'])) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         }
 
         return Response::json($result, $status);
@@ -79,7 +79,7 @@ class GoodsController extends Controller
         [$result, $status] = $this->reqProcessingForGoodsUpdate($id);
 
         if (isset($result['success'])) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         }
 
         return Response::json($result, $status);
@@ -90,10 +90,10 @@ class GoodsController extends Controller
         [$result, $status] = $this->reqProcessingForGoodsDestroy($id);
 
         if (isset($result['errors'])) {
-            flash($result['errors'])->error();
+            flash($result['errors'])->error()->important();
         }
         if (isset($result['success'])) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         }
 
         return Redirect::to($_SERVER['HTTP_REFERER']);

@@ -12,7 +12,8 @@
 <div class="container-fluid" style="background: url(/back_darky_green.jpg) repeat">
 
     <div class="row justify-content-center" style="height: 4vh !important">
-        <div class="col-10 text-center btn-sm pl-5 pr-5 pt-0">
+        <div class="col-2"></div>
+        <div class="col-8 text-center btn-sm pl-5 pr-5 pt-0">
             <div style="position: absolute"><h3><b>Склады</b></h3></div>
             @include('flash::message')
         </div>

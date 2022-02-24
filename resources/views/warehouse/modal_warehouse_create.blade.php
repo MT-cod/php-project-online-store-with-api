@@ -10,7 +10,7 @@
                     </button>
                 </div>
                 <div class="modal-body" style="background-color: #dbfeff">
-                    <span class="modal_warehouse_create_results"></span>
+                    <span id="modal_warehouse_create_results"></span>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item" style="background-color: #e6f9ff">
                             <h6><b><label for="modal_warehouse_create_name">Имя склада</label></b></h6>

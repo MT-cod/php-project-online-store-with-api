@@ -36,9 +36,9 @@ class BasketsController extends Controller
         if ($validationErrors) {
             flash($validationErrors->first())->error();
         } else if ($this->reqProcessingForStoreNewPosition(request())) {
-            flash('Товар успешно добавлен в корзину')->success();
+            flash('Товар успешно добавлен в корзину')->success()->important();
         } else {
-            flash('Не удалось добавить товар в корзину')->error();
+            flash('Не удалось добавить товар в корзину')->error()->important();
         }
 
         return Redirect::to($_SERVER['HTTP_REFERER']);
@@ -70,9 +70,9 @@ class BasketsController extends Controller
             return Response::json($result, $status);
         }
         if (array_key_exists('success', $result)) {
-            flash($result['success'])->success();
+            flash($result['success'])->success()->important();
         } else {
-            flash($result['errors'])->error();
+            flash($result['errors'])->error()->important();
         }
         return Redirect::to($_SERVER['HTTP_REFERER']);
     }

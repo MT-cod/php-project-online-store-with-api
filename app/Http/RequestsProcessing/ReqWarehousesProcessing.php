@@ -4,6 +4,7 @@ namespace App\Http\RequestsProcessing;
 
 use App\Models\AdditionalChar;
 use App\Models\Warehouse;
+use Illuminate\Auth\Access\AuthorizationException;
 
 trait ReqWarehousesProcessing
 {
@@ -11,7 +12,7 @@ trait ReqWarehousesProcessing
     use Sorter;
 
     /**
-     * Обработка запроса на создание доп характеристики.
+     * Обработка запроса на создание склада.
      *
      * @return array
      */
@@ -39,22 +40,24 @@ trait ReqWarehousesProcessing
     }
 
     /**
-     * Обработка запроса на получение необходимых данных для формы изменения доп характеристики.
+     * Обработка запроса на получение необходимых данных для формы изменения склада.
      *
      * @param int $id
      * @return array
+     * @throws AuthorizationException
      */
     public function reqProcessingForEdit(int $id): array
     {
-        $prepareAdditChar = AdditionalChar::findOrFail($id);
-        $additChar = $prepareAdditChar->toArray();
-        $additChar['created_at'] = $prepareAdditChar->created_at->format('d.m.Y H:i:s');
-        $additChar['updated_at'] = $prepareAdditChar->updated_at->format('d.m.Y H:i:s');
-        return compact('additChar');
+        $prepareWarehouse = Warehouse::findOrFail($id);
+        $this->authorize('edit', $prepareWarehouse);
+        $warehouse = $prepareWarehouse->toArray();
+        $warehouse['created_at'] = $prepareWarehouse->created_at->format('d.m.Y H:i:s');
+        $warehouse['updated_at'] = $prepareWarehouse->updated_at->format('d.m.Y H:i:s');
+        return compact('warehouse');
     }
 
     /**
-     * Обработка запроса на изменение доп характеристики.
+     * Обработка запроса на изменение склада.
      *
      * @param int $id
      * @return array
@@ -63,22 +66,29 @@ trait ReqWarehousesProcessing
     {
         try {
             $req = request();
-            $char = AdditionalChar::find($id);
+            $warehouse = Warehouse::find($id);
+            $this->authorize('edit', $warehouse);
             $data = [];
             foreach ($req->input() as $row => $val) {
                 switch ($row) {
                     case 'name':
                         $data['name'] = $val;
                         break;
-                    case 'value':
-                        $data['value'] = $val ?? '-';
+                    case 'description':
+                        $data['description'] = $val ?? '-';
+                        break;
+                    case 'address':
+                        $data['address'] = $val ?? '-';
+                        break;
+                    case 'priority':
+                        $data['priority'] = $val;
                         break;
                 }
             }
-            $char->fill($data);
-            if ($char->save()) {
+            $warehouse->fill($data);
+            if ($warehouse->save()) {
                 return [[
-                    'success' => "Параметры доп характеристики &quot;$char->name&quot; успешно изменены.",
+                    'success' => "Параметры склада &quot;$warehouse->name&quot; успешно изменены.",
                     'referer' => $_SERVER['HTTP_REFERER']
                 ], 200];
             }
@@ -89,23 +99,22 @@ trait ReqWarehousesProcessing
     }
 
     /**
-     * Обработка запроса на удаление доп характеристики.
+     * Обработка запроса на удаление склада.
      *
      * @param int $id
      * @return array
      */
     public function reqProcessingForDestroy(int $id): array
     {
-        $char = AdditionalChar::find($id);
-        if ($char) {
+        $warehouse = Warehouse::find($id);
+        if ($warehouse) {
             try {
-                $char->goods()->detach();
-                $char->delete();
+                $warehouse->delete();
             } catch (\Throwable $e) {
-                return [['errors' => "Не удалось удалить доп характеристику &quot;$char->name&quot;."], 400];
+                return [['errors' => "Не удалось удалить склад &quot;$warehouse->name&quot;."], 400];
             }
-            return [['success' => "Характеристика &quot;$char->name&quot; успешно удалена."], 200];
+            return [['success' => "Склад &quot;$warehouse->name&quot; успешно удалён."], 200];
         }
-        return [['errors' => "Не удалось найти указанную доп характеристику."], 400];
+        return [['errors' => "Не удалось найти указанный склад."], 400];
     }
 }

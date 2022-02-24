@@ -17,7 +17,7 @@ class ShopController extends Controller
         $result = $this->reqProcessingForShopIndex();
 
         if ($result['errors']) {
-            flash($result['errors'])->error();
+            flash($result['errors'])->error()->important();
             $_REQUEST = ['filter_expand' => "1"];
         }
 
