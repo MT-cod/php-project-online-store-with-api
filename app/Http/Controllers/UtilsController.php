@@ -12,7 +12,7 @@ class UtilsController extends Controller
     {
         try {
             session()->flush();
-            passthru('php artisan migrate:fresh --seed --force');
+            passthru('php ' . __DIR__ . '/../../../artisan migrate:fresh --seed --force');
         } catch (\Throwable $e) {
             flash('При перегенерации возникло исключение. Запустите перегенерацию заново!')->error()->important();
             return Redirect::to('/');

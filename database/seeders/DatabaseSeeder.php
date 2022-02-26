@@ -136,6 +136,6 @@ class DatabaseSeeder extends Seeder
 
     private function outputMessage(string $mess): void
     {
-        print_r("<div style='background-color: black;color: lawngreen;font-size: .7rem;'>$mess</div><script>window.scrollTo(0,document.body.scrollHeight);</script>");
+        print_r("<div style='background-color: black;color: lawngreen;font-size: .7rem;'>$mess</div>\n<script>window.scrollTo(0,document.body.scrollHeight);</script>");
     }
 }
