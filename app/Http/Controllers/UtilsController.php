@@ -12,11 +12,12 @@ class UtilsController extends Controller
     {
         try {
             session()->flush();
-            Artisan::call('migrate:fresh --seed --force');
+            passthru('php artisan migrate:fresh --seed --force');
         } catch (\Throwable $e) {
             flash('При перегенерации возникло исключение. Запустите перегенерацию заново!')->error()->important();
             return Redirect::to('/');
         }
+        flash('Перегенерация выполнена успешно!')->success()->important();
         return Redirect::to('/');
     }
 }
