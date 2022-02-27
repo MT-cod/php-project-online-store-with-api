@@ -4,6 +4,7 @@ use App\Http\Controllers\AdditionalCharsController;
 use App\Http\Controllers\BasketsController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\GoodsController;
+use App\Http\Controllers\MovementsController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\UtilsController;
@@ -32,5 +33,6 @@ Route::resource('additionalChars', AdditionalCharsController::class);
 Route::resource('basket', BasketsController::class, ['only' => ['index', 'store', 'update', 'destroy']]);
 Route::resource('orders', OrdersController::class);
 Route::resource('warehouses', WarehousesController::class);
+Route::resource('movements', MovementsController::class, ['only' => ['index', 'create', 'store']]);
 
 Auth::routes();

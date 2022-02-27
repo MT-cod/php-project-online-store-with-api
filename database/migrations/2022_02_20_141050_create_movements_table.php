@@ -17,6 +17,7 @@ class CreateMovementsTable extends Migration
             $table->id();
             $table->timestamps();
             $table->integer('movement_type')->unsigned();
+            $table->text('description')->default('-');
             $table->bigInteger('order_id')->unsigned()->nullable()->default(0);
         });
     }

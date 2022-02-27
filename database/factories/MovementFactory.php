@@ -15,6 +15,6 @@ class MovementFactory extends Factory
      */
     public function definition()
     {
-        return ['movement_type' => random_int(1, 4)];
+        return ['description' => $this->faker->words(10, true), 'movement_type' => random_int(1, 4)];
     }
 }

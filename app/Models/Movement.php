@@ -10,7 +10,7 @@ class Movement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['movement_type', 'order_id', 'updated_at'];
+    protected $fillable = ['description', 'movement_type', 'order_id', 'updated_at'];
 
     public function goods(): BelongsToMany
     {

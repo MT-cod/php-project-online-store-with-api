@@ -55,6 +55,7 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuManagering" style="background: url(/back_gray_min.jpg) repeat">
                                 <a class="dropdown-item" href="{{ route('orders.index', ['sort[id]=desc']) }}"><b>{{ __('Заказы') }}</b></a>
+                                <a class="dropdown-item" href="{{ route('movements.index', ['sort[id]=desc']) }}"><b>{{ __('Складские движения') }}</b></a>
                             </div>
                         </li>
                         <li class="nav-item">

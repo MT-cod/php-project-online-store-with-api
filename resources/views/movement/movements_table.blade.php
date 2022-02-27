@@ -1,7 +1,7 @@
 <div class="col text-left" style="height: 91vh !important; overflow-y: auto;">
     <div class="row p-0 m-0">
         <div class="col-10 d-flex justify-content-center pagination pagination-sm">
-            {{ $orders->links('pagination::bootstrap-4') }}
+            {{ $movements->links('pagination::bootstrap-4') }}
         </div>
         <div class="col-2 p-sm-1 m-0 d-flex justify-content-center">
             <b>Показать&nbsp;</b>
@@ -50,7 +50,7 @@
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Создан ▲
+                        Проведено ▲
                     </th>
                 @elseif (isset($_REQUEST['sort']['created_at']) && ($_REQUEST['sort']['created_at'] === 'desc'))
                     <th scope="col"
@@ -59,7 +59,7 @@
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Создан ▼
+                        Проведено ▼
                     </th>
                 @else
                     <th scope="col"
@@ -68,57 +68,34 @@
                         data-toggle="tooltip"
                         data-placement="bottom"
                         title="Нажать для сортировки">
-                        Создан
+                        Проведено
                     </th>
                 @endif
-                @if (isset($_REQUEST['sort']['name']) && ($_REQUEST['sort']['name'] === 'asc'))
-                    <th
-                        scope="col"
-                        class="text-center clickableRow"
-                        onclick="$('#sortByName').val('desc');$('#fsp').submit();"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="Нажать для сортировки">
-                        Имя заказчика ▲
-                    </th>
-                @elseif (isset($_REQUEST['sort']['name']) && ($_REQUEST['sort']['name'] === 'desc'))
-                    <th scope="col"
-                        class="text-center clickableRow"
-                        onclick="$('#sortByName').val('');$('#fsp').submit();"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="Нажать для сортировки">
-                        Имя заказчика ▼
-                    </th>
-                @else
-                    <th scope="col"
-                        class="text-center clickableRow AddSortSimbol"
-                        onclick="$('#sortByName').val('asc');$('#fsp').submit();"
-                        data-toggle="tooltip"
-                        data-placement="bottom"
-                        title="Нажать для сортировки">
-                        Имя заказчика
-                    </th>
-                @endif
-                <th scope="col" class="text-center">E-mail</th>
-                <th scope="col" class="text-center">Телефон</th>
-                <th scope="col" class="text-center">Статус</th>
+                <th scope="col" class="text-center">Описание</th>
+                <th scope="col" class="text-center">Тип движения</th>
             </tr>
         </thead>
         <tbody style="background-color: rgba(0,0,0,0.05);">
-            @foreach ($orders as $order)
-                <tr class="text-center clickableRow btn-modal_order_edit" data-id="{{$order['id']}}">
-                    <td class="text-break"><b>{{Str::limit($order['id'], 40)}}</b></td>
-                    <td class="text-break">{{Str::limit($order['created_at'], 60)}}</td>
-                    <td class="text-break">{{Str::limit($order['name'], 60)}}</td>
-                    <td class="text-break">{{Str::limit($order['email'], 60)}}</td>
-                    <td class="text-break">{{Str::limit($order['phone'], 60)}}</td>
+            @foreach ($movements as $movement)
+                <tr class="text-center clickableRow btn-modal_order_edit" data-id="{{$movement['id']}}">
+                    <td><b>{{Str::limit($movement['id'], 40)}}</b></td>
+                    <td class="text-break">{{Str::limit($movement['created_at'], 60)}}</td>
+                    <td class="text-break text-left">{{$movement['description']}}</td>
                     <td class="text-break">
-                        @if ($order['completed'])
-                            <b>Завершён</b>
-                        @else
-                            <b>В работе</b>
-                        @endif
+                        @switch($movement['movement_type'])
+                            @case(1)
+                            <b>пополнение склада</b>
+                            @break
+                            @case(2)
+                            <b>списание со склада</b>
+                            @break
+                            @case(3)
+                            <b>выдача со склада по заказу</b>
+                            @break
+                            @case(4)
+                            <b>движение между складами</b>
+                            @break
+                        @endswitch
                     </td>
                 </tr>
             @endforeach

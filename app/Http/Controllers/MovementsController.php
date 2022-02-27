@@ -2,84 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Movement;
-use Illuminate\Http\Request;
+use App\Http\RequestsProcessing\ReqMovementsProcessing;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 
 class MovementsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    use ReqMovementsProcessing;
+
+    public function index(): Factory|View|Application
     {
-        //
+        [$movements, $errors] = $this->reqProcessingForIndex();
+
+        if ($errors) {
+            flash($errors)->error();
+            $_REQUEST = ['filter_expand' => "1"];
+        }
+
+        return view('movement.index', compact('movements'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    /*public function create(): array
     {
-        //
+        return $this->reqProcessingForCreate();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(OrdersStoreValidator $req): RedirectResponse
     {
-        //
-    }
+        $validationErrors = $req->errors();
+        if ($validationErrors) {
+            flash($validationErrors)->error();
+        } else if ($this->reqProcessingForStore()) {
+            flash('Спасибо! Ваш заказ передан в обработку.')->success()->important();
+        } else {
+            flash('Не удалось создать заказ.')->error()->important();
+        }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Movement  $movement
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Movement $movement)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Movement  $movement
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Movement $movement)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Movement  $movement
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Movement $movement)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Movement  $movement
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Movement $movement)
-    {
-        //
-    }
+        return Redirect::to($_SERVER['HTTP_REFERER']);
+    }*/
 }
