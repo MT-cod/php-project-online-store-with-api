@@ -45,8 +45,8 @@ API должно поддерживать авторизацию (рекомен
 ## Документация к API проекта на getpostman.com:
 https://documenter.getpostman.com/view/18230245/UVJfhuYT
 
-## Развёрнутый проект на Heroku:
-<a href="http://php-online-store-with-api.herokuapp.com/">php-online-store-with-api.herokuapp.com</a>
+## Развёрнутый проект:
+<a href="http://php-project-online-store-with-api.mamont.xyz/">php-project-online-store-with-api.mamont.xyz</a>
 
 ## Готовый docker-образ с проектом:
 <a href="https://hub.docker.com/r/mtcod/php-project-online-store-with-api">mtcod/php-project-online-store-with-api</a>
