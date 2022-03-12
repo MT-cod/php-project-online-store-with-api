@@ -1,15 +1,17 @@
 <div class="col text-left" style="height: 91vh !important; overflow-y: auto;">
-    <div class="row p-0 m-0">
-        <div class="col-10 d-flex justify-content-center pagination pagination-sm">
-            {{ $movements->links('pagination::bootstrap-4') }}
+    @if ($movements)
+        <div class="row p-0 m-0">
+            <div class="col-10 d-flex justify-content-center pagination pagination-sm">
+                {{ $movements->links('pagination::bootstrap-4') }}
+            </div>
+            <div class="col-2 p-sm-1 m-0 d-flex justify-content-center">
+                <b>Показать&nbsp;</b>
+                <input href="#" onclick="$('#perpage').val(20)" type="submit" form="fsp" value="20">
+                <input href="#" onclick="$('#perpage').val(50)" type="submit" form="fsp" value="50">
+                <input href="#" onclick="$('#perpage').val(500)" type="submit" form="fsp" value="500">
+            </div>
         </div>
-        <div class="col-2 p-sm-1 m-0 d-flex justify-content-center">
-            <b>Показать&nbsp;</b>
-            <input href="#" onclick="$('#perpage').val(20)" type="submit" form="fsp" value="20">
-            <input href="#" onclick="$('#perpage').val(50)" type="submit" form="fsp" value="50">
-            <input href="#" onclick="$('#perpage').val(500)" type="submit" form="fsp" value="500">
-        </div>
-    </div>
+    @endif
     <table class="table table-bordered table-hover table-sm mx-auto">
         <thead style="background-color: rgba(0,0,0,0.1);">
             <tr style="font-size: 1.2rem;">
@@ -81,22 +83,7 @@
                     <td><b>{{Str::limit($movement['id'], 40)}}</b></td>
                     <td class="text-break">{{Str::limit($movement['created_at'], 60)}}</td>
                     <td class="text-break text-left">{{$movement['description']}}</td>
-                    <td class="text-break">
-                        @switch($movement['movement_type'])
-                            @case(1)
-                            <b>пополнение склада</b>
-                            @break
-                            @case(2)
-                            <b>списание со склада</b>
-                            @break
-                            @case(3)
-                            <b>выдача со склада по заказу</b>
-                            @break
-                            @case(4)
-                            <b>движение между складами</b>
-                            @break
-                        @endswitch
-                    </td>
+                    <td class="text-break">{{config('movements_types.' . $movement['movement_type'])}}</td>
                 </tr>
             @endforeach
         </tbody>

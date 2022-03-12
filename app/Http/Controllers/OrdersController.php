@@ -24,7 +24,7 @@ class OrdersController extends Controller
         [$orders, $errors] = $this->reqProcessingForIndex();
 
         if ($errors) {
-            flash($errors)->error();
+            flash($errors)->error()->important();
             $_REQUEST = ['filter_expand' => "1"];
         }
 
@@ -40,8 +40,8 @@ class OrdersController extends Controller
     {
         $validationErrors = $req->errors();
         if ($validationErrors) {
-            flash($validationErrors)->error();
-        } else if ($this->reqProcessingForStore()) {
+            flash($validationErrors)->error()->important();
+        } elseif ($this->reqProcessingForStore()) {
             flash('Спасибо! Ваш заказ передан в обработку.')->success()->important();
         } else {
             flash('Не удалось создать заказ.')->error()->important();

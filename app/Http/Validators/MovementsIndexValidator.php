@@ -19,9 +19,9 @@ class MovementsIndexValidator extends \App\Http\Validators\Validator
         return Validator::make($request->all(), [
             'filter.create_min' => ['nullable', 'date'],
             'filter.create_max' => ['nullable', 'date'],
-            'filter.movement_type' => ['integer', 'between:1,4'],
-            'filter.warehouse_id' => ['nullable', 'integer', 'exists:warehouses,id'],
-            'filter.goods_id' => ['nullable', 'integer', 'exists:goods,id'],
+            'filter.movement_type' => ['nullable', 'integer', 'between:1,4'],
+            'filter.warehouses' => ['nullable'],
+            'filter.goods' => ['nullable', 'integer', 'exists:goods,id'],
             'sort.*' => ['nullable', Rule::in(['asc', 'desc'])],
             'perpage' => ['nullable', 'integer'],
             'filter.*' => function ($attr, $val, $fail): void {
@@ -30,8 +30,8 @@ class MovementsIndexValidator extends \App\Http\Validators\Validator
                     'create_min',
                     'create_max',
                     'movement_type',
-                    'warehouse_id',
-                    'goods_id'
+                    'warehouses',
+                    'goods'
                 ];
                 if (!in_array(explode('.', $attr)[1], $permitAttrs)) {
                     $fail("Фильтрация данных по полю $attr некорректна.");

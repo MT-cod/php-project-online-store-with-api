@@ -13,7 +13,7 @@ trait ReqMovementsProcessing
     use Sorter;
 
     /**
-     * Обработка запроса на список заказов с фильтрацией, сортировкой и разбитием на страницы.
+     * Обработка запроса на список движений с фильтрацией, сортировкой и разбитием на страницы.
      *
      * @return array
      */
@@ -34,50 +34,211 @@ trait ReqMovementsProcessing
     }
 
     /**
-     * Обработка запроса на получение необходимых данных для формы создания нового заказа.
+     * Обработка запроса на получение необходимых данных для формы создания нового товара.
      *
      * @return array
      */
-    public function reqProcessingForCreate(): array
+    public function reqProcessingForGoodsCreate(): array
     {
-        $user_data = [];
-        $user = Auth::user();
-        if ($user) {
-            //Если пользователь авторизован - работаем с табличными данными в БД
-            $user_data['name'] = $user->name;
-            $user_data['email'] = $user->email;
-            $user_data['phone'] = $user->phone;
-        }
-        $basket = Basket::getActualDataOfBasket();
-        return compact('user_data', 'basket');
+        $categories = Category::categsForSelectsWithMarkers();
+
+        $additCharacteristics = AdditionalChar::additCharsForFilters();
+
+        return compact('categories', 'additCharacteristics');
     }
 
     /**
-     * Обработка запроса создания заказа.
+     * Обработка запроса на создание товара.
      *
-     * @return bool
+     * @return array
      */
-    public function reqProcessingForStore(): bool
+    public function reqProcessingForGoodsStore(): array
     {
-        $basket = Basket::getActualDataOfBasket();
-        if ($basket) {
+        try {
             $req = request();
-            $user = Auth::user();
-            $order = new Order();
+            $item = new Goods();
+            $this->authorize('store', $item);
             $data['name'] = $req->name;
-            $data['email'] = $req->email;
-            $data['phone'] = $req->phone;
-            $data['user_id'] = ($user) ? $user->id : 0;
-            $data['address'] = $req->address ?? '-';
-            $data['comment'] = $req->comment ?? '-';
-            $order->fill($data);
-            if ($order->save()) {
-                array_walk($basket, static fn($item) => $order->goods()
-                    ->attach($item['id'], ['price' => $item['price'], 'quantity' => $item['quantity']]));
-                Basket::purgeBasket();//Заказ сделан, корзина больше не нужна - удаляем её
-                return true;
+            $data['slug'] = $req->slug;
+            $data['description'] = $req->description ?? '-';
+            $data['price'] = $req->price ?? 0;
+            $data['category_id'] = $req->category_id;
+            $item->fill($data);
+            $additChars = $req->input('additChars', []);
+            if ($item->save()) {
+                $item->additionalChars()->attach($additChars);
+                try {
+                    if ($req->file('file')) {
+                        $item->addMediaFromRequest('file')->toMediaCollection('images');
+                    }
+                } catch (\Throwable $e) {
+                    return [[
+                        'success' => "Товар &quot;$item->name&quot; успешно создан, но не удалось установить изображение.",
+                        'referer' => $_SERVER['HTTP_REFERER']
+                    ], 200];
+                }
+                return [[
+                    'success' => "Товар &quot;$item->name&quot; успешно создан.",
+                    'referer' => $_SERVER['HTTP_REFERER']
+                ], 200];
+            }
+            return [['errors' => 'Не удалось создать товар.'], 400];
+        } catch (\Throwable $e) {
+            return [['errors' => 'Не удалось создать товар.'], 400];
+        }
+    }
+
+    /**
+     * Обработка запроса на получение товара по id.
+     *
+     * @param int $id
+     * @return array
+     */
+    public function reqProcessingForGoodsShow(int $id): array
+    {
+        try {
+            $prepareItem = Goods::findOrFail($id);
+            $item = $prepareItem->toArray();
+            $item['category'] = $prepareItem->category()->first()->name;
+            $item['created_at'] = $prepareItem->created_at->format('d.m.Y H:i:s');
+            $item['updated_at'] = $prepareItem->updated_at->format('d.m.Y H:i:s');
+            $item['additional_chars'] = $prepareItem
+                ->additionalChars()
+                ->select('id', 'name', 'value')
+                ->orderBy('name')
+                ->get()
+                ->toArray();
+            $item['warehouses'] = $prepareItem
+                ->warehouses()
+                ->select('id', 'name', 'address', 'quantity', 'priority')
+                ->orderBy('priority')
+                ->get()
+                ->toArray();
+            try {
+                $item['image'] = $prepareItem->getMedia('images')->first()->getUrl('normal');
+            } catch (\Throwable $e) {
+                $item['image'] = '/placeholder-300x200.png';
+            }
+            return $item;
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Обработка запроса на получение необходимых данных для формы изменения товара.
+     *
+     * @param int $id
+     * @return array
+     * @throws AuthorizationException
+     */
+    public function reqProcessingForGoodsEdit(int $id): array
+    {
+        try {
+            $prepareItem = Goods::findOrFail($id);
+            $this->authorize('edit', $prepareItem);
+            $item = $prepareItem->toArray();
+            $item['created_at'] = $prepareItem->created_at->format('d.m.Y H:i:s');
+            $item['updated_at'] = $prepareItem->updated_at->format('d.m.Y H:i:s');
+            $item['additional_chars'] = $prepareItem
+                ->additionalChars()
+                ->select('id', 'name', 'value')
+                ->orderBy('name')
+                ->get()
+                ->toArray();
+            try {
+                $item['image'] = $prepareItem->getMedia('images')->first()->getUrl('normal');
+            } catch (\Throwable $e) {
+                $item['image'] = 'https://via.placeholder.com/300x200';
+            }
+            return $item;
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Обработка запроса на изменение товара.
+     *
+     * @param int $id
+     * @return array
+     * @throws AuthorizationException
+     */
+    public function reqProcessingForGoodsUpdate(int $id): array
+    {
+        try {
+            $req = request();
+            $item = Goods::find($id);
+            $this->authorize('update', $item);
+            $data = [];
+            foreach ($req->input() as $row => $val) {
+                switch ($row) {
+                    case 'name':
+                        $data['name'] = $val;
+                        break;
+                    case 'slug':
+                        $data['slug'] = $val;
+                        break;
+                    case 'description':
+                        $data['description'] = $val ?? '-';
+                        break;
+                    case 'price':
+                        $data['price'] = $val ?? 0;
+                        break;
+                    case 'category_id':
+                        $data['category_id'] = $val;
+                        break;
+                    case 'additChars':
+                        $item->additionalChars()->sync($val);
+                        break;
+                }
+            }
+            $item->fill($data);
+            if ($item->save()) {
+                try {
+                    if ($req->file('file')) {
+                        $item->clearMediaCollection('images')->addMediaFromRequest('file')->toMediaCollection('images');
+                    }
+                } catch (\Throwable $e) {
+                    return [[
+                        'success' => "Параметры товара &quot;$item->name&quot; успешно изменены, но не удалось изменить изображение.",
+                        'referer' => $_SERVER['HTTP_REFERER']
+                    ], 200];
+                }
+                return [[
+                    'success' => "Параметры товара &quot;$item->name&quot; успешно изменены.",
+                    'referer' => $_SERVER['HTTP_REFERER']
+                ], 200];
+            }
+            return [['errors' => 'Ошибка изменения данных.'], 400];
+        } catch (\Throwable $e) {
+            return [['errors' => 'Ошибка изменения данных.'], 400];
+        }
+    }
+
+    /**
+     * Обработка запроса на удаление товара.
+     *
+     * @param int $id
+     * @return array
+     * @throws AuthorizationException
+     */
+    public function reqProcessingForGoodsDestroy(int $id): array
+    {
+        $item = Goods::find($id);
+        $this->authorize('delete', $item);
+        if ($item) {
+            try {
+                $item->additionalChars()->detach();
+                $item->delete();
+                return [['success' => "Товар &quot;$item->name&quot; успешно удален."], 200];
+            } catch (\Throwable $e) {
+                return [
+                    ['errors' => "Не удалось удалить товар &quot;$item->name&quot;. Товар может участвовать в транзакциях."],
+                    400
+                ];
             }
         }
-        return false;
+        return [['errors' => "Не удалось найти товар, указанный для удаления."], 400];
     }
 }

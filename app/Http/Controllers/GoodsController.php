@@ -24,7 +24,7 @@ class GoodsController extends Controller
         [$goods, $errors] = $this->reqProcessingForGoodsIndex();
 
         if ($errors) {
-            flash($errors)->error();
+            flash($errors)->error()->important();
             $_REQUEST = ['filter_expand' => "1"];
         }
 

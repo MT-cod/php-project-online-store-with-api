@@ -16,4 +16,9 @@ class Warehouse extends Model
     {
         return $this->belongsToMany(Goods::class, 'goods_warehouses', 'warehouse_id', 'goods_id');
     }
+
+    public static function warehousesForFilters(): array
+    {
+        return self::select('id', 'name')->orderBy('name')->get()->toArray();
+    }
 }

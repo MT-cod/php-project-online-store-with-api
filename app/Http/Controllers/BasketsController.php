@@ -34,8 +34,8 @@ class BasketsController extends Controller
     {
         $validationErrors = $req->errors();
         if ($validationErrors) {
-            flash($validationErrors->first())->error();
-        } else if ($this->reqProcessingForStoreNewPosition(request())) {
+            flash($validationErrors->first())->error()->important();
+        } elseif ($this->reqProcessingForStoreNewPosition(request())) {
             flash('Товар успешно добавлен в корзину')->success()->important();
         } else {
             flash('Не удалось добавить товар в корзину')->error()->important();

@@ -1,15 +1,17 @@
 <div class="col text-left" style="height: 91vh !important; overflow-y: auto;">
-    <div class="row p-0 m-0">
-        <div class="col-10 d-flex justify-content-center pagination pagination-sm">
-            {{ $additChars->links('pagination::bootstrap-4') }}
+    @if ($additChars)
+        <div class="row p-0 m-0">
+            <div class="col-10 d-flex justify-content-center pagination pagination-sm">
+                {{ $additChars->links('pagination::bootstrap-4') }}
+            </div>
+            <div class="col-2 p-sm-1 m-0 d-flex justify-content-center">
+                <b>Показать&nbsp;</b>
+                <input href="#" onclick="$('#perpage').val(20)" type="submit" form="fsp" value="20">
+                <input href="#" onclick="$('#perpage').val(50)" type="submit" form="fsp" value="50">
+                <input href="#" onclick="$('#perpage').val(500)" type="submit" form="fsp" value="500">
+            </div>
         </div>
-        <div class="col-2 p-sm-1 m-0 d-flex justify-content-center">
-            <b>Показать&nbsp;</b>
-            <input href="#" onclick="$('#perpage').val(20)" type="submit" form="fsp" value="20">
-            <input href="#" onclick="$('#perpage').val(50)" type="submit" form="fsp" value="50">
-            <input href="#" onclick="$('#perpage').val(500)" type="submit" form="fsp" value="500">
-        </div>
-    </div>
+    @endif
     <table class="table table-bordered table-hover table-sm mx-auto">
         <thead style="background-color: rgba(0,0,0,0.1);">
             <tr style="font-size: 1.2rem;">

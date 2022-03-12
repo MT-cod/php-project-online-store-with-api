@@ -34,7 +34,7 @@
 
     <div class="row justify-content-center">
         <!-- Filter -->
-        @include('order.filter')
+        @include('movement.filter')
 
         <!-- Movements -->
         @include('movement.movements_table')

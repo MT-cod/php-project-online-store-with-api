@@ -27,6 +27,7 @@ trait Filter
                 'price_max' => fn($val, $data) => $data->where('price', '<=', $val ?? 10e20),
                 'level' => fn($val, $data) => $data->where('level', $val),
                 'parent_id' => fn($val, $data) => $data->where('parent_id', $val),
+                'movement_type' => fn($val, $data) => $val ? $data->where('movement_type', $val) : $data,
                 'category_id' => function ($val, $data): void {
                     $catsWithChildsList = [];
                     function catChildsToList($category, $catsWithChildsList): array
@@ -98,6 +99,20 @@ trait Filter
                 'id' => function ($val, $data): void {
                     if ($val > 0) {
                         $data->where('id', (int) $val);
+                    }
+                },
+                'warehouses' => function ($val, $data): void {
+                    foreach ($val as $warehouse) {
+                        $data->whereHas('warehouses', function (Builder $query) use ($warehouse) {
+                            $query->where('warehouse_id', $warehouse);
+                        });
+                    }
+                },
+                'goods' => function ($val, $data): void {
+                    if ($val) {
+                        $data->whereHas('goods', function (Builder $query) use ($val) {
+                            $query->where('goods_id', $val);
+                        });
                     }
                 }
             ];

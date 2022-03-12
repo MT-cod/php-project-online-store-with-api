@@ -70,4 +70,9 @@ class Goods extends Model implements HasMedia
     {
         return $this->belongsToMany(User::class, 'baskets', 'goods_id', 'user_id');
     }
+
+    public static function goodsForFilters(): array
+    {
+        return self::select('id', 'name')->orderBy('name')->get()->toArray();
+    }
 }

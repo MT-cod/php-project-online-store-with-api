@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\RequestsProcessing\ReqMovementsProcessing;
+use App\Models\Goods;
+use App\Models\Warehouse;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -18,11 +20,14 @@ class MovementsController extends Controller
         [$movements, $errors] = $this->reqProcessingForIndex();
 
         if ($errors) {
-            flash($errors)->error();
+            flash($errors)->error()->important();
             $_REQUEST = ['filter_expand' => "1"];
         }
 
-        return view('movement.index', compact('movements'));
+        $warehouses = Warehouse::warehousesForFilters();
+        $goods = Goods::goodsForFilters();
+
+        return view('movement.index', compact('movements', 'warehouses', 'goods'));
     }
 
     /*public function create(): array

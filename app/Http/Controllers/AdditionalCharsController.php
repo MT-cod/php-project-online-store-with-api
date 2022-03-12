@@ -22,7 +22,7 @@ class AdditionalCharsController extends Controller
         [$additChars, $errors] = $this->reqProcessingForIndex();
 
         if ($errors) {
-            flash($errors)->error();
+            flash($errors)->error()->important();
             $_REQUEST = ['filter_expand' => "1"];
         }
 

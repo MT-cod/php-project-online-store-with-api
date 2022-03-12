@@ -25,7 +25,7 @@
             @include('shared.filter.by_completed')
 
             <div class="btn-block g-0">
-                <a href="/orders/?filter_expand=1" style="text-decoration: none">
+                <a href="/orders/?filter_expand=1&sort[id]=desc" style="text-decoration: none">
                     <button class="btn btn-secondary collapse multi_filt show" type="button" id="submit_filt1" data-toggle="collapse" data-target=".multi_filt" aria-controls="submit_filt1 submit_filt2">
                         Сброс фильтра
                     </button>
